@@ -18,7 +18,7 @@ public class PhotoService {
   List<PhotoJson> allUsersPhotoList = List.of(
       PhotoJson.builder()
           .id(UUID.randomUUID())
-          .username("Niffler")
+          .username("Rangiffler")
           .countryJson(countryService.getCountryByCode("KZ"))
           .description("Some photo")
           .photo(

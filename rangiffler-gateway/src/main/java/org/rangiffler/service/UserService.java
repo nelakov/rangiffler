@@ -31,8 +31,8 @@ public class UserService {
           .build(),
       UserJson.builder()
           .id(UUID.randomUUID())
-          .username("Niffler")
-          .firstName("Niffler")
+          .username("Rangiffler")
+          .firstName("Rangiffler")
           .lastLame("Great")
           .friendStatus(FriendStatus.NOT_FRIEND)
           .avatar(

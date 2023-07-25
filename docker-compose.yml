@@ -1,0 +1,118 @@
+version: '3.9'
+
+services:
+  rangiffler-all-db:
+    container_name: rangiffler-all-db
+    image: postgres:15.1
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    expose:
+      - "5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  auth.rangiffler.dc:
+    container_name: auth.rangiffler.dc
+    image: nelakov/rangiffler-auth:latest
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  currency.rangiffler.dc:
+    container_name: currency.rangiffler.dc
+    image: nelakov/rangiffler-currency:latest
+    expose:
+      - "8091"
+      - "8092"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  gateway.rangiffler.dc:
+    container_name: gateway.rangiffler.dc
+    image: nelakov/rangiffler-gateway:latest
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      - auth.rangiffler.dc
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  spend.rangiffler.dc:
+    container_name: spend.rangiffler.dc
+    image: nelakov/rangiffler-spend:latest
+    expose:
+      - "8093"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  userdata.rangiffler.dc:
+    container_name: userdata.rangiffler.dc
+    image: nelakov/rangiffler-userdata:latest
+    expose:
+      - "8089"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  frontend.rangiffler.dc:
+    container_name: frontend.rangiffler.dc
+    image: nelakov/rangiffler-frontend:latest
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      gateway.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+volumes:
+  pgdata:
+    external: true
+
+networks:
+  rangiffler-network:
+    driver: bridge
