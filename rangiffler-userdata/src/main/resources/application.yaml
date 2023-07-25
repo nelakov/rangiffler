@@ -1,17 +1,12 @@
 server:
-  port: 9000
-  # ONLY FOR TESTING
-  servlet:
-    session:
-      cookie:
-        http-only: false
-        secure: false
+  port: 9010
+  error:
+    include:
+      message: true
 
 spring:
   application:
-    name: rangiffler-auth
-  mvc:
-    log-request-details: true
+    name: rangiffler-userdata
   datasource:
     hikari:
       connection-timeout: 20000
@@ -31,9 +26,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
     generate-ddl: true
-  sql:
-    init:
-      mode: always
+    sql:
+      init:
+        mode: always
 
 logging:
   level:
@@ -43,39 +38,33 @@ logging:
     org.springframework.security.oauth2: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
 
+grpc:
+  client:
+    grpcUserdataService:
+      address: 'static://localhost:8081'
+      negotiationType: PLAINTEXT
+
 ---
 spring:
   config:
     activate:
       on-profile: 'local'
   datasource:
-    url: jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
     password: 123qweasd
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
-rangiffler-front:
-  base-uri: 'http://127.0.0.1:3001'
-rangiffler-auth:
-  base-uri: 'http://127.0.0.1:9000'
 ---
 spring:
   config:
     activate:
       on-profile: 'docker'
   datasource:
-    #    TODO: updated db address
-    url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth'
-    username: root
-    password: secret
+    url: 'jdbc:mysql://rangiffler-all-db:5432/niffler-userdata'
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: validate
-rangiffler-front:
-  base-uri: 'http://frontend.rangiffler.dc'
-rangiffler-auth:
-  base-uri: 'http://auth.rangiffler.dc:9000'
 ---

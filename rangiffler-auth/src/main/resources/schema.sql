@@ -1,10 +1,9 @@
--- create database "niffler-auth" with owner postgres;
+CREATE DATABASE IF NOT EXISTS `rangiffler-auth`;
+USE `rangiffler-auth`;
 
-create extension if not exists "uuid-ossp";
-
-create table if not exists users
+CREATE TABLE IF NOT EXISTS users
 (
-    id                      UUID unique        not null default uuid_generate_v1(),
+    id                      BINARY(16)  unique not null default (UUID_TO_BIN(UUID(), TRUE)),
     username                varchar(50) unique not null,
     password                varchar(255)       not null,
     enabled                 boolean            not null,
@@ -14,18 +13,12 @@ create table if not exists users
     primary key (id, username)
 );
 
-alter table users
-    owner to postgres;
-
 create table if not exists authorities
 (
-    id        UUID unique not null default uuid_generate_v1() primary key,
-    user_id   UUID        not null,
+    id        BINARY(16) unique not null default (UUID_TO_BIN(UUID(), TRUE)) primary key,
+    user_id   BINARY(16)  not null,
     authority varchar(50) not null,
-    constraint fk_authorities_users foreign key (user_id) references users (id)
+    foreign key (user_id) references users (id)
 );
 
-alter table authorities
-    owner to postgres;
-
-create unique index if not exists ix_auth_username on authorities (user_id, authority);
+-- CREATE UNIQUE INDEX  ix_auth_username ON authorities (user_id, authority);
