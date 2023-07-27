@@ -49,6 +49,11 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
@@ -62,6 +67,11 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: 'jdbc:mysql://rangiffler-all-db:5432/niffler-userdata'
   jpa:

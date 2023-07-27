@@ -5,8 +5,8 @@ plugins {
     id 'com.palantir.docker' version '0.35.0'
 }
 
-group = 'guru.qa'
-version = '0.0.4-SNAPSHOT'
+group = 'com.elakov'
+version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -20,6 +20,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.1.1'
+    implementation 'org.springframework.kafka:spring-kafka:3.0.9'
     runtimeOnly    'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
