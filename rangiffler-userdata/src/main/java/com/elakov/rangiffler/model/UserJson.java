@@ -76,12 +76,12 @@ public class UserJson {
 
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
-        byte[] photo = entity.getPhoto();
+        byte[] photo = entity.getAvatar();
         usr.setId(entity.getId());
         usr.setUsername(entity.getUsername());
         usr.setFirstname(entity.getFirstname());
         usr.setSurname(entity.getSurname());
-        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
+        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
         return usr;
     }
 

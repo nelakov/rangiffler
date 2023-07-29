@@ -16,7 +16,7 @@ spring:
       max-lifetime: 1000
       auto-commit: true
     username: root
-    password: secret
+    password: 123qweasd
   jpa:
     properties:
       hibernate:
@@ -56,8 +56,6 @@ spring:
       auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: 123qweasd
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
@@ -73,7 +71,7 @@ spring:
       group-id: 'userdata'
       auto-offset-reset: earliest
   datasource:
-    url: 'jdbc:mysql://rangiffler-all-db:5432/niffler-userdata'
+    url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-userdata'
   jpa:
     hibernate:
       ddl-auto: validate

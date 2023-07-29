@@ -53,7 +53,7 @@ public class UserDataService {
         }
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
-        userEntity.setPhoto(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        userEntity.setAvatar(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
 
         return UserJson.fromEntity(saved);
