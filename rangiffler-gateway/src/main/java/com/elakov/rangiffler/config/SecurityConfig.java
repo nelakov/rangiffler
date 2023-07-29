@@ -25,12 +25,14 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     corsCustomizer.corsCustomizer(http);
-
-    http.csrf().disable().authorizeHttpRequests()
-            .requestMatchers("/actuator/health", "/favicon.ico").permitAll()
+    // Конфигурируем сам Spring Security
+    // Конфигурируем авторизацию
+    http.authorizeHttpRequests()
+            .requestMatchers("/actuator/health").permitAll()
             .requestMatchers(HttpMethod.POST).permitAll()
             .anyRequest()
-            .authenticated().and()
+            .authenticated()
+            .and()
             .oauth2ResourceServer()
             .jwt();
     return http.build();

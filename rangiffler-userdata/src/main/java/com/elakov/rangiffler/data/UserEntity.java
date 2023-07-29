@@ -17,10 +17,6 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CurrencyValues currency;
-
     @Column(nullable = true)
     private String firstname;
 
@@ -50,14 +46,6 @@ public class UserEntity {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
     }
 
     public String getFirstname() {
@@ -130,12 +118,12 @@ public class UserEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserEntity that = (UserEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && currency == that.currency && Objects.equals(firstname, that.firstname) && Objects.equals(surname, that.surname) && Arrays.equals(photo, that.photo) && Objects.equals(friends, that.friends) && Objects.equals(invites, that.invites);
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(firstname, that.firstname) && Objects.equals(surname, that.surname) && Arrays.equals(photo, that.photo) && Objects.equals(friends, that.friends) && Objects.equals(invites, that.invites);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, username, currency, firstname, surname, friends, invites);
+        int result = Objects.hash(id, username, firstname, surname, friends, invites);
         result = 31 * result + Arrays.hashCode(photo);
         return result;
     }
