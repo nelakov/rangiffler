@@ -23,7 +23,7 @@ public class UserEntity {
     @Column(nullable = true)
     private String surname;
 
-    @Column(name = "avatar", columnDefinition = "bytea")
+    @Column(name = "avatar", columnDefinition = "LONGBLOB")
     private byte[] avatar;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
