@@ -16,7 +16,7 @@ spring:
       max-lifetime: 1000
       auto-commit: true
     username: root
-    password: 123qweasd
+    password: secret
   jpa:
     properties:
       hibernate:
@@ -26,9 +26,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
     generate-ddl: true
-    sql:
-      init:
-        mode: always
+  sql:
+    init:
+      mode: always
 
 logging:
   level:
@@ -37,12 +37,6 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
-
-grpc:
-  client:
-    grpcUserdataService:
-      address: 'static://localhost:8081'
-      negotiationType: PLAINTEXT
 
 ---
 spring:
