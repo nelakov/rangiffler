@@ -17,18 +17,14 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CurrencyValues currency;
-
     @Column(nullable = true)
     private String firstname;
 
     @Column(nullable = true)
     private String surname;
 
-    @Column(name = "photo", columnDefinition = "bytea")
-    private byte[] photo;
+    @Column(name = "avatar", columnDefinition = "LONGBLOB")
+    private byte[] avatar;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> friends = new ArrayList<>();
@@ -52,14 +48,6 @@ public class UserEntity {
         this.username = username;
     }
 
-    public CurrencyValues getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(CurrencyValues currency) {
-        this.currency = currency;
-    }
-
     public String getFirstname() {
         return firstname;
     }
@@ -76,12 +64,12 @@ public class UserEntity {
         this.surname = surname;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+    public byte[] getAvatar() {
+        return avatar;
     }
 
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
     }
 
     public @Nonnull List<FriendsEntity> getFriends() {
@@ -130,13 +118,13 @@ public class UserEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserEntity that = (UserEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && currency == that.currency && Objects.equals(firstname, that.firstname) && Objects.equals(surname, that.surname) && Arrays.equals(photo, that.photo) && Objects.equals(friends, that.friends) && Objects.equals(invites, that.invites);
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(firstname, that.firstname) && Objects.equals(surname, that.surname) && Arrays.equals(avatar, that.avatar) && Objects.equals(friends, that.friends) && Objects.equals(invites, that.invites);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, username, currency, firstname, surname, friends, invites);
-        result = 31 * result + Arrays.hashCode(photo);
+        int result = Objects.hash(id, username, firstname, surname, friends, invites);
+        result = 31 * result + Arrays.hashCode(avatar);
         return result;
     }
 }

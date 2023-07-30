@@ -45,7 +45,7 @@ public class RangifflerAuthServiceConfig {
 
     @Autowired
     public RangifflerAuthServiceConfig(KeyManager keyManager,
-                                       @Value("${rangiffler-front.base-uri}") String rangifflerFrontUri,
+                                       @Value("${rangiffler-client.base-uri}") String rangifflerFrontUri,
                                        @Value("${rangiffler-auth.base-uri}") String rangifflerAuthUri, CorsCustomizer corsCustomizer) {
         this.keyManager = keyManager;
         this.rangifflerFrontUri = rangifflerFrontUri;

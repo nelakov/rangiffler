@@ -52,13 +52,11 @@ spring:
     bootstrap-servers: 'localhost:9092'
   datasource:
     url: jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: 123qweasd
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
-rangiffler-front:
+      ddl-auto: validate
+rangiffler-client:
   base-uri: 'http://127.0.0.1:3001'
 rangiffler-auth:
   base-uri: 'http://127.0.0.1:9000'
@@ -72,8 +70,6 @@ spring:
   datasource:
     #    TODO: updated db address
     url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth'
-    username: root
-    password: secret
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:

@@ -26,9 +26,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
     generate-ddl: true
-    sql:
-      init:
-        mode: always
+  sql:
+    init:
+      mode: always
 
 logging:
   level:
@@ -37,12 +37,6 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
 #    org.springframework.boot.autoconfigure: DEBUG
-
-grpc:
-  client:
-    grpcUserdataService:
-      address: 'static://localhost:8081'
-      negotiationType: PLAINTEXT
 
 ---
 spring:
@@ -56,12 +50,10 @@ spring:
       auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: 123qweasd
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
 ---
 spring:
   config:
@@ -73,7 +65,7 @@ spring:
       group-id: 'userdata'
       auto-offset-reset: earliest
   datasource:
-    url: 'jdbc:mysql://rangiffler-all-db:5432/niffler-userdata'
+    url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-userdata'
   jpa:
     hibernate:
       ddl-auto: validate
