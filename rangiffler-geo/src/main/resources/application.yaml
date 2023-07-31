@@ -1,16 +1,16 @@
 server:
-  port: 9010
+  port: 9020
   error:
     include:
       message: true
 
 grpc:
   server:
-    port: 9011
+    port: 9021
 
 spring:
   application:
-    name: rangiffler-userdata
+    name: rangiffler-geo
   datasource:
     hikari:
       connection-timeout: 20000
@@ -46,13 +46,8 @@ spring:
   config:
     activate:
       on-profile: 'local'
-  kafka:
-    bootstrap-servers: 'localhost:9092'
-    consumer:
-      group-id: 'userdata'
-      auto-offset-reset: earliest
   datasource:
-    url: jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/rangiffler-geo?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
@@ -62,13 +57,8 @@ spring:
   config:
     activate:
       on-profile: 'docker'
-  kafka:
-    bootstrap-servers: 'kafka:9092'
-    consumer:
-      group-id: 'userdata'
-      auto-offset-reset: earliest
   datasource:
-    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler_users?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-geo'
   jpa:
     hibernate:
       ddl-auto: validate

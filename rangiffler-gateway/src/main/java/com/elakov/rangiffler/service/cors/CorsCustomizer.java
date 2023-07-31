@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.cors;
+package com.elakov.rangiffler.service.cors;
 
 import jakarta.annotation.Nonnull;
 import java.util.List;

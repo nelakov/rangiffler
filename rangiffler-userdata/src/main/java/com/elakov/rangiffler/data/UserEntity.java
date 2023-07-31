@@ -1,11 +1,15 @@
 package com.elakov.rangiffler.data;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.*;
 import java.util.stream.Stream;
 
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -31,62 +35,6 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "friend", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FriendsEntity> invites = new ArrayList<>();
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(byte[] avatar) {
-        this.avatar = avatar;
-    }
-
-    public @Nonnull List<FriendsEntity> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(List<FriendsEntity> friends) {
-        this.friends = friends;
-    }
-
-    public @Nonnull List<FriendsEntity> getInvites() {
-        return invites;
-    }
-
-    public void setInvites(List<FriendsEntity> invites) {
-        this.invites = invites;
-    }
 
     public void addFriends(boolean pending, UserEntity... friends) {
         List<FriendsEntity> friendsEntities = Stream.of(friends)

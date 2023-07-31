@@ -1,13 +1,13 @@
 package com.elakov.rangiffler.service;
 
-import com.elakov.rangiffler.data.UserEntity;
-import com.elakov.rangiffler.exception.NotFoundException;
-import jakarta.annotation.Nonnull;
 import com.elakov.rangiffler.data.FriendsEntity;
+import com.elakov.rangiffler.data.UserEntity;
 import com.elakov.rangiffler.data.repository.UserRepository;
+import com.elakov.rangiffler.exception.NotFoundException;
 import com.elakov.rangiffler.model.FriendJson;
 import com.elakov.rangiffler.model.FriendState;
 import com.elakov.rangiffler.model.UserJson;
+import jakarta.annotation.Nonnull;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +53,17 @@ public class UserDataService {
         }
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
-        userEntity.setAvatar(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        userEntity.setAvatar(user.getAvatar() != null ? user.getAvatar().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
 
         return UserJson.fromEntity(saved);
     }
 
     public @Nonnull
-    UserJson getCurrentUserOrCreateIfAbsent(@Nonnull String username) {
+    UserJson getCurrentUser(@Nonnull String username) {
         UserEntity userDataEntity = userRepository.findByUsername(username);
         if (userDataEntity == null) {
-            userDataEntity = new UserEntity();
-            userDataEntity.setUsername(username);
-            return UserJson.fromEntity(userRepository.save(userDataEntity));
+            throw new NotFoundException();
         } else {
             return UserJson.fromEntity(userDataEntity);
         }
@@ -108,7 +106,7 @@ public class UserDataService {
     }
 
     public @Nonnull
-    List<UserJson> friends(@Nonnull String username, boolean includePending) {
+    List<UserJson> friends(@Nonnull String username) {
         UserEntity userEntity = userRepository.findByUsername(username);
         if (userEntity == null) {
             throw new NotFoundException("Can`t find user by username: " + username);
@@ -116,7 +114,7 @@ public class UserDataService {
         return userEntity
                 .getFriends()
                 .stream()
-                .filter(fe -> includePending || !fe.isPending())
+                .filter(fe -> !fe.isPending())
                 .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
                         ? FriendState.INVITE_SENT
                         : FriendState.FRIEND))
@@ -152,7 +150,7 @@ public class UserDataService {
     }
 
     public @Nonnull
-    List<UserJson> acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
+    UserJson acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
         UserEntity inviteUser = userRepository.findByUsername(invitation.getUsername());
         if (currentUser == null) {
@@ -172,18 +170,12 @@ public class UserDataService {
         currentUser.addFriends(false, inviteUser);
         userRepository.save(currentUser);
 
-        return currentUser
-                .getFriends()
-                .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
-                        ? FriendState.INVITE_SENT
-                        : FriendState.FRIEND))
-                .toList();
+        return UserJson.fromEntity(inviteUser, FriendState.FRIEND);
     }
 
     @Transactional
     public @Nonnull
-    List<UserJson> declineInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
+    UserJson declineInvitation(@Nonnull String username, @Nonnull UserJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
         UserEntity friendToDecline = userRepository.findByUsername(invitation.getUsername());
         if (currentUser == null) {
@@ -199,16 +191,12 @@ public class UserDataService {
         userRepository.save(currentUser);
         userRepository.save(friendToDecline);
 
-        return currentUser.getInvites()
-                .stream()
-                .filter(FriendsEntity::isPending)
-                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
-                .toList();
+        return UserJson.fromEntity(currentUser, FriendState.NOT_FRIEND);
     }
 
     @Transactional
     public @Nonnull
-    List<UserJson> removeFriend(@Nonnull String username, @Nonnull String friendUsername) {
+    UserJson removeFriend(@Nonnull String username, @Nonnull String friendUsername) {
         UserEntity currentUser = userRepository.findByUsername(username);
         UserEntity friendToRemove = userRepository.findByUsername(friendUsername);
         if (currentUser == null) {
@@ -226,12 +214,6 @@ public class UserDataService {
         userRepository.save(currentUser);
         userRepository.save(friendToRemove);
 
-        return currentUser
-                .getFriends()
-                .stream()
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
-                        ? FriendState.INVITE_SENT
-                        : FriendState.FRIEND))
-                .toList();
+        return UserJson.fromEntity(friendToRemove, FriendState.NOT_FRIEND);
     }
 }

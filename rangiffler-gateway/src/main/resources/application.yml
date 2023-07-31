@@ -28,13 +28,14 @@ spring:
           issuer-uri: 'http://127.0.0.1:9000'
 grpc:
   client:
-    grpcCurrencyClient:
-      address: 'static://localhost:8092'
+    grpcGeoClient:
+      address: 'static://localhost:9021'
       negotiationType: PLAINTEXT
-rangiffler-userdata:
-  base-uri: 'http://127.0.0.1:9010'
+
 rangiffler-client:
   base-uri: 'http://127.0.0.1:3001'
+rangiffler-userdata:
+  base-uri: 'http://127.0.0.1:9010'
 
 ---
 spring:
@@ -46,15 +47,14 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: 'http://auth.rangiffler.dc:9000'
-
 grpc:
   client:
-#    TODO: Fix later
-    grpcCurrencyClient:
-      address: 'static://currency.rangiffler.dc:8092'
+    grpcGeoClient:
+      address: 'static://geo.rangiffler.dc:9021'
       negotiationType: PLAINTEXT
-rangiffler-userdata:
-  base-uri: 'http://userdata.rangiffler.dc:8089'
-rangiffler-client:
-  base-uri: 'http://frontend.rangiffler.dc'
+
+#rangiffler-client:
+#  base-uri: 'http://frontend.rangiffler.dc'
+#rangiffler-userdata:
+#  base-uri: 'http://userdata.rangiffler.dc:8089'
 ---

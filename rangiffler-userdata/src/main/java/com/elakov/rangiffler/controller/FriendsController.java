@@ -23,9 +23,8 @@ public class FriendsController {
     }
 
     @GetMapping("/friends")
-    public List<UserJson> friends(@RequestParam String username,
-                                  @RequestParam boolean includePending) {
-        return userService.friends(username, includePending);
+    public List<UserJson> friends(@RequestParam String username) {
+        return userService.friends(username);
     }
 
     @GetMapping("/invitations")
@@ -34,14 +33,14 @@ public class FriendsController {
     }
 
     @PostMapping("/acceptInvitation")
-    public List<UserJson> acceptInvitation(@RequestParam String username,
+    public UserJson acceptInvitation(@RequestParam String username,
                                            @RequestBody FriendJson invitation) {
         return userService.acceptInvitation(username, invitation);
     }
 
-    @PostMapping("/friends/decline")
-    public List<UserJson> declineInvitation(@RequestParam String username,
-                                            @RequestBody FriendJson invitation) {
+    @PostMapping("/declineInvitation")
+    public UserJson declineInvitation(@RequestParam String username,
+                                            @RequestBody UserJson invitation) {
         return userService.declineInvitation(username, invitation);
     }
 
@@ -51,9 +50,9 @@ public class FriendsController {
         return userService.addFriend(username, friend);
     }
 
-    @DeleteMapping("/friends/remove")
-    public List<UserJson> removeFriend(@RequestParam String username,
-                                       @RequestParam String friendUsername) {
-        return userService.removeFriend(username, friendUsername);
+    @PostMapping("/removeFriend")
+    public UserJson removeFriend(@RequestParam String username,
+                                       @RequestBody UserJson friend) {
+        return userService.removeFriend(username, friend.getUsername());
     }
 }

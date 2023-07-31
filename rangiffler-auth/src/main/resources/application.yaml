@@ -74,7 +74,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: validate
-rangiffler-front:
+rangiffler-client:
   base-uri: 'http://frontend.rangiffler.dc'
 rangiffler-auth:
   base-uri: 'http://auth.rangiffler.dc:9000'

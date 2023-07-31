@@ -10,10 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.ToString;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@Data
+@ToString(exclude = "authorities")
 @Entity
 @Table(name = "authorities")
 public class AuthorityEntity {
@@ -29,30 +33,6 @@ public class AuthorityEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Authority getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(Authority authority) {
-        this.authority = authority;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
 
     @Override
     public boolean equals(Object o) {

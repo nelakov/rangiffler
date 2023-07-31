@@ -1,87 +1,47 @@
 package com.elakov.rangiffler.model;
 
-import com.elakov.rangiffler.data.UserEntity;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import com.elakov.rangiffler.data.UserEntity;
+import lombok.NoArgsConstructor;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.UUID;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserJson {
+
     @JsonProperty("id")
     private UUID id;
+
     @JsonProperty("username")
     private String username;
-    @JsonProperty("firstname")
+
+    @JsonProperty("firstName")
     private String firstname;
+
     @JsonProperty("surname")
     private String surname;
-    @JsonProperty("photo")
-    private String photo;
+
+    @JsonProperty("avatar")
+    private String avatar;
+
     @JsonProperty("friendState")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private FriendState friendState;
-
-    public UserJson() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public FriendState getFriendState() {
-        return friendState;
-    }
-
-    public void setFriendState(FriendState friendState) {
-        this.friendState = friendState;
-    }
+    private FriendState friendState = FriendState.NOT_FRIEND;
 
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
-        byte[] photo = entity.getAvatar();
+        byte[] avatar = entity.getAvatar();
         usr.setId(entity.getId());
         usr.setUsername(entity.getUsername());
         usr.setFirstname(entity.getFirstname());
         usr.setSurname(entity.getSurname());
-        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
+        usr.setAvatar(avatar != null && avatar.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
         return usr;
     }
 
@@ -89,18 +49,5 @@ public class UserJson {
         UserJson userJson = fromEntity(entity);
         userJson.setFriendState(friendState);
         return userJson;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, photo, friendState);
     }
 }
