@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users
     surname   VARCHAR(255)                  NOT NULL,
     avatar    LONGBLOB,
     PRIMARY KEY (id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS friends
 (
@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS friends
     PRIMARY KEY (user_id, friend_id),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (friend_id) REFERENCES users (id)
-);
+    );
