@@ -3,11 +3,12 @@ USE `rangiffler-userdata`;
 
 CREATE TABLE IF NOT EXISTS users
 (
-    id        BINARY(16) PRIMARY KEY UNIQUE NOT NULL DEFAULT (UUID_TO_BIN(UUID(), TRUE)),
+    id        BINARY(16) UNIQUE NOT NULL DEFAULT (UUID_TO_BIN(UUID(), TRUE)),
     username  VARCHAR(50) UNIQUE            NOT NULL,
     firstname VARCHAR(255)                  NOT NULL,
-    lastName  VARCHAR(255)                  NOT NULL,
-    avatar    LONGBLOB
+    surname   VARCHAR(255)                  NOT NULL,
+    avatar    LONGBLOB,
+    PRIMARY KEY (id)
     );
 
 CREATE TABLE IF NOT EXISTS friends

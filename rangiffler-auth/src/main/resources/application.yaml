@@ -1,6 +1,5 @@
 server:
   port: 9000
-  # ONLY FOR TESTING
   servlet:
     session:
       cookie:
@@ -41,22 +40,20 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
-
 ---
 spring:
   config:
     activate:
       on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
   datasource:
     url: jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
-    username: root
-    password: 123qweasd
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
-rangiffler-front:
+      ddl-auto: validate
+rangiffler-client:
   base-uri: 'http://127.0.0.1:3001'
 rangiffler-auth:
   base-uri: 'http://127.0.0.1:9000'
@@ -66,15 +63,12 @@ spring:
     activate:
       on-profile: 'docker'
   datasource:
-    #    TODO: updated db address
     url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth'
-    username: root
-    password: secret
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: validate
-rangiffler-front:
+rangiffler-client:
   base-uri: 'http://frontend.rangiffler.dc'
 rangiffler-auth:
   base-uri: 'http://auth.rangiffler.dc:9000'

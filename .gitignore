@@ -36,6 +36,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### gRPC generated files ###
-/rangiffler-grpc-common/src/generated/**
