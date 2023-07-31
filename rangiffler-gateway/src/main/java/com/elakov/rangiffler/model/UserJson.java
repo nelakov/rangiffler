@@ -28,4 +28,3 @@ public class UserJson {
   @JsonProperty("friendStatus")
   private FriendStatus friendStatus;
 }
-

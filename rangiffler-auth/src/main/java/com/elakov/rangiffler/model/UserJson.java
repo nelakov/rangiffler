@@ -15,4 +15,3 @@ public class UserJson {
     @JsonProperty("username")
     private String username;
 }
-

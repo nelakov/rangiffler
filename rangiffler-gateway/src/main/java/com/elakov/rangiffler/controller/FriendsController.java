@@ -43,21 +43,21 @@ public class FriendsController {
 
     @PostMapping("friends/submit")
     public UserJson acceptInvitation(@AuthenticationPrincipal Jwt principal,
-                                           @Validated @RequestBody UserJson friend) {
+                                     @Validated @RequestBody UserJson friend) {
         String username = principal.getClaim("sub");
         return userDataClient.acceptInvitation(username, friend);
     }
 
     @PostMapping("friends/decline")
     public UserJson declineInvitation(@AuthenticationPrincipal Jwt principal,
-                                            @Validated @RequestBody UserJson friend) {
+                                      @Validated @RequestBody UserJson friend) {
         String username = principal.getClaim("sub");
         return userDataClient.declineInvitation(username, friend);
     }
 
     @PostMapping("users/invite/")
     public UserJson sendInvitation(@AuthenticationPrincipal Jwt principal,
-                              @Validated @RequestBody FriendJson friend) {
+                                   @Validated @RequestBody FriendJson friend) {
         String username = principal.getClaim("sub");
         return userDataClient.addFriend(username, friend);
     }

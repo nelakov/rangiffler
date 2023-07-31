@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users
     account_non_locked      boolean            not null,
     credentials_non_expired boolean            not null,
     primary key (id, username)
-);
+    );
 
 create table if not exists authorities
 (
@@ -19,6 +19,6 @@ create table if not exists authorities
     user_id   BINARY(16)  not null,
     authority varchar(50) not null,
     foreign key (user_id) references users (id)
-);
+    );
 
 -- CREATE UNIQUE INDEX  ix_auth_username ON authorities (user_id, authority);

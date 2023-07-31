@@ -89,7 +89,7 @@ public class RestUserdataClient {
     }
 
     public UserJson addFriend(@Nonnull String username,
-                                   @Nonnull FriendJson friend) {
+                              @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/addFriend").queryParams(params).build().toUri();
@@ -104,7 +104,7 @@ public class RestUserdataClient {
 
     public @Nonnull
     UserJson removeFriend(@Nonnull String username,
-                                @Nonnull UserJson friend) {
+                          @Nonnull UserJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
         URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/removeFriend").queryParams(params).build().toUri();

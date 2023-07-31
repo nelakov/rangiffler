@@ -13,9 +13,9 @@ public class RangifflerGatewayConfig {
   @Bean
   public WebClient webClient() {
     return WebClient
-        .builder()
-        .exchangeStrategies(ExchangeStrategies.builder().codecs(
-            configurer -> configurer.defaultCodecs().maxInMemorySize(MAX_PHOTO_SIZE)).build())
-        .build();
+            .builder()
+            .exchangeStrategies(ExchangeStrategies.builder().codecs(
+                    configurer -> configurer.defaultCodecs().maxInMemorySize(MAX_PHOTO_SIZE)).build())
+            .build();
   }
 }
