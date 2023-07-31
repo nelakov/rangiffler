@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/currentUser")
     public UserJson currentUser(@RequestParam String username) {
-        return userService.getCurrentUser(username);
+        return userService.getCurrentUserOrCreateIfAbsent(username);
     }
 
     @GetMapping("/allUsers")

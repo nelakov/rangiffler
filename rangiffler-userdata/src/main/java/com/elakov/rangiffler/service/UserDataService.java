@@ -2,18 +2,16 @@ package com.elakov.rangiffler.service;
 
 import com.elakov.rangiffler.data.FriendsEntity;
 import com.elakov.rangiffler.data.UserEntity;
+import com.elakov.rangiffler.data.repository.FriendsRepository;
 import com.elakov.rangiffler.data.repository.UserRepository;
 import com.elakov.rangiffler.exception.NotFoundException;
 import com.elakov.rangiffler.model.FriendJson;
 import com.elakov.rangiffler.model.FriendState;
 import com.elakov.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +23,12 @@ public class UserDataService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDataService.class);
     private final UserRepository userRepository;
+    private final FriendsRepository friendsRepository;
 
     @Autowired
-    public UserDataService(UserRepository userRepository) {
+    public UserDataService(UserRepository userRepository, FriendsRepository friendsRepository) {
         this.userRepository = userRepository;
+        this.friendsRepository = friendsRepository;
     }
 
     public @Nonnull
@@ -46,10 +46,12 @@ public class UserDataService {
     }
 
     public @Nonnull
-    UserJson getCurrentUser(@Nonnull String username) {
+    UserJson getCurrentUserOrCreateIfAbsent(@Nonnull String username) {
         UserEntity userDataEntity = userRepository.findByUsername(username);
         if (userDataEntity == null) {
-            throw new NotFoundException();
+            userDataEntity = new UserEntity();
+            userDataEntity.setUsername(username);
+            return UserJson.fromEntity(userRepository.save(userDataEntity));
         } else {
             return UserJson.fromEntity(userDataEntity);
         }

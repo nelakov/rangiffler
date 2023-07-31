@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//TODO: Для Кафки - потом
 @Data
 @Builder
 @AllArgsConstructor
