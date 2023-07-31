@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8080
   error:
     include:
       message: true
@@ -14,47 +14,6 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
 
----
-spring:
-  config:
-    activate:
-      on-profile: 'local'
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: 'http://127.0.0.1:9000'
-grpc:
-  client:
-    grpcCurrencyClient:
-      address: 'static://localhost:8092'
-      negotiationType: PLAINTEXT
-rangiffler-userdata:
-  base-uri: 'http://127.0.0.1:9010'
-rangiffler-client:
+rangiffler-front:
   base-uri: 'http://127.0.0.1:3001'
-
----
-spring:
-  config:
-    activate:
-      on-profile: 'docker'
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: 'http://auth.rangiffler.dc:9000'
-
-grpc:
-  client:
-#    TODO: Fix later
-    grpcCurrencyClient:
-      address: 'static://currency.rangiffler.dc:8092'
-      negotiationType: PLAINTEXT
-rangiffler-userdata:
-  base-uri: 'http://userdata.rangiffler.dc:8089'
-rangiffler-client:
-  base-uri: 'http://frontend.rangiffler.dc'
----

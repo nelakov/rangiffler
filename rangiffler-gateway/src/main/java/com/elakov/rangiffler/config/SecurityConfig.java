@@ -1,39 +1,31 @@
 package com.elakov.rangiffler.config;
 
 import com.elakov.rangiffler.cors.CorsCustomizer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @EnableWebSecurity
 @Configuration
-@Profile("!local")
-public class SecurityConfigMain {
-  private final CorsCustomizer corsCustomizer;
-  private final Environment environment;
+public class SecurityConfig {
 
-  @Autowired
-  public SecurityConfigMain(CorsCustomizer corsCustomizer, Environment environment) {
+  private final CorsCustomizer corsCustomizer;
+
+  public SecurityConfig(CorsCustomizer corsCustomizer) {
     this.corsCustomizer = corsCustomizer;
-    this.environment = environment;
   }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     corsCustomizer.corsCustomizer(http);
 
-    http.authorizeHttpRequests()
-            .requestMatchers("/actuator/health").permitAll()
-            .anyRequest()
-            .authenticated().and()
-            .oauth2ResourceServer()
-            .jwt();
+    http.authorizeHttpRequests(
+        authorize ->
+            authorize.anyRequest().permitAll()
+    ).csrf().disable();
     return http.build();
   }
-
 }

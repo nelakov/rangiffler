@@ -1,5 +1,6 @@
 package com.elakov.rangiffler.service;
 
+import com.elakov.rangiffler.data.CurrencyValues;
 import com.elakov.rangiffler.data.UserEntity;
 import com.elakov.rangiffler.exception.NotFoundException;
 import jakarta.annotation.Nonnull;
@@ -24,6 +25,7 @@ import java.util.*;
 public class UserDataService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDataService.class);
+    private static final CurrencyValues DEFAULT_USER_CURRENCY = CurrencyValues.RUB;
     private final UserRepository userRepository;
 
     @Autowired
@@ -37,6 +39,7 @@ public class UserDataService {
         LOG.info("### Kafka consumer record: " + cr.toString());
         UserEntity userDataEntity = new UserEntity();
         userDataEntity.setUsername(user.getUsername());
+        userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
         UserEntity userEntity = userRepository.save(userDataEntity);
         LOG.info(String.format(
                 "### User '%s' successfully saved to database with id: %s",
@@ -53,7 +56,8 @@ public class UserDataService {
         }
         userEntity.setFirstname(user.getFirstname());
         userEntity.setSurname(user.getSurname());
-        userEntity.setAvatar(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
+        userEntity.setCurrency(user.getCurrency());
+        userEntity.setPhoto(user.getPhoto() != null ? user.getPhoto().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
 
         return UserJson.fromEntity(saved);
@@ -65,6 +69,7 @@ public class UserDataService {
         if (userDataEntity == null) {
             userDataEntity = new UserEntity();
             userDataEntity.setUsername(username);
+            userDataEntity.setCurrency(DEFAULT_USER_CURRENCY);
             return UserJson.fromEntity(userRepository.save(userDataEntity));
         } else {
             return UserJson.fromEntity(userDataEntity);
