@@ -38,7 +38,7 @@ public class RegisterController {
 
     @Autowired
     public RegisterController(UserService userService,
-                              @Value("${rangiffler-client.base-uri}") String rangifflerFrontUri, KafkaTemplate kafkaTemplate) {
+                              @Value("${rangiffler-front.base-uri}") String rangifflerFrontUri, KafkaTemplate kafkaTemplate) {
         this.userService = userService;
         this.rangifflerFrontUri = rangifflerFrontUri;
         this.kafkaTemplate = kafkaTemplate;

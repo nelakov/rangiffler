@@ -1,5 +1,6 @@
 package com.elakov.rangiffler.model;
 
+import com.elakov.rangiffler.data.CurrencyValues;
 import com.elakov.rangiffler.data.UserEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,6 +18,8 @@ public class UserJson {
     private String firstname;
     @JsonProperty("surname")
     private String surname;
+    @JsonProperty("currency")
+    private CurrencyValues currency;
     @JsonProperty("photo")
     private String photo;
     @JsonProperty("friendState")
@@ -58,6 +61,14 @@ public class UserJson {
         this.surname = surname;
     }
 
+    public CurrencyValues getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CurrencyValues currency) {
+        this.currency = currency;
+    }
+
     public String getPhoto() {
         return photo;
     }
@@ -76,12 +87,13 @@ public class UserJson {
 
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
-        byte[] photo = entity.getAvatar();
+        byte[] photo = entity.getPhoto();
         usr.setId(entity.getId());
         usr.setUsername(entity.getUsername());
         usr.setFirstname(entity.getFirstname());
         usr.setSurname(entity.getSurname());
-        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
+        usr.setCurrency(entity.getCurrency());
+        usr.setPhoto(photo != null && photo.length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null);
         return usr;
     }
 
@@ -96,11 +108,11 @@ public class UserJson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserJson userJson = (UserJson) o;
-        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
+        return Objects.equals(id, userJson.id) && Objects.equals(username, userJson.username) && Objects.equals(firstname, userJson.firstname) && Objects.equals(surname, userJson.surname) && currency == userJson.currency && Objects.equals(photo, userJson.photo) && friendState == userJson.friendState;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstname, surname, photo, friendState);
+        return Objects.hash(id, username, firstname, surname, currency, photo, friendState);
     }
 }
