@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group = 'com.elakov'
-version = '0.0.1-SNAPSHOT'
+group = 'guru.qa'
+version = '0.0.4-SNAPSHOT'
 sourceCompatibility = '20'
 
 repositories {
