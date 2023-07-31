@@ -2,13 +2,12 @@ package com.elakov.rangiffler.data;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.util.*;
 import java.util.stream.Stream;
 
-@Getter
-@Setter
-@ToString
+@Data
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
@@ -64,15 +63,13 @@ public class UserEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         UserEntity that = (UserEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(firstname, that.firstname) && Objects.equals(surname, that.surname) && Arrays.equals(avatar, that.avatar) && Objects.equals(friends, that.friends) && Objects.equals(invites, that.invites);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, username, firstname, surname, friends, invites);
-        result = 31 * result + Arrays.hashCode(avatar);
-        return result;
+        return getClass().hashCode();
     }
 }

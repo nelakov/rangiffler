@@ -21,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/updateUserInfo")
+    @PatchMapping("/updateUserInfo")
     public UserJson updateUserInfo(@RequestBody UserJson user) {
         return userService.update(user);
     }

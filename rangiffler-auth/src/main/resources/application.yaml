@@ -1,6 +1,5 @@
 server:
   port: 9000
-  # ONLY FOR TESTING
   servlet:
     session:
       cookie:
@@ -41,8 +40,6 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
-
 ---
 spring:
   config:
@@ -65,10 +62,7 @@ spring:
   config:
     activate:
       on-profile: 'docker'
-  kafka:
-    bootstrap-servers: 'kafka:9092'
   datasource:
-    #    TODO: updated db address
     url: 'jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth'
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect

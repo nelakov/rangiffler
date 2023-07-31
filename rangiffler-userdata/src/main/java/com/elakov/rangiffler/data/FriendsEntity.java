@@ -2,10 +2,11 @@ package com.elakov.rangiffler.data;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
-@Getter
-@Setter
-@ToString
+import java.util.Objects;
+
+@Data
 @RequiredArgsConstructor
 @Entity
 @Table(name = "friends")
@@ -24,5 +25,19 @@ public class FriendsEntity {
 
     @Column(name = "pending")
     private boolean pending;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        FriendsEntity that = (FriendsEntity) o;
+        return user != null && Objects.equals(user, that.user)
+                && friend != null && Objects.equals(friend, that.friend);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, friend);
+    }
 
 }

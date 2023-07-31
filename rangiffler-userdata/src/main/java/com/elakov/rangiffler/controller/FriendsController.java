@@ -34,13 +34,13 @@ public class FriendsController {
 
     @PostMapping("/acceptInvitation")
     public UserJson acceptInvitation(@RequestParam String username,
-                                           @RequestBody FriendJson invitation) {
+                                     @RequestBody FriendJson invitation) {
         return userService.acceptInvitation(username, invitation);
     }
 
     @PostMapping("/declineInvitation")
     public UserJson declineInvitation(@RequestParam String username,
-                                            @RequestBody UserJson invitation) {
+                                      @RequestBody UserJson invitation) {
         return userService.declineInvitation(username, invitation);
     }
 
@@ -52,7 +52,7 @@ public class FriendsController {
 
     @PostMapping("/removeFriend")
     public UserJson removeFriend(@RequestParam String username,
-                                       @RequestBody UserJson friend) {
+                                 @RequestBody UserJson friend) {
         return userService.removeFriend(username, friend.getUsername());
     }
 }

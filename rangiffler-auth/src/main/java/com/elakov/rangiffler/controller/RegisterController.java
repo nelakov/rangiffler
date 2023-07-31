@@ -34,15 +34,6 @@ public class RegisterController {
 
     private final UserService userService;
     private final String rangifflerFrontUri;
-//    private final KafkaTemplate kafkaTemplate;
-
-//    @Autowired
-//    public RegisterController(UserService userService,
-//                              @Value("${rangiffler-client.base-uri}") String rangifflerFrontUri, KafkaTemplate kafkaTemplate) {
-//        this.userService = userService;
-//        this.rangifflerFrontUri = rangifflerFrontUri;
-//        this.kafkaTemplate = kafkaTemplate;
-//    }
 
     @Autowired
     public RegisterController(UserService userService,
@@ -70,9 +61,6 @@ public class RegisterController {
                         registrationModel.getUsername(),
                         registrationModel.getPassword()
                 );
-//                UserJson kafkaMsg = new UserJson();
-//                kafkaMsg.setUsername(registeredUserName);
-//                kafkaTemplate.send("users", kafkaMsg);
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
             } catch (DataIntegrityViolationException e) {

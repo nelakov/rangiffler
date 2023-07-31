@@ -9,11 +9,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfigMain {
+public class SecurityConfig {
 
   private final CorsCustomizer corsCustomizer;
 
-  public SecurityConfigMain(CorsCustomizer corsCustomizer) {
+  public SecurityConfig(CorsCustomizer corsCustomizer) {
     this.corsCustomizer = corsCustomizer;
   }
 
