@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS users
 (
     id        BINARY(16) UNIQUE NOT NULL DEFAULT (UUID_TO_BIN(UUID(), TRUE)),
     username  VARCHAR(50) UNIQUE            NOT NULL,
-    firstname VARCHAR(255)                  NOT NULL,
-    surname   VARCHAR(255)                  NOT NULL,
+    firstname VARCHAR(255),
+    surname   VARCHAR(255),
     avatar    LONGBLOB,
     PRIMARY KEY (id)
     );
