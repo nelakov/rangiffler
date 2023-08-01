@@ -17,13 +17,13 @@ public class UserEntity {
     @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String username;
 
-    @Column(nullable = true)
+    @Column(name = "firstname")
     private String firstname;
 
-    @Column(nullable = true)
+    @Column(name = "surname")
     private String surname;
 
     @Column(name = "avatar", columnDefinition = "LONGBLOB")
