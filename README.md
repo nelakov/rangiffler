@@ -1,5 +1,5 @@
 <p align="center">
-<img src="/Users/nikitaelakov/Repositories/IdeaProjects/qa-guru/rangiffler/utils/Images/download.svg" width="250"/>
+<img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/download.svg" width="250"/>
 </p>
 
 <div style="text-align: center;">
@@ -415,5 +415,5 @@ Travel! It's worth it!
 </div>
 <hr>
 <p align="center">
-<img src="/Users/nikitaelakov/Repositories/IdeaProjects/qa-guru/rangiffler/utils/Images/mimino_rangiffler.jpg" width="800"/>
+<img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/mimino_rangiffler.jpg" width="800"/>
 </p>
