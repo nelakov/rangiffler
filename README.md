@@ -2,16 +2,12 @@
 <img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/download.svg" width="250"/>
 </p>
 
-
-<div style="text-align: center;">
-<span style="color: #fafafa; font-size: 36px;">
- <b>Rangiffler</b>
-</span>
+<div align="center">
+  <b style="color: #fafafa; font-size: 54px;">Rangiffler</b>
 </div>
-<div style="text-align: center;">
-<span style="font-style: italic; font-size: 18px;">
-Still not the Aviasales, already not the Tripadvisor
-</span>
+
+<div align="center">
+  <i style="font-size: 18px;">Still not the Aviasales, already not the Tripadvisor</i>
 </div>
 
 <div id="badges" align="center">
@@ -117,7 +113,7 @@ flexibility, and efficient operation.
 The project includes several modules, each serving specific functions and offering unique experiences to users.
 
 <p align="left">
-<img src="/Users/nikitaelakov/Repositories/IdeaProjects/qa-guru/rangiffler/utils/Images/rangiffler_schema.png" width="900"/>
+<img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/rangiffler_schema.png" width="900"/>
 </p>
 
 <a name="ports"></a>
@@ -402,18 +398,14 @@ To work with the Rangiffler project, you need to ensure the following minimum re
 </span>
 </div>
 
+<div align="center">
+  <b style="color: #fafafa; font-size: 54px;">Enjoy the Rangiffler</b>
+</div>
 
+<div align="center">
+  <i style="font-size: 18px;">Travel! It's worth it!</i>
 </div>
-<div style="text-align: center;">
-<span style="color: #fafafa; font-size: 36px;">
- <b>Enjoy the Rangiffler</b>
-</span>
-</div>
-<div style="text-align: center;">
-<span style="font-style: italic; font-size: 18px;">
-Travel! It's worth it!
-</span>
-</div>
+
 <hr>
 <p align="center">
 <img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/mimino_rangiffler.jpg" width="800"/>
