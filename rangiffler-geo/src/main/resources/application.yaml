@@ -1,16 +1,16 @@
 server:
-  port: 9000
-  servlet:
-    session:
-      cookie:
-        http-only: false
-        secure: false
+  port: 9020
+  error:
+    include:
+      message: true
+
+grpc:
+  server:
+    port: 9021
 
 spring:
   application:
-    name: rangiffler-auth
-  mvc:
-    log-request-details: true
+    name: rangiffler-geo
   datasource:
     hikari:
       connection-timeout: 20000
@@ -40,36 +40,26 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG
 ---
 spring:
   config:
     activate:
       on-profile: 'local'
-  kafka:
-    bootstrap-servers: 'localhost:9092'
   datasource:
-    url: jdbc:mysql://localhost:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/rangiffler-geo?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: validate
-rangiffler-client:
-  base-uri: 'http://127.0.0.1:3001'
-rangiffler-auth:
-  base-uri: 'http://127.0.0.1:9000'
 ---
 spring:
   config:
     activate:
       on-profile: 'docker'
   datasource:
-    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-geo?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: validate
-rangiffler-client:
-  base-uri: 'http://frontend.rangiffler.dc'
-rangiffler-auth:
-  base-uri: 'http://auth.rangiffler.dc:9000'
 ---
