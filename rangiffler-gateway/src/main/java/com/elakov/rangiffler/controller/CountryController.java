@@ -1,7 +1,7 @@
 package com.elakov.rangiffler.controller;
 
 import com.elakov.rangiffler.model.CountryJson;
-import com.elakov.rangiffler.service.CountryService;
+import com.elakov.rangiffler.service.api.GrpcCountryClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,18 +10,16 @@ import java.util.List;
 
 @RestController
 public class CountryController {
-
-
-  private final CountryService countryService;
+  private final GrpcCountryClient grpcCountryClient;
 
   @Autowired
-  public CountryController(CountryService countryService) {
-    this.countryService = countryService;
+  public CountryController(GrpcCountryClient grpcCountryClient) {
+    this.grpcCountryClient = grpcCountryClient;
   }
 
   @GetMapping("/countries")
   public List<CountryJson> getAllCountries() {
-    return countryService.getAllCountries();
+    return grpcCountryClient.getAllCountries();
   }
 
 }

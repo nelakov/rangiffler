@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package com.elakov.grpc.rangiffler;
+
+option java_multiple_files = true;
+option java_package = "com.elakov.rangiffler.grpc";
+option java_outer_classname = "RangifflerGeoProto";
+
+service RangifflerCountryService {
+  rpc GetAllCountries (google.protobuf.Empty) returns (CountriesResponse) {}
+  rpc GetCountryByCode (CountryByCodeRequest) returns (Country);
+}
+
+message CountryByCodeRequest {
+  string countryCode = 1;
+}
+
+message CountriesResponse {
+  repeated Country countries = 1;
+}
+
+message Country {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+}

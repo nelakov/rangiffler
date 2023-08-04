@@ -2,5 +2,6 @@ rootProject.name = 'rangiffler'
 include 'rangiffler-gateway'
 include 'rangiffler-auth'
 include 'rangiffler-userdata'
-include 'rangiffler-geo'
+include 'rangiffler-country'
+include 'rangiffler-grpc-common'
 

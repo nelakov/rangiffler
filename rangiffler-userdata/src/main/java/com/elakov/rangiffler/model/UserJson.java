@@ -1,10 +1,10 @@
 package com.elakov.rangiffler.model;
 
+import com.elakov.rangiffler.data.UserEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import com.elakov.rangiffler.data.UserEntity;
 import lombok.NoArgsConstructor;
 
 import java.nio.charset.StandardCharsets;

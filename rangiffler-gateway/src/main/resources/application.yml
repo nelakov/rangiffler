@@ -28,6 +28,12 @@ rangiffler-client:
   base-uri: 'http://127.0.0.1:3001'
 rangiffler-userdata:
   base-uri: 'http://127.0.0.1:9010'
+
+grpc:
+  client:
+    grpcCountryClient:
+      address: 'static://localhost:9021'
+      negotiationType: PLAINTEXT
 ---
 spring:
   config:
@@ -42,4 +48,9 @@ rangiffler-client:
   base-uri: 'http://frontend.rangiffler.dc:3001'
 rangiffler-userdata:
   base-uri: 'http://userdata.rangiffler.dc:9010'
+grpc:
+  client:
+    grpcCountryClient:
+      address: 'http://country.rangiffler.dc:9021'
+      negotiationType: PLAINTEXT
 ---
