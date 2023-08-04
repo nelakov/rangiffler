@@ -1,8 +1,8 @@
 package com.elakov.rangiffler.service;
 
-import com.elakov.rangiffler.domain.RangifflerUserPrincipal;
 import com.elakov.rangiffler.data.UserEntity;
 import com.elakov.rangiffler.data.repository.UserRepository;
+import com.elakov.rangiffler.domain.RangifflerUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

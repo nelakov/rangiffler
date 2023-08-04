@@ -1,11 +1,11 @@
 package com.elakov.rangiffler.service;
 
-import com.elakov.rangiffler.data.FriendsEntity;
 import com.elakov.rangiffler.data.UserEntity;
-import com.elakov.rangiffler.data.repository.FriendsRepository;
-import com.elakov.rangiffler.data.repository.UserRepository;
 import com.elakov.rangiffler.exception.NotFoundException;
 import com.elakov.rangiffler.model.FriendJson;
+import com.elakov.rangiffler.data.FriendsEntity;
+import com.elakov.rangiffler.data.repository.FriendsRepository;
+import com.elakov.rangiffler.data.repository.UserRepository;
 import com.elakov.rangiffler.model.FriendState;
 import com.elakov.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;

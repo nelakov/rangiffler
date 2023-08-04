@@ -10,7 +10,7 @@ grpc:
 
 spring:
   application:
-    name: rangiffler-geo
+    name: rangiffler-country
   datasource:
     hikari:
       connection-timeout: 20000
@@ -40,14 +40,13 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
-#    org.springframework.boot.autoconfigure: DEBUG
 ---
 spring:
   config:
     activate:
       on-profile: 'local'
   datasource:
-    url: jdbc:mysql://localhost:3306/rangiffler-geo?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/rangiffler-country?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
@@ -58,7 +57,7 @@ spring:
     activate:
       on-profile: 'docker'
   datasource:
-    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-geo?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-country?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate

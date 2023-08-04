@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':rangiffler-grpc-common')
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
     runtimeOnly    'mysql:mysql-connector-java:8.0.33'

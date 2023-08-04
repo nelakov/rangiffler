@@ -1,7 +1,7 @@
 package com.elakov.rangiffler.service;
 
-import com.elakov.rangiffler.data.AuthorityEntity;
 import com.elakov.rangiffler.data.Authority;
+import com.elakov.rangiffler.data.AuthorityEntity;
 import com.elakov.rangiffler.data.UserEntity;
 import com.elakov.rangiffler.data.repository.UserRepository;
 import jakarta.annotation.Nonnull;
