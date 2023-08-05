@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package com.elakov.grpc.rangiffler.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.elakov.grpc.rangiffler.grpc";
+option java_outer_classname = "RangifflerUserdataProto";
+
+service RangifflerUserdataService {
+  rpc GetAllFriends(Username) returns (UserArray) {}
+}
+
+message Username {
+  string username = 1;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string firstname = 3;
+  string surname = 4;
+  string avatar = 5;
+}
+
+message UserArray {
+  repeated User users = 1;
+}

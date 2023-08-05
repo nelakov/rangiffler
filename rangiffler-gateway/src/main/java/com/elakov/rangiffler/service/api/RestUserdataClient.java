@@ -23,14 +23,12 @@ public class RestUserdataClient {
 
     private final String userdataUri;
 
-
     @Autowired
     public RestUserdataClient(WebClient webClient,
                               @Value("${rangiffler-userdata.base-uri}") String userdataUri) {
         this.webClient = webClient;
         this.userdataUri = userdataUri;
     }
-
 
     public @Nonnull
     List<UserJson> getAllUsers(@Nonnull String username) {
@@ -58,7 +56,6 @@ public class RestUserdataClient {
                 .bodyToMono(UserJson.class)
                 .block();
     }
-
 
     public @Nonnull
     List<UserJson> friends(@Nonnull String username) {

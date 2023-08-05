@@ -1,11 +1,11 @@
 package com.elakov.rangiffler.service;
 
+import com.elakov.grpc.rangiffler.grpc.CountriesResponse;
+import com.elakov.grpc.rangiffler.grpc.Country;
+import com.elakov.grpc.rangiffler.grpc.CountryByCodeRequest;
+import com.elakov.grpc.rangiffler.grpc.RangifflerCountryServiceGrpc;
 import com.elakov.rangiffler.data.CountryEntity;
 import com.elakov.rangiffler.data.repository.CountryRepository;
-import com.elakov.rangiffler.grpc.CountriesResponse;
-import com.elakov.rangiffler.grpc.Country;
-import com.elakov.rangiffler.grpc.CountryByCodeRequest;
-import com.elakov.rangiffler.grpc.RangifflerCountryServiceGrpc;
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @GrpcService
-public class CountryService extends RangifflerCountryServiceGrpc.RangifflerCountryServiceImplBase {
+public class GrpcCountryService extends RangifflerCountryServiceGrpc.RangifflerCountryServiceImplBase {
 
     private CountryRepository countryRepository;
 
     @Autowired
-    public CountryService(CountryRepository countryRepository) {
+    public GrpcCountryService(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
     }
 

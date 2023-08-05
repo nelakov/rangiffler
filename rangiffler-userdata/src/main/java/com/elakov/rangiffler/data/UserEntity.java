@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 @Data
 @RequiredArgsConstructor
+@ToString(exclude = "users")
 @Entity
 @Table(name = "users")
 public class UserEntity {
