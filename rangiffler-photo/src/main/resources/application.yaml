@@ -1,0 +1,82 @@
+server:
+  port: 9030
+  error:
+    include:
+      message: true
+grpc:
+  server:
+    port: 9031
+    max-inbound-message-size: 50000000
+
+spring:
+  application:
+    name: rangiffler-photo
+  datasource:
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 30
+      idle-timeout: 10000
+      max-lifetime: 1000
+      auto-commit: true
+    username: root
+    password: secret
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: false
+    generate-ddl: true
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  datasource:
+    url: jdbc:mysql://localhost:3306/rangiffler-photo?serverTimezone=UTC&createDatabaseIfNotExist=true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://127.0.0.1:9011'
+      negotiationType: PLAINTEXT
+    grpcCountryClient:
+      address: 'static://127.0.0.1:9021'
+      negotiationType: PLAINTEXT
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  datasource:
+    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-photo?serverTimezone=UTC&useSSL=false&createDatabaseIfNotExist=true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://userdata.rangiffler.dc:9011'
+      negotiationType: PLAINTEXT
+    grpcCountryClient:
+      address: 'static://country.rangiffler.dc:9021'
+      negotiationType: PLAINTEXT
+
+---

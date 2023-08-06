@@ -6,8 +6,8 @@ plugins {
     id "io.freefair.lombok" version "8.1.0"
 }
 
-group 'com.elakov'
-version '0.0.1-SNAPSHOT'
+group = 'com.elakov'
+version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -16,17 +16,16 @@ repositories {
 dependencies {
     implementation project(':rangiffler-grpc-common')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
-
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
+    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
     runtimeOnly    'mysql:mysql-connector-java:8.0.33'
 }
 
 docker {
     dependsOn build
-    name "nelakov/rangiffler-userdata:${project.version}"
-    tag 'latest', 'nelakov/rangiffler-userdata:latest'
+    name "nelakov/rangiffler-gateway:${project.version}"
+    tag 'latest', 'nelakov/rangiffler-photo:latest'
     files bootJar.archiveFile
     buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
     noCache true
@@ -35,8 +34,4 @@ docker {
 task dockerRmi(type: Exec) {
     workingDir "${buildDir}"
     commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rangiffler')\n"
-}
-
-tasks.named('bootJar') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

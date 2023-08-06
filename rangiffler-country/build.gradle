@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.1'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.palantir.docker' version '0.35.0'
     id "io.freefair.lombok" version "8.1.0"
 }
 
@@ -14,13 +15,22 @@ repositories {
 
 dependencies {
     implementation project(':rangiffler-grpc-common')
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
-    runtimeOnly    'mysql:mysql-connector-java:8.0.33'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly    'mysql:mysql-connector-java:8.0.33'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+docker {
+    dependsOn build
+    name "nelakov/rangiffler-gateway:${project.version}"
+    tag 'latest', 'nelakov/rangiffler-photo:latest'
+    files bootJar.archiveFile
+    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
+    noCache true
+}
+
+task dockerRmi(type: Exec) {
+    workingDir "${buildDir}"
+    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rangiffler')\n"
 }

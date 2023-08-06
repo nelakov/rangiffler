@@ -1,6 +1,6 @@
 package com.elakov.rangiffler.model;
 
-import com.elakov.rangiffler.grpc.Country;
+import com.elakov.grpc.rangiffler.grpc.Country;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;

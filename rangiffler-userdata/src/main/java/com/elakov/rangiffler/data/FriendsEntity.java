@@ -8,6 +8,7 @@ import java.util.Objects;
 
 @Data
 @RequiredArgsConstructor
+@ToString(exclude = "friends")
 @Entity
 @Table(name = "friends")
 @IdClass(FriendsId.class)

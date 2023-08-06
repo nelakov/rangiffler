@@ -1,6 +1,6 @@
 package com.elakov.rangiffler.service.api;
 
-import com.elakov.rangiffler.grpc.RangifflerCountryServiceGrpc;
+import com.elakov.grpc.rangiffler.grpc.RangifflerCountryServiceGrpc;
 import com.elakov.rangiffler.model.CountryJson;
 import com.google.protobuf.Empty;
 import io.grpc.StatusRuntimeException;
@@ -10,13 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class GrpcCountryClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(GrpcCountryClient.class);
