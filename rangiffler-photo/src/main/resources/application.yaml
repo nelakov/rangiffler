@@ -47,17 +47,17 @@ spring:
     activate:
       on-profile: 'local'
   datasource:
-    url: jdbc:mysql://localhost:3306/rangiffler_photo?serverTimezone=UTC&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/rangiffler-photo?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate
 grpc:
   client:
-    grpcCountryClient:
-      address: 'static://127.0.0.1:9021'
-      negotiationType: PLAINTEXT
     grpcUserdataClient:
       address: 'static://127.0.0.1:9011'
+      negotiationType: PLAINTEXT
+    grpcCountryClient:
+      address: 'static://127.0.0.1:9021'
       negotiationType: PLAINTEXT
 
 ---
@@ -66,17 +66,17 @@ spring:
     activate:
       on-profile: 'docker'
   datasource:
-    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler_photo?serverTimezone=UTC&useSSL=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-photo?serverTimezone=UTC&useSSL=false&createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: validate
 grpc:
   client:
-    grpcCountryClient:
-      address: 'static://country.rangiffler.dc:9021'
-      negotiationType: PLAINTEXT
     grpcUserdataClient:
       address: 'static://userdata.rangiffler.dc:9011'
+      negotiationType: PLAINTEXT
+    grpcCountryClient:
+      address: 'static://country.rangiffler.dc:9021'
       negotiationType: PLAINTEXT
 
 ---
