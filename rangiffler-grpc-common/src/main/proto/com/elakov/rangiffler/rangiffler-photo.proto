@@ -30,6 +30,5 @@ message Photo {
 }
 
 message PhotoArray {
-//  string name = 1;
   repeated Photo photoArray = 1;
 }
