@@ -1,0 +1,88 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+    id 'io.qameta.allure-adapter' version '2.11.2'
+    id "io.freefair.lombok" version "8.1.0"
+}
+
+group 'com.elakov'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def jUnitVersion = '5.10.0'
+def allureVersion = "2.23.0"
+def selenideVersion = "6.17.0"
+def feignVersion = "12.4"
+def grpcVersion = "1.57.1"
+def protobufVersion = "3.23.4"
+def loggingInterceptorVersion = "4.11.0"
+def assertJVersion = "3.24.2"
+def commonsIoVersion = "2.13.0"
+def springSecurityCryptoVersion = "6.1.2"
+def mySqlVersion = "8.0.33"
+def springJdbcVersion = "6.0.11"
+def hibernateVersion = "6.2.7.Final"
+def p6spyVersion = "3.9.1"
+def sqlFormatterVersion = "2.0.4"
+def fakerVersion = "1.0.2"
+def jakartaVersion = "1.3.5"
+
+allure {
+    version.set("${allureVersion}")
+    adapter {
+        aspectjVersion.set("1.9.19")
+        autoconfigure.set(true)
+        aspectjWeaver.set(true)
+    }
+}
+
+dependencies {
+    project(':rangiffler-grpc-common')
+    testImplementation(
+            // jUnit
+            "org.junit.jupiter:junit-jupiter:$jUnitVersion",
+            // REST
+            "io.github.openfeign:feign-micrometer:$feignVersion",
+            "io.github.openfeign:feign-okhttp:$feignVersion",
+            "io.github.openfeign:feign-jackson:$feignVersion",
+            "io.github.openfeign:feign-slf4j:$feignVersion",
+            "io.github.openfeign:feign-gson:$feignVersion",
+            "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion",
+            //gRPC
+            "io.grpc:grpc-protobuf:$grpcVersion",
+            "io.grpc:grpc-stub:$grpcVersion",
+            "io.grpc:grpc-netty:$grpcVersion",
+            "com.google.protobuf:protobuf-java:$protobufVersion",
+            // Web-Mobile
+            "com.codeborne:selenide:$selenideVersion",
+            "com.codeborne:selenide-core:$selenideVersion",
+            //DB
+            "mysql:mysql-connector-java:$mySqlVersion",
+            "org.springframework:spring-jdbc:$springJdbcVersion",
+            "org.hibernate.orm:hibernate-core:$hibernateVersion",
+            "p6spy:p6spy:$p6spyVersion",
+            "com.github.vertical-blank:sql-formatter:$sqlFormatterVersion",
+            // Allure
+            "io.qameta.allure:allure-okhttp3:$allureVersion",
+            "io.qameta.allure:allure-grpc:${allureVersion}",
+            "io.qameta.allure:allure-attachments:$allureVersion",
+            "io.qameta.allure:allure-assertj:$allureVersion",
+            "io.qameta.allure:allure-junit5:$allureVersion",
+            "io.qameta.allure:allure-junit5:$allureVersion",
+            "io.qameta.allure:allure-selenide:$allureVersion",
+            // Utils
+            "org.springframework.security:spring-security-crypto:$springSecurityCryptoVersion",
+            "org.assertj:assertj-core:$assertJVersion",
+            "com.github.javafaker:javafaker:$fakerVersion",
+            "commons-io:commons-io:$commonsIoVersion"
+    )
+    compileOnly "jakarta.annotation:jakarta.annotation-api:$jakartaVersion"
+    // Java 9+ compatibility - Do NOT update to 2.0.0
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
