@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @GrpcService
 public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServiceImplBase {
 
@@ -41,13 +43,15 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
 
     @Override
     public void getAllFriendsPhoto(Username usernameRequest, StreamObserver<PhotoArray> responseObserver) {
+        PhotoArray photoArray = null;
         UserArray friendsArray = grpcUserdataClient.friends(usernameRequest);
         List<String> friendsNamesList = friendsArray.getUsersList().stream()
                 .map(User::getUsername)
                 .collect(Collectors.toList());
-
         List<PhotoEntity> friendsPhotosEntityList = photoRepository.findAllByUsernameIn(friendsNamesList);
-        PhotoArray photoArray = buildPhotoArrayResponse(friendsPhotosEntityList);
+        if (!friendsPhotosEntityList.isEmpty()) {
+            photoArray = buildPhotoArrayResponse(friendsPhotosEntityList);
+        }
         responseObserver.onNext(photoArray);
         responseObserver.onCompleted();
     }
@@ -77,7 +81,9 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
 
     private PhotoEntity savePhotoEntity(Photo photo) {
         PhotoEntity photoEntity = new PhotoEntity();
-        photoEntity.setId(UUID.fromString(photo.getId()));
+        if (!photo.getId().isBlank()) {
+            photoEntity.setId(UUID.fromString(photo.getId()));
+        }
         photoEntity.setPhoto(photo.getPhoto().getBytes(StandardCharsets.UTF_8));
         photoEntity.setCountryCode(photo.getCountryCode().getCode());
         photoEntity.setUsername(photo.getUsername());
@@ -87,13 +93,17 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
 
     private Photo buildPhotoResponse(PhotoEntity photoEntity) {
         Country countryCode = getCountryByCode(photoEntity.getCountryCode());
-        return Photo.newBuilder()
-                .setId(photoEntity.getId().toString())
-                .setPhoto(new String(photoEntity.getPhoto(), StandardCharsets.UTF_8))
+        Photo.Builder builder = Photo.newBuilder()
                 .setCountryCode(countryCode)
                 .setDescription(photoEntity.getDescription())
-                .setUsername(photoEntity.getUsername())
-                .build();
+                .setUsername(photoEntity.getUsername());
+        if (photoEntity.getId() != null) {
+            photoEntity.setId(photoEntity.getId());
+        }
+        if (photoEntity.getPhoto() != null && photoEntity.getPhoto().length > 0) {
+            builder.setPhoto(new String(photoEntity.getPhoto(), UTF_8));
+        }
+        return builder.build();
     }
 
     private PhotoArray buildPhotoArrayResponse(List<PhotoEntity> photoEntities) {
