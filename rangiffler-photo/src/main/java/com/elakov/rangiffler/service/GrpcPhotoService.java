@@ -98,7 +98,7 @@ public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhoto
                 .setDescription(photoEntity.getDescription())
                 .setUsername(photoEntity.getUsername());
         if (photoEntity.getId() != null) {
-            photoEntity.setId(photoEntity.getId());
+            builder.setId(String.valueOf(photoEntity.getId()));
         }
         if (photoEntity.getPhoto() != null && photoEntity.getPhoto().length > 0) {
             builder.setPhoto(new String(photoEntity.getPhoto(), UTF_8));
