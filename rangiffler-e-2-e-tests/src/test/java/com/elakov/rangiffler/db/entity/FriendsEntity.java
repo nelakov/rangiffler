@@ -1,7 +1,9 @@
-package com.elakov.rangiffler.data;
+package com.elakov.rangiffler.db.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;

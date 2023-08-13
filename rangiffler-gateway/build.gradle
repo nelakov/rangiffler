@@ -44,3 +44,12 @@ task dockerRmi(type: Exec) {
     workingDir "${buildDir}"
     commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rangiffler')\n"
 }
+
+task runTestsByTag(type: Test) {
+    if (System.getProperty("test")){
+        useJUnitPlatform { includeTags System.getProperty("test") }
+    } else {
+        useJUnitPlatform()
+    }
+    systemProperties System.getProperties()
+}

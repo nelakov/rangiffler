@@ -26,19 +26,19 @@ spring:
           issuer-uri: 'http://127.0.0.1:9000'
 rangiffler-client:
   base-uri: 'http://127.0.0.1:3001'
-rangiffler-userdata:
-  base-uri: 'http://127.0.0.1:9010'
 rangiffler-country:
-  base-uri: 'http://127.0.0.1:9020'
+  base-uri: 'http://127.0.0.1:9010'
 rangiffler-photo:
-  base-uri: 'http://127.0.0.1:9030'
+  base-uri: 'http://127.0.0.1:9020'
+  rangiffler-userdata:
+    base-uri: 'http://127.0.0.1:9030'
 grpc:
   client:
     grpcCountryClient:
-      address: 'static://localhost:9021'
+      address: 'static://localhost:9011'
       negotiationType: PLAINTEXT
     grpcPhotoClient:
-      address: 'static://localhost:9031'
+      address: 'static://localhost:9021'
       negotiationType: PLAINTEXT
       max-inbound-message-size: 50000000
 ---
@@ -52,16 +52,20 @@ spring:
         jwt:
           issuer-uri: 'http://auth.rangiffler.dc:9000'
 rangiffler-client:
-  base-uri: 'http://frontend.rangiffler.dc:3001'
-rangiffler-userdata:
-  base-uri: 'http://userdata.rangiffler.dc:9010'
+  base-uri: 'http://client.rangiffler.dc:3001'
+rangiffler-country:
+  base-uri: 'http://country.rangiffler.dc:9010'
+rangiffler-photo:
+  base-uri: 'http://photo.rangiffler.dc:9020'
+  rangiffler-userdata:
+    base-uri: 'http://userdata.rangiffler.dc:9030'
 grpc:
   client:
     grpcCountryClient:
-      address: 'http://country.rangiffler.dc:9021'
+      address: 'http://country.rangiffler.dc:9011'
       negotiationType: PLAINTEXT
     grpcPhotoClient:
-      address: 'http://photo.rangiffler.dc:9031'
+      address: 'http://photo.rangiffler.dc:9021'
       negotiationType: PLAINTEXT
       max-inbound-message-size: 50000000
 ---
