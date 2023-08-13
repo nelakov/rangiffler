@@ -16,7 +16,7 @@ public enum EmfProvider {
     private final Map<ServiceDataBase, EntityManagerFactory> emfStore = new ConcurrentHashMap<>();
 
     public EntityManagerFactory getEmf(ServiceDataBase serviceDataBase) {
-        if (emfStore.get(serviceDataBase) == null) {
+        return emfStore.computeIfAbsent(serviceDataBase, db -> {
             Map<String, Object> properties = new HashMap<>();
             properties.put("hibernate.dialect", HIBERNATE_DIALECT);
             properties.put("hibernate.connection.driver_class", HIBERNATE_DRIVER_CLASS);
@@ -24,11 +24,8 @@ public enum EmfProvider {
             properties.put("hibernate.connection.password", HIBERNATE_PASSWORD);
             properties.put("hibernate.connection.url", serviceDataBase.toString());
 
-            this.emfStore.put(serviceDataBase,
-                    new ThreadLocalEmf(
-                            createEntityManagerFactory("niffler-persistence-unit-name", properties))
-            );
-        }
-        return emfStore.get(serviceDataBase);
+            return new ThreadLocalEmf(
+                    createEntityManagerFactory("niffler-persistence-unit-name", properties));
+        });
     }
 }
