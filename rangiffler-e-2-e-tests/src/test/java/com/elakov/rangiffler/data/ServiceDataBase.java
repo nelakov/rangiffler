@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.db;
+package com.elakov.rangiffler.data;
 
 import com.elakov.rangiffler.config.hibernate.HibernateProperties;
 import lombok.AllArgsConstructor;

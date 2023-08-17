@@ -7,7 +7,7 @@ import com.elakov.grpc.rangiffler.grpc.Username;
 import com.elakov.rangiffler.data.UserEntity;
 import com.elakov.rangiffler.data.repository.UserRepository;
 import com.elakov.rangiffler.exception.NotFoundException;
-import com.elakov.rangiffler.model.FriendState;
+import com.elakov.rangiffler.model.FriendStatus;
 import com.elakov.rangiffler.model.UserJson;
 import io.grpc.stub.StreamObserver;
 import jakarta.transaction.Transactional;
@@ -48,7 +48,7 @@ public class GrpcUserdataService extends RangifflerUserdataServiceGrpc.Rangiffle
     private List<UserJson> getNonPendingFriends(UserEntity userEntity) {
         return userEntity.getFriends().stream()
                 .filter(fe -> !fe.isPending())
-                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending() ? FriendState.INVITE_SENT : FriendState.FRIEND))
+                .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending() ? FriendStatus.INVITATION_SENT : FriendStatus.FRIEND))
                 .collect(Collectors.toList());
     }
 

@@ -30,7 +30,7 @@ rangiffler-country:
   base-uri: 'http://127.0.0.1:9010'
 rangiffler-photo:
   base-uri: 'http://127.0.0.1:9020'
-  rangiffler-userdata:
+rangiffler-userdata:
     base-uri: 'http://127.0.0.1:9030'
 grpc:
   client:

@@ -1,34 +1,36 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.1'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.palantir.docker' version '0.35.0'
-    id "io.freefair.lombok" version "8.1.0"
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.docker)
 }
 
-group = 'com.elakov'
-version '0.0.1-SNAPSHOT'
+group = libs.versions.group.get()
+version = libs.versions.app.get()
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     implementation project(path: ':rangiffler-grpc-common')
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation('org.springframework.boot:spring-boot-starter-web-services') {
+    implementation(
+            libs.spring.boot.starter,
+            libs.spring.webflux.starter,
+            libs.spring.actuator.starter,
+            libs.spring.validation.starter,
+            libs.spring.oauth2.starter,
+            libs.spring.security.starter
+    )
+    implementation (libs.spring.boot.services.starter) {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
-    implementation "org.springframework:spring-webflux"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
-    implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
-    implementation "io.projectreactor.netty:reactor-netty"
+    implementation(
+            libs.spring.grpc.client.starter,
+            libs.reactor.netty
+    )
 }
 
 docker {
@@ -46,7 +48,7 @@ task dockerRmi(type: Exec) {
 }
 
 task runTestsByTag(type: Test) {
-    if (System.getProperty("test")){
+    if (System.getProperty("test")) {
         useJUnitPlatform { includeTags System.getProperty("test") }
     } else {
         useJUnitPlatform()

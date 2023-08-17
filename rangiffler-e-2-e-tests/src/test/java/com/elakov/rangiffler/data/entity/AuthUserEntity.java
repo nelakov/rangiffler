@@ -1,8 +1,8 @@
-package com.elakov.rangiffler.db.entity;
+package com.elakov.rangiffler.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.UUID;
 import static jakarta.persistence.FetchType.EAGER;
 
 @Data
-@ToString(exclude = "users")
 @Entity
+@Setter
 @Table(name = "users")
 public class AuthUserEntity {
     @Id
@@ -57,5 +57,19 @@ public class AuthUserEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, username, password, enabled, accountNonExpired, accountNonLocked, credentialsNonExpired, authorities);
+    }
+
+    @Override
+    public String toString() {
+        return "AuthUserEntity{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", accountNonExpired=" + accountNonExpired +
+                ", accountNonLocked=" + accountNonLocked +
+                ", credentialsNonExpired=" + credentialsNonExpired +
+                ", authorities=" + authorities +
+                '}';
     }
 }

@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.db.jpa;
+package com.elakov.rangiffler.data.jpa;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;

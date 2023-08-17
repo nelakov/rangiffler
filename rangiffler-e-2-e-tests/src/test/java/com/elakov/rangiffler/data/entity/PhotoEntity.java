@@ -1,12 +1,14 @@
-package com.elakov.rangiffler.db.entity;
+package com.elakov.rangiffler.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.util.UUID;
 
 @Data
+@ToString(exclude = "photos")
 @RequiredArgsConstructor
 @Entity
 @Table(name = "photos")

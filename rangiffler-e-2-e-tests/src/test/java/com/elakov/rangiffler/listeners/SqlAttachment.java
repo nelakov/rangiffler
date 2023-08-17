@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.helpers;
+package com.elakov.rangiffler.listeners;
 
 import io.qameta.allure.attachment.AttachmentData;
 
@@ -26,6 +26,5 @@ public class SqlAttachment implements AttachmentData {
     public String getName() {
         return null;
     }
-
 
 }

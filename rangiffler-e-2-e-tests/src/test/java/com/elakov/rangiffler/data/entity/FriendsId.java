@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.db.entity;
+package com.elakov.rangiffler.data.entity;
 
 import lombok.Data;
 

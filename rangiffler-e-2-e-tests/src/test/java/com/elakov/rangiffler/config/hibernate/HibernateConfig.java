@@ -1,9 +1,14 @@
 package com.elakov.rangiffler.config.hibernate;
 
 import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.Sources;
 
-@Sources("classpath:config/com/elakov/rangiffler/hibernate/${env}_db.properties")
+import static org.aeonbits.owner.Config.LoadType.MERGE;
+
+@LoadPolicy(MERGE)
+@Sources({"classpath:config/com/elakov/rangiffler/hibernate/${env}_db.properties",
+        "classpath:config/com/elakov/rangiffler/hibernate/local_db.properties"})
 interface HibernateConfig extends Config {
 
     @Key("hibernate.username")
@@ -15,7 +20,7 @@ interface HibernateConfig extends Config {
     String password();
 
     @Key("hibernate.dialect")
-    @DefaultValue("org.hibernate.dialect.MySQL8Dialect")
+    @DefaultValue("org.hibernate.dialect.MySQLDialect")
     String dialect();
 
     @Key("hibernate.driver_class")

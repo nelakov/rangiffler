@@ -54,12 +54,11 @@ spring:
 grpc:
   client:
     grpcCountryClient:
-      address: 'http://127.0.0.1:9011'
+      address: 'static://127.0.0.1:9011'
       negotiationType: PLAINTEXT
     grpcUserdataClient:
-      address: 'http://127.0.0.1:9031'
+      address: 'static://127.0.0.1:9031'
       negotiationType: PLAINTEXT
-
 
 ---
 spring:

@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.db.entity;
+package com.elakov.rangiffler.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,11 +9,11 @@ import org.hibernate.Hibernate;
 import java.util.Objects;
 
 @Data
-@RequiredArgsConstructor
 @ToString(exclude = "friends")
+@RequiredArgsConstructor
+@IdClass(FriendsId.class)
 @Entity
 @Table(name = "friends")
-@IdClass(FriendsId.class)
 public class FriendsEntity {
 
     @Id

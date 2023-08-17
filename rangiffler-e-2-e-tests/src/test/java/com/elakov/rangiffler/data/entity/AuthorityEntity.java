@@ -1,4 +1,4 @@
-package com.elakov.rangiffler.db.entity;
+package com.elakov.rangiffler.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class AuthorityEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private AuthUserEntity user;
 
     @Override
     public boolean equals(Object o) {
@@ -36,5 +36,14 @@ public class AuthorityEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, authority, user);
+    }
+
+    @Override
+    public String toString() {
+        return "AuthorityEntity{" +
+                "id=" + id +
+                ", authority=" + authority +
+                ", user=" + user +
+                '}';
     }
 }

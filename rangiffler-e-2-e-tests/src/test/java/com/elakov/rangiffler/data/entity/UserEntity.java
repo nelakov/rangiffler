@@ -1,17 +1,19 @@
-package com.elakov.rangiffler.db.entity;
+package com.elakov.rangiffler.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 import java.util.UUID;
 
 @Data
+@ToString(exclude = "users")
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users", catalog = "userdata")
 public class UserEntity {
-    public Object password;
-    public Object enabled;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
@@ -28,5 +30,6 @@ public class UserEntity {
 
     @Column(name = "avatar", columnDefinition = "LONGBLOB")
     private byte[] avatar;
+
 
 }
