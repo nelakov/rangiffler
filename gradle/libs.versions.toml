@@ -79,7 +79,7 @@ allure-selenide = { module = "io.qameta.allure:allure-selenide", version.ref = "
 allure-okkhttp3 = { module = "io.qameta.allure:allure-okhttp3", version.ref = "allure" }
 allure-grpc = { module = "io.qameta.allure:allure-grpc", version.ref = "allure" }
 allure-attachments = { module = "io.qameta.allure:allure-attachments", version.ref = "allure" }
-allure-commandline = { module = "io.qameta.allure:allure-commandline", version.ref = "allure" }
+#allure-commandline = { module = "io.qameta.allure:allure-commandline", version.ref = "allure" }
 selenide = { module = "com.codeborne:selenide", version.ref = "selenide" }
 selenide-core = { module = "com.codeborne:selenide-core", version.ref = "selenide" }
 #################################################################################### DATABASE ####################################################################################
@@ -111,7 +111,7 @@ logs = ["logback-classic", "logback-core", "slf4j-api", "slf4j-jul"]
 spring-boot-starter-auth = ["spring-boot-starter", "spring-thymeleaf-starter", "spring-actuator-starter", "spring-validation-starter", "spring-security-starter", "spring-security-oauth2"]
 spring-boot-starter-gateway = ["spring-boot-starter", "spring-webflux-starter", "spring-actuator-starter", "spring-validation-starter", "spring-security-starter", "spring-oauth2-starter","spring-security-oauth2", "spring-security-starter"]
 feign = ["feign-micrometer", "feign-jackson", "feign-okhttp", "feign-slf4j", "feign-gson", "okhttp3-logging-interceptor"]
-allure = ["allure-junit5", "allure-assertj", "allure-selenide", "allure-okkhttp3", "allure-grpc", "allure-attachments", "allure-commandline"]
+allure = ["allure-junit5", "allure-assertj", "allure-selenide", "allure-okkhttp3", "allure-grpc", "allure-attachments"]
 test-utils = ["assertj-core", "aeonbits-owner", "commons-io", "findbugs", "java-faker"]
 ###################################################################################################################################################################################
 [plugins]
@@ -119,6 +119,7 @@ spring-boot = { id = "org.springframework.boot", version.ref = "springframework-
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
 allure = { id = "io.qameta.allure", version.ref = "allure-plugin" }
+allure-report = { id = "io.qameta.allure-report", version.ref = "allure-plugin" }
 allure-adpater = { id = "io.qameta.allure-adapter", version.ref = "allure-plugin" }
 docker = { id = "com.palantir.docker", version.ref = "docker-palantir" }
 google-protobuf = { id = 'com.google.protobuf', version.ref = "protobuf-plugin" }

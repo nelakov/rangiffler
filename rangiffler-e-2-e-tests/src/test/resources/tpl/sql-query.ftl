@@ -1,5 +1,5 @@
 <html>
-<#-- @ftlvariable name="data" type="com.elakov.rangiffler.listeners.SqlAttachment" -->
+<#-- @ftlvariable name="data" type="com.elakov.rangiffler.helpers.SqlAttachment" -->
 <head>
     <meta http-equiv="content-type" content="text/html; charset = UTF-8">
     <script src="https://yastatic.net/jquery/2.2.3/jquery.min.js" crossorigin="anonymous"></script>
@@ -22,7 +22,7 @@
 
 <h5>Statement</h5>
 <div>
-    <pre><code>${data.preparedStatement}</code></pre>
+    <pre><code>${data.statement}</code></pre>
 </div>
 <h5>Query</h5>
 <div>

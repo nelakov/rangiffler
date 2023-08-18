@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    alias(libs.plugins.allure)
+    alias(libs.plugins.allure.report)
     alias(libs.plugins.allure.adpater)
     alias(libs.plugins.lombok)
 }
@@ -9,16 +9,22 @@ group = libs.versions.group.get()
 version = libs.versions.app.get()
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
-    mavenLocal()
 }
 
 allure {
-    version.set(libs.versions.allure.plugin)
+    report {
+        version.set("2.23.0")
+    }
     adapter {
-        aspectjVersion.set(libs.versions.aspectj)
         autoconfigure.set(true)
         aspectjWeaver.set(true)
+        frameworks {
+            junit5 {
+                adapterVersion.set("2.23.0")
+            }
+        }
     }
 }
 
@@ -35,6 +41,9 @@ dependencies {
     )
     compileOnly libs.jakarta.annotation
     // Java 9+ compatibility - Do NOT update to 2.0.0
+    implementation 'org.aspectj:aspectjweaver:1.9.19'
+    implementation 'org.springframework:spring-aop:6.0.11'
+
 }
 
 // https://github.com/DiUS/java-faker/issues/327

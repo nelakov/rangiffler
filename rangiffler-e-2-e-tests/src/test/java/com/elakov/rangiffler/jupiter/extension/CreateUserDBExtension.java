@@ -6,7 +6,7 @@ import com.elakov.rangiffler.data.entity.AuthorityEntity;
 import com.elakov.rangiffler.data.jpa.EmfProvider;
 import com.elakov.rangiffler.data.repository.authDAO.AuthRepository;
 import com.elakov.rangiffler.data.repository.authDAO.AuthRepositoryImpl;
-import com.elakov.rangiffler.helpers.AllureHelper;
+import com.elakov.rangiffler.helpers.AllureSteps;
 import com.elakov.rangiffler.jupiter.annotation.GenerateUserWith;
 import com.github.javafaker.Faker;
 import jakarta.persistence.EntityManagerFactory;
@@ -106,7 +106,7 @@ public class CreateUserDBExtension implements
 
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
-        AllureHelper.step("Connection was closed", () -> {
+        AllureSteps.step("Connection was closed", () -> {
             EmfProvider.INSTANCE.closeEmf()
                     .forEach(EntityManagerFactory::close);
         });
