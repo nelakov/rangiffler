@@ -1,11 +1,12 @@
 package com.elakov.rangiffler.config.hibernate;
 
-import org.aeonbits.owner.ConfigCache;
+import org.aeonbits.owner.ConfigFactory;
 
 public final class HibernateProperties {
 
     // Singleton
-    private static final HibernateConfig HIBERNATE_CONFIG = ConfigCache.getOrCreate(HibernateConfig.class, System.getProperties());
+    
+    private static final HibernateConfig HIBERNATE_CONFIG = ConfigFactory.create(HibernateConfig.class);
     public static final String HIBERNATE_USERNAME = HIBERNATE_CONFIG.username();
     public static final String HIBERNATE_PASSWORD = HIBERNATE_CONFIG.password();
     public static final String HIBERNATE_DIALECT = HIBERNATE_CONFIG.dialect();

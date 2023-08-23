@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.elakov.rangiffler.config.hibernate.HibernateProperties.*;
-import static com.elakov.rangiffler.helpers.AllureSteps.step;
+import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 import static jakarta.persistence.Persistence.createEntityManagerFactory;
 
 

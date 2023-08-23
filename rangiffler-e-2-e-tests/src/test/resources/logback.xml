@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="ALLURE" class="com.elakov.rangiffler.listeners.AllureLogAppender">
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="okhttp3.logging.HttpLoggingInterceptor" level="DEBUG"/>
+    <appender name="ALLURE" class="com.elakov.rangiffler.listener.AllureLogAppender">
         <encoder>
             <!-- Формат в котором сохраняется строка логов-->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n</pattern>
         </encoder>
-        <filter class="com.elakov.rangiffler.helpers.FilterMdc"/>
+<!--        <filter class="com.elakov.rangiffler.helper.FilterMdc"/>-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>TRACE</level>
             <onMatch>DENY</onMatch>
@@ -40,7 +42,7 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
         </encoder>
         <!--Фильтрация логов по уровням для вывода в appender-->
-        <filter class="com.elakov.rangiffler.helpers.FilterMdc"/>
+<!--        <filter class="com.elakov.rangiffler.helper.FilterMdc"/>-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>TRACE</level>
             <onMatch>ACCEPT</onMatch>
@@ -68,7 +70,7 @@
             <pattern>%d{HH:mm:ss} %-5level - %msg%n</pattern>
         </encoder>
         <!--Фильтрация логов по уровням для вывода в appender-->
-        <filter class="com.elakov.rangiffler.helpers.FilterMdc"/>
+<!--        <filter class="com.elakov.rangiffler.helper.FilterMdc"/>-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>TRACE</level>
             <onMatch>DENY</onMatch>
@@ -90,11 +92,11 @@
             <onMatch>ACCEPT</onMatch>
         </filter>
     </appender>
-    <logger name="p6spy" level="info" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="ALLURE"/>
-    </logger>
+<!--    <logger name="p6spy" level="info" additivity="false">-->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--        <appender-ref ref="FILE"/>-->
+<!--        <appender-ref ref="ALLURE"/>-->
+<!--    </logger>-->
     <!--    -->
     <root level="TRACE">
         <appender-ref ref="FILE"/>

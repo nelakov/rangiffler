@@ -8,8 +8,10 @@ allure = "2.23.0"
 # SELENIDE
 selenide = "6.17.0"
 # SPRING
-jakarta = "1.3.5"
-spring-feign = "12.4"
+jakarta-annotaion = "1.3.5"
+jakarta-validation = "2.0.2"
+#spring-feign = "12.4"
+retrofit = '2.9.0'
 spring-kafka = "3.0.9"
 spring-crypto = "6.1.2"
 spring-security-oauth2 = "1.0.0"
@@ -19,21 +21,23 @@ p6spy = "3.9.1"
 my-sql = "8.0.33"
 sql-formatter = "2.0.3"
 hibernate = "6.2.6.Final"
+# GRPC
+grpc = "1.57.2"
+grpc-protobuf = "1.57.2"
+protobuf = "3.23.4"
 # LOGS
 slfj = "2.0.7"
 logback = "1.4.5"
-logging-interceptor = "4.11.0"
+logging-interceptor = "3.14.9"
 # OTHER
 assertj = "3.24.2"
 faker = "1.0.2"
 commons-io = "2.13.0"
 owner = "1.0.12"
-grpc = "1.57.2"
-grpc-protobuf = "1.57.2"
-protobuf = "3.23.4"
 google-findbugs = "3.0.2"
 spring-data-commons = "2.6.2"
 aspectj = "1.9.19"
+database-rider = "1.39.0"
 #################################################################################### PLUGINS ####################################################################################
 lombok = "8.1.0"
 allure-plugin = "2.11.2"
@@ -59,12 +63,13 @@ spring-grpc-client-starter = { module = "net.devh:grpc-client-spring-boot-starte
 spring-data-commons = { module = "org.springframework.data:spring-data-commons", version.ref = "spring-data-commons" }
 spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "spring-crypto" }
 spring-security-oauth2 = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version.ref = "spring-security-oauth2" }
-
-feign-micrometer = { module = "io.github.openfeign:feign-micrometer", version.ref = "spring-feign" }
-feign-jackson = { module = "io.github.openfeign:feign-jackson", version.ref = "spring-feign" }
-feign-okhttp = { module = "io.github.openfeign:feign-okhttp", version.ref = "spring-feign" }
-feign-slf4j = { module = "io.github.openfeign:feign-slf4j", version.ref = "spring-feign" }
-feign-gson = { module = "io.github.openfeign:feign-gson", version.ref = "spring-feign" }
+#feign-micrometer = { module = "io.github.openfeign:feign-micrometer", version.ref = "spring-feign" }
+#feign-jackson = { module = "io.github.openfeign:feign-jackson", version.ref = "spring-feign" }
+#feign-okhttp = { module = "io.github.openfeign:feign-okhttp", version.ref = "spring-feign" }
+#feign-slf4j = { module = "io.github.openfeign:feign-slf4j", version.ref = "spring-feign" }
+#feign-gson = { module = "io.github.openfeign:feign-gson", version.ref = "spring-feign" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }
 reactor-netty = { module = "io.projectreactor.netty:reactor-netty" }
 
 grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
@@ -94,13 +99,18 @@ aeonbits-owner = { module = "org.aeonbits.owner:owner", version.ref = "owner" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 java-faker = { module = "com.github.javafaker:javafaker", version.ref = "faker" }
 findbugs = { module = "com.google.code.findbugs:jsr305", version.ref = "google-findbugs" }
-jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakarta" } # Java 9+ compatibility - Do NOT update to 2.0.0
+database-rider-core = { module = "com.github.database-rider:rider-core", version.ref = "database-rider" }
+database-rider-juni5 = { module = "com.github.database-rider:rider-junit5", version.ref = "database-rider" }
+jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakarta-annotaion" }
+jakarta-validation = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakarta-validation" }
 # LOGS
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slfj" }
 slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slfj" }
 logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "logging-interceptor" }
+# PROJECTS
+#grpc-common = { module = "com.elakov.rangiffler:rangiffler-grpc-common" }
 ###################################################################################################################################################################################
 [bundles]
 grpc = ["grpc-stub", "grpc-netty", "grpc-protobuf", "protobuf-java"]
@@ -109,10 +119,11 @@ selenide = ["selenide", "selenide-core"]
 database = ["mysql", "hibernate", "p6spy", "sql-formatter", "spring-security-crypto"]
 logs = ["logback-classic", "logback-core", "slf4j-api", "slf4j-jul"]
 spring-boot-starter-auth = ["spring-boot-starter", "spring-thymeleaf-starter", "spring-actuator-starter", "spring-validation-starter", "spring-security-starter", "spring-security-oauth2"]
-spring-boot-starter-gateway = ["spring-boot-starter", "spring-webflux-starter", "spring-actuator-starter", "spring-validation-starter", "spring-security-starter", "spring-oauth2-starter","spring-security-oauth2", "spring-security-starter"]
-feign = ["feign-micrometer", "feign-jackson", "feign-okhttp", "feign-slf4j", "feign-gson", "okhttp3-logging-interceptor"]
+spring-boot-starter-gateway = ["spring-boot-starter", "spring-webflux-starter", "spring-actuator-starter", "spring-validation-starter", "spring-security-starter", "spring-oauth2-starter", "spring-security-oauth2", "spring-security-starter"]
+#feign = ["feign-micrometer", "feign-jackson", "feign-okhttp", "feign-slf4j", "feign-gson"]
+retrofit = ["retrofit", "retrofit-converter", "okhttp3-logging-interceptor"]
 allure = ["allure-junit5", "allure-assertj", "allure-selenide", "allure-okkhttp3", "allure-grpc", "allure-attachments"]
-test-utils = ["assertj-core", "aeonbits-owner", "commons-io", "findbugs", "java-faker"]
+test-utils = ["assertj-core", "aeonbits-owner", "commons-io", "findbugs", "java-faker", "database-rider-core", "database-rider-juni5"]
 ###################################################################################################################################################################################
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "springframework-boot" }
