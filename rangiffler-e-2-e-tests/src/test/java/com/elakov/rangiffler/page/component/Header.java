@@ -20,10 +20,10 @@ public class Header extends BaseComponent<Header> {
         super($("header"));
     }
     private final SelenideElement addPhotoBtn = $x("//button[text()='Add photo']");
-    private final SelenideElement logoutBtn = $("svg[data-testid='LogoutIcon']");
     private final SelenideElement userVisitedCountriesIcon = $("div[aria-label='Your visited countries']");
     private final SelenideElement userProfileIcon = $("div[aria-label='Your photos']");
     private final SelenideElement userFriendsIcon = $("div[aria-label='Your friends']");
+    private final SelenideElement logoutBtn = $("svg[data-testid='LogoutIcon']");
 
     @Override
     public Header checkThatComponentDisplayed() {
@@ -62,7 +62,6 @@ public class Header extends BaseComponent<Header> {
 
     @Step("Check count of friends is equal expect")
     public Header checkFriendsCountInHeader(int countFriends) {
-        addStepParameter("Expected count of friends", countFriends);
         userFriendsIcon.shouldHave(text(String.valueOf(countFriends)));
         return this;
     }
@@ -76,7 +75,6 @@ public class Header extends BaseComponent<Header> {
 
     @Step("Check count of visited country is equal expect")
     public Header checkCountriesCountInHeader(int countCountry) {
-        addStepParameter("Expected count of photo", countCountry);
         userVisitedCountriesIcon.shouldHave(text(String.valueOf(countCountry)));
         return this;
     }

@@ -12,7 +12,6 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 import static com.elakov.rangiffler.condition.FriendsCondition.friends;
-import static com.elakov.rangiffler.helper.allure.AllureAttachHelper.addStepParameter;
 
 public class FriendsComponent extends BaseComponent<FriendsComponent> {
 
@@ -35,7 +34,6 @@ public class FriendsComponent extends BaseComponent<FriendsComponent> {
 
     @Step("Check friend list contains friends")
     public FriendsComponent checkTableContainsFriends(UserJson...friend) {
-        addStepParameter("FRIENDS: ", friend);
         friendsTable.shouldHave(friends(friend));
         return this;
     }
@@ -47,7 +45,6 @@ public class FriendsComponent extends BaseComponent<FriendsComponent> {
 
     @Step("Remove friend")
     public FriendsComponent removeFriend(String name) {
-        addStepParameter("FRIEND NAME: ", name);
         friendsTable.filter(text(name)).first().$(removeFriendBtn).click();
         deleteBtn.click();
         return this;

@@ -8,7 +8,6 @@ import io.qameta.allure.Step;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static com.elakov.rangiffler.helper.allure.AllureAttachHelper.addStepParameter;
 import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class LoginPage extends BasePage<LoginPage> {
@@ -42,14 +41,12 @@ public class LoginPage extends BasePage<LoginPage> {
 
     @Step("Input username")
     public LoginPage inputUsername(String username) {
-        addStepParameter("USERNAME", username);
         usernameInput.val(username);
         return this;
     }
 
     @Step("Input password")
     public LoginPage inputPassword(String password) {
-        addStepParameter("PASSWORD", password);
         passwordInput.val(password);
         return this;
     }
