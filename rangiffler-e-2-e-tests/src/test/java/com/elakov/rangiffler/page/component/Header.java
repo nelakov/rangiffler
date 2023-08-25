@@ -9,8 +9,8 @@ import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
 import static com.elakov.rangiffler.helper.allure.AllureAttachHelper.addStepParameter;
 import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
@@ -19,7 +19,7 @@ public class Header extends BaseComponent<Header> {
     public Header() {
         super($("header"));
     }
-    private final SelenideElement addPhotoBtn = $x("//button[text()='Add photo']");
+    private final SelenideElement addPhotoBtn = $(byText("Add photo"));
     private final SelenideElement userVisitedCountriesIcon = $("div[aria-label='Your visited countries']");
     private final SelenideElement userProfileIcon = $("div[aria-label='Your photos']");
     private final SelenideElement userFriendsIcon = $("div[aria-label='Your friends']");

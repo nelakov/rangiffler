@@ -15,14 +15,12 @@ import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class RegistrationPage extends BasePage<RegistrationPage> {
 
-
     public static final String authUrl = AUTH_BASE_URL + "/register";
     private final SelenideElement header = $(".form__header");
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
     private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
     private final SelenideElement submitBtn = $("button[type='submit']");
-
     private final SelenideElement redirect = $("a[href*='redirect']");
     private final SelenideElement formError = $(".form__error");
 
@@ -87,4 +85,5 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
         formError.shouldHave(text(expectedMessage));
         return this;
     }
+
 }

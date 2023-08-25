@@ -11,6 +11,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class NavigatorTabs extends BaseComponent<NavigatorTabs> {
+
     public NavigatorTabs() {
         super($("div[aria-label='Tabs']"));
     }
@@ -39,14 +40,15 @@ public class NavigatorTabs extends BaseComponent<NavigatorTabs> {
     }
 
     @Step("Open 'Your travels' tab ")
-    public YourTravelsTab openYourTravelsTab() {
+    public TravelsTab openYourTravelsTab() {
         travelsTab.click();
-        return new YourTravelsTab();
+        return new TravelsTab();
     }
+
     @Step("Open 'Friends travels' tab")
-    public YourTravelsTab openFriendsTravelsTab() {
+    public TravelsTab openFriendsTravelsTab() {
         friendsTravelsTab.click();
-        return new YourTravelsTab();
+        return new TravelsTab();
     }
 
     @Step("Open 'People Around' tab")
@@ -54,4 +56,5 @@ public class NavigatorTabs extends BaseComponent<NavigatorTabs> {
         peopleAroundTab.click();
         return new PeopleAroundTab();
     }
+
 }

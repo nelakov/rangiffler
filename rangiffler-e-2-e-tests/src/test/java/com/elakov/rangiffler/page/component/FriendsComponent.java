@@ -10,7 +10,6 @@ import io.qameta.allure.Step;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
 import static com.elakov.rangiffler.condition.FriendsCondition.friends;
 
 public class FriendsComponent extends BaseComponent<FriendsComponent> {
@@ -23,16 +22,18 @@ public class FriendsComponent extends BaseComponent<FriendsComponent> {
     private final ElementsCollection friendsTable = self.$$("tbody tr");
     private final String removeFriendBtn = "button[aria-label='Remove friend']";
     private final SelenideElement deleteBtn = $(byText("Delete"));
-    private final SelenideElement noFriendsYetLabel = $x("//div[text()='No friends yet']");
+    private final SelenideElement noFriendsYetLabel = $(byText("No friends yet"));
+
+    private final SelenideElement infoMessage = $("div[role='alert']");
 
     @Override
-    @Step("Check Friends component displayed and close icon visible")
+    @Step("'Friends' component displayed and close icon visible")
     public FriendsComponent checkThatComponentDisplayed() {
         closeIcon.shouldBe(Condition.visible);
         return null;
     }
 
-    @Step("Check friend list contains friends")
+    @Step("Friend's list contain friends")
     public FriendsComponent checkTableContainsFriends(UserJson...friend) {
         friendsTable.shouldHave(friends(friend));
         return this;
@@ -47,6 +48,12 @@ public class FriendsComponent extends BaseComponent<FriendsComponent> {
     public FriendsComponent removeFriend(String name) {
         friendsTable.filter(text(name)).first().$(removeFriendBtn).click();
         deleteBtn.click();
+        return this;
+    }
+
+    @Step("Alert message should displayed and contains text")
+    public FriendsComponent alertMessageShouldBeDisplayedAndContainsText(String alertMessage) {
+        infoMessage.shouldHave(text(alertMessage));
         return this;
     }
 

@@ -14,6 +14,7 @@ import static com.elakov.rangiffler.config.services.ServicesProperties.CLIENT_BA
 import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class StartPage extends BasePage<StartPage> {
+
     public static final String URL = CLIENT_BASE_URL;
     private final SelenideElement header = $("div h1");
     private final SelenideElement loginBtn = $x("//a[text()='Login']");

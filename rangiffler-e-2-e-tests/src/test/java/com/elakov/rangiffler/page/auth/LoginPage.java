@@ -62,4 +62,5 @@ public class LoginPage extends BasePage<LoginPage> {
         formError.shouldHave(text(expectedMessage));
         return this;
     }
+
 }

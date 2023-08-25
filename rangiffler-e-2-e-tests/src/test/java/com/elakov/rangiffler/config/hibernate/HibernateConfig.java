@@ -21,8 +21,8 @@ public interface HibernateConfig extends Config {
     String dialect();
 
     @Key("hibernate.driver_class")
-//    @DefaultValue("com.p6spy.engine.spy.P6SpyDriver")
-    @DefaultValue("com.mysql.cj.jdbc.Driver")
+    @DefaultValue("com.p6spy.engine.spy.P6SpyDriver")
+//    @DefaultValue("com.mysql.cj.jdbc.Driver")
     String driverClass();
 
     @Key("auth.hibernate.url")
