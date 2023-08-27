@@ -23,7 +23,7 @@ public class Header extends BaseComponent<Header> {
     private final SelenideElement userVisitedCountriesIcon = $("div[aria-label='Your visited countries']");
     private final SelenideElement userProfileIcon = $("div[aria-label='Your photos']");
     private final SelenideElement userFriendsIcon = $("div[aria-label='Your friends']");
-    private final SelenideElement logoutBtn = $("svg[data-testid='LogoutIcon']");
+    private final SelenideElement logoutBtn = $("div[aria-label='Logout']");
 
     @Override
     public Header checkThatComponentDisplayed() {

@@ -13,11 +13,12 @@ public class TravelsTab extends BasePage<TravelsTab> {
 
     @Override
     public TravelsTab checkThatPageLoaded() {
-        mapComponent.checkThatComponentDisplayed();
+        mapComponent
+                .checkThatComponentDisplayed();
         return this;
     }
 
-    public MapComponent getWorldMap() {
+    public MapComponent getMap() {
         return mapComponent;
     }
 

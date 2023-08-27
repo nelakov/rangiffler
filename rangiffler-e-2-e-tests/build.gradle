@@ -43,6 +43,7 @@ dependencies {
             libs.bundles.database,
             libs.bundles.test.utils
     )
+    implementation 'commons-logging:commons-logging:1.2'
 //    implementation 'org.aspectj:aspectjweaver:1.9.19'
 //    implementation 'org.springframework:spring-aop:6.0.11'
 }

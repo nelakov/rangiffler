@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @ExtendWith({ApiLoginCallback.class, CreateUserCallback.class})
-public @interface ApiLoginTest {
+public @interface ApiLogin {
 
     CreateUser[] user() default {};
 

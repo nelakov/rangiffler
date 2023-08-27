@@ -1,11 +1,14 @@
 package com.elakov.rangiffler.jupiter.callback.creation;
 
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
-import com.elakov.rangiffler.jupiter.callback.service.CreateUserService;
+import com.elakov.rangiffler.jupiter.callback.service.UserService;
 import com.elakov.rangiffler.model.UserJson;
 import io.qameta.allure.AllureId;
 import org.junit.jupiter.api.extension.*;
 
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -15,15 +18,24 @@ public class CreateUserCallback implements BeforeEachCallback, ParameterResolver
             .create(CreateUserCallback.class);
 
 
-    private static final CreateUserService CREATE_USER_SERVICE = new CreateUserService();
+    private static final UserService CREATE_USER_SERVICE = new UserService();
 
     @Override
     public void beforeEach(ExtensionContext context) {
         CreateUser annotation = context.getRequiredTestMethod()
                 .getAnnotation(CreateUser.class);
 
-        if (annotation != null) {
-            context.getStore(CREATE_USER_NAMESPACE).put(getTestId(context), CREATE_USER_SERVICE.createUser(annotation));
+        if (annotation == null) {
+            List<Parameter> parameters = Arrays.stream(context.getRequiredTestMethod().getParameters())
+                    .filter(parameter -> parameter.isAnnotationPresent(CreateUser.class))
+                    .filter(parameter -> parameter.getType().isAssignableFrom(UserJson.class))
+                    .toList();
+            for (Parameter parameter : parameters) {
+                annotation = parameter.getAnnotation(CreateUser.class);
+                context.getStore(CREATE_USER_NAMESPACE).put(getTestId(context), CREATE_USER_SERVICE.createUserViaApi(annotation));
+            }
+        } else {
+            context.getStore(CREATE_USER_NAMESPACE).put(getTestId(context), CREATE_USER_SERVICE.createUserViaApi(annotation));
         }
     }
 

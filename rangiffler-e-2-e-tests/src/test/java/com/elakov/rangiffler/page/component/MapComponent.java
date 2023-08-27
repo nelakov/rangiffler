@@ -22,17 +22,17 @@ public class MapComponent extends BaseComponent<MapComponent> {
     SelenideElement textsToolTip = $("text[fill='white'][visibility='visible']");
 
     public MapComponent() {
-        super($("worldmap__figure-container"));
+        super($(".worldmap__figure-container"));
     }
 
     @Override
     public MapComponent checkThatComponentDisplayed() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
-        return step("Check the 'Login page' was loaded", () -> {
+        return step("Check the 'Map component' was loaded", () -> {
 
-            softstep.add("Check that header visible", () -> self.shouldBe(visible));
-            softstep.add("Check username input visible", () -> zoomIcon.shouldBe(visible));
-            softstep.add("Check password input visible", () -> worldIcon.shouldBe(visible));
+            softstep.add("Check that map visible", () -> self.shouldBe(visible));
+            softstep.add("Check zoom icon visible", () -> zoomIcon.shouldBe(visible));
+            softstep.add("Check world icon visible", () -> worldIcon.shouldBe(visible));
 
             softstep.execute();
             return this;

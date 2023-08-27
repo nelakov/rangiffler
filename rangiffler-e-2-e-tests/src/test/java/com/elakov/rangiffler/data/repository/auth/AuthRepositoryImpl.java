@@ -17,7 +17,7 @@ public class AuthRepositoryImpl extends JpaTransactionManager implements AuthRep
 
     @Override
     public int createUser(UserAuthEntity userAuthEntity) {
-        userAuthEntity.setPassword(PASSWORD_ENCODER.encode(userAuthEntity.getPassword().toString()));
+        userAuthEntity.setPassword(PASSWORD_ENCODER.encode(userAuthEntity.getPassword()));
         persist(userAuthEntity);
         return 0;
     }

@@ -1,0 +1,46 @@
+package com.elakov.rangiffler.test.web.auth;
+
+import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
+import com.elakov.rangiffler.model.UserJson;
+import com.elakov.rangiffler.step.web.AuthWebStep;
+import com.elakov.rangiffler.test.web.BaseWebTest;
+import io.qameta.allure.AllureId;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Owner;
+import org.junit.jupiter.api.*;
+
+import static com.elakov.rangiffler.helper.allure.tags.AllureOwner.ELAKOV;
+import static com.elakov.rangiffler.helper.allure.tags.AllureTag.AUTH;
+import static com.elakov.rangiffler.helper.allure.tags.AllureTag.WEB;
+
+@Owner(ELAKOV)
+@Epic("Auth service")
+@Feature("Login")
+@Tags({@Tag(WEB), @Tag(AUTH)})
+public class LoginNewUserTest extends BaseWebTest {
+
+    AuthWebStep steps = new AuthWebStep();
+
+    @BeforeEach
+    void setUp() {
+        steps.openStartPageAndRedirectToLogin();
+    }
+
+    @Test
+    @AllureId("1000")
+    @DisplayName("Successful: Create new user and login")
+    void createNewUserAndLoginTest(@CreateUser UserJson user) {
+        steps
+                .successfullyLoginAndRedirectToTravelsTab(user);
+    }
+
+    @Test
+    @AllureId("1001")
+    @DisplayName("Successful: user hasn't account. Redirect to registration via Sign up")
+    void userHasntAccTest() {
+        steps
+                .redirectToRegistrationViaSignUpBtn();
+    }
+
+}

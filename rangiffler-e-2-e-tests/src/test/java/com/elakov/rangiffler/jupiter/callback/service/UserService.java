@@ -6,10 +6,14 @@ import com.elakov.rangiffler.api.grpc.CountryGrpcClient;
 import com.elakov.rangiffler.api.grpc.PhotoGrpcClient;
 import com.elakov.rangiffler.api.rest.auth.AuthRestClient;
 import com.elakov.rangiffler.api.rest.userdata.UserdataRestClient;
+import com.elakov.rangiffler.data.entity.auth.Authority;
+import com.elakov.rangiffler.data.entity.auth.AuthorityEntity;
+import com.elakov.rangiffler.data.entity.auth.UserAuthEntity;
 import com.elakov.rangiffler.helper.data.DataFakeHelper;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreatePhoto;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
+import com.elakov.rangiffler.jupiter.annotation.creation.CreateUserInDB;
 import com.elakov.rangiffler.model.PhotoJson;
 import com.elakov.rangiffler.model.UserJson;
 import org.apache.commons.lang3.ArrayUtils;
@@ -20,7 +24,7 @@ import java.util.Arrays;
 import static com.elakov.rangiffler.helper.data.FileLoaderHelper.getFileByClasspath;
 import static org.hibernate.internal.util.StringHelper.isNotEmpty;
 
-public class CreateUserService {
+public class UserService {
 
     private static final AuthRestClient authClient = new AuthRestClient();
     private static final UserdataRestClient userdataClient = new UserdataRestClient();
@@ -28,14 +32,34 @@ public class CreateUserService {
     private final CountryGrpcClient countryGrpcClient = new CountryGrpcClient();
     private final PhotoGrpcClient photoGrpcClient = new PhotoGrpcClient();
 
+
+    public UserAuthEntity createUserInDb(@Nonnull CreateUserInDB annotation) {
+        UserAuthEntity userAuthEntity = new UserAuthEntity();
+        userAuthEntity.setUsername("".equals(annotation.username()) ? DataFakeHelper.generateRandomFunnyUsername() : annotation.username());
+        userAuthEntity.setPassword("".equals(annotation.password()) ? DataFakeHelper.generateRandomPassword() : annotation.password());
+        userAuthEntity.setEnabled(annotation.enabled());
+        userAuthEntity.setAccountNonExpired(annotation.accountNonExpired());
+        userAuthEntity.setAccountNonLocked(annotation.accountNonLocked());
+        userAuthEntity.setCredentialsNonExpired(annotation.credentialsNonExpired());
+        userAuthEntity.setAuthorities(Arrays.stream(Authority.values()).map(
+                a -> {
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setAuthority(a);
+                    ae.setUser(userAuthEntity);
+                    return ae;
+                }
+        ).toList());
+        return userAuthEntity;
+    }
+
     /**
      * This method create random user
      * username and password generated with help Faker library
      * @param annotation
      * @return
      */
-    public UserJson createUser(@Nonnull CreateUser annotation) {
-        UserJson user = createRandomUser();
+    public UserJson createUserViaApi(@Nonnull CreateUser annotation) {
+        UserJson user = createRandomUserViaApi();
 
         addFriendsIfPresent(user, annotation.friends());
         addOutcomeInvitationsIfPresent(user, annotation.outcomeInvitations());
@@ -90,7 +114,7 @@ public class CreateUserService {
     private void addFriendsIfPresent(UserJson targetUser, CreateFriend[] createFriends) {
         if (isNotEmpty(Arrays.toString(createFriends))) {
             for (CreateFriend createFriend : createFriends) {
-                UserJson friendJson = createRandomUser();
+                UserJson friendJson = createRandomUserViaApi();
                 userdataClient.addFriend(targetUser.getUsername(), friendJson.getUsername());
                 userdataClient.acceptInvitation(friendJson.getUsername(), targetUser.getUsername());
                 targetUser.getFriends().add(friendJson);
@@ -107,7 +131,7 @@ public class CreateUserService {
     private void addOutcomeInvitationsIfPresent(UserJson targetUser, CreateFriend[] outcomeInvitations) {
         if (isNotEmpty(Arrays.toString(outcomeInvitations))) {
             for (CreateFriend oi : outcomeInvitations) {
-                UserJson friendJson = createRandomUser();
+                UserJson friendJson = createRandomUserViaApi();
                 userdataClient.addFriend(targetUser.getUsername(), friendJson.getUsername());
                 targetUser.getOutcomeInvitations().add(friendJson);
             }
@@ -123,7 +147,7 @@ public class CreateUserService {
     private void addIncomeInvitationsIfPresent(UserJson targetUser, CreateFriend[] incomeInvitations) {
         if (isNotEmpty(Arrays.toString(incomeInvitations))) {
             for (CreateFriend ii : incomeInvitations) {
-                UserJson friendJson = createRandomUser();
+                UserJson friendJson = createRandomUserViaApi();
                 userdataClient.addFriend(friendJson.getUsername(), targetUser.getUsername());
                 targetUser.getIncomeInvitations().add(friendJson);
             }
@@ -135,7 +159,7 @@ public class CreateUserService {
      *
      * @return
      */
-    private UserJson createRandomUser() {
+    private UserJson createRandomUserViaApi() {
         final String username = DataFakeHelper.generateRandomUsername();
         final String password = DataFakeHelper.generateRandomPassword();
         authClient.register(username, password);
@@ -144,4 +168,5 @@ public class CreateUserService {
         user.setPassword(password);
         return user;
     }
+
 }

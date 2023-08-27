@@ -18,6 +18,10 @@ public class LoginPage extends BasePage<LoginPage> {
     private final SelenideElement submitBtn = $("button[type='submit']");
     private final SelenideElement formError = $(".form__error");
 
+    private final SelenideElement footerText = $(" p.form__paragraph");
+
+    private final SelenideElement signUpBtn = $("[href='/register']");
+
     @Override
     public LoginPage checkThatPageLoaded() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
@@ -30,13 +34,6 @@ public class LoginPage extends BasePage<LoginPage> {
             softstep.execute();
             return this;
         });
-    }
-
-    @Step("Fill 'Login page' and go to 'Your travels tab'")
-    public LoginPage fillLoginForm(String username, String password) {
-        inputUsername(username);
-        inputPassword(password);
-        return this;
     }
 
     @Step("Input username")
@@ -52,9 +49,16 @@ public class LoginPage extends BasePage<LoginPage> {
     }
 
     @Step("Tap to Submit button")
-    public <T> T submit(T page) {
+    public <T> T signIn(T page) {
         submitBtn.click();
         return page;
+    }
+
+    @Step("Tap to Sign up button")
+    public RegistrationPage signUp() {
+        footerText.shouldHave(text("Have no account?"));
+        signUpBtn.shouldHave(text("Sign up!")).click();
+        return new RegistrationPage();
     }
 
     @Step("Check the 'Auth' error message")
