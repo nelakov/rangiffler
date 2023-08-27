@@ -13,6 +13,8 @@ public interface AuthRepository {
 
     UserAuthEntity getUser(UserAuthEntity user);
 
+    UserAuthEntity getUserByUsername(String username);
+
     String findUserById(String userName);
 
     int removeUser(UserAuthEntity user);

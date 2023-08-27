@@ -1,6 +1,5 @@
 package com.elakov.rangiffler.page.auth;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.elakov.rangiffler.helper.allure.AllureSoftStepsHelper;
 import com.elakov.rangiffler.page.BasePage;
@@ -39,20 +38,6 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
         });
     }
 
-    @Step("Open the 'Register page'")
-    public RegistrationPage open() {
-        return Selenide.open(authUrl, RegistrationPage.class);
-    }
-
-    @Step("Fill 'Registration page' and go to 'Register Success Page'")
-    public RegistrationSuccessPage successFillRegistrationForm(String username, String password, String passwordSubmit) {
-        inputUsername(username);
-        inputPassword(password);
-        inputPasswordSubmit(passwordSubmit);
-        submit();
-        return new RegistrationSuccessPage();
-    }
-
     @Step("Input username")
     public RegistrationPage inputUsername(String username) {
         addStepParameter("USERNAME", username);
@@ -74,10 +59,10 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
         return this;
     }
 
-    @Step("Tap to submit")
-    public RegistrationPage submit() {
+    @Step("Click to 'SIGN UP'")
+    public RegistrationSuccessPage signUpClick() {
         submitBtn.click();
-        return this;
+        return new RegistrationSuccessPage();
     }
 
     @Step("Check the 'Registration' error message")

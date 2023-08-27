@@ -45,7 +45,7 @@ public class StartPage extends BasePage<StartPage> {
     }
 
     @Step("Redirect to register page")
-    public RegistrationPage openRegisttrationPage() {
+    public RegistrationPage openRegistrationPage() {
         registerBtn.click();
         return new RegistrationPage();
     }

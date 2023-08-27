@@ -31,7 +31,7 @@ public class LoginErrorTest extends BaseWebTest {
     @Test
     @AllureId("1002")
     @DisplayName("Unsuccessful: Wrong auth userdata")
-    public void wrongAuthUserdataAndCheckErrorTest() {
+    public void unsuccessfulLoginWrongAuthUserdataTest() {
         steps
                 .unsuccessfullyLoginAndCheckAuthError("Bad credentials");
     }
@@ -40,7 +40,7 @@ public class LoginErrorTest extends BaseWebTest {
     @CreateUserInDB(enabled = false)
     @AllureId("1003")
     @DisplayName("Unsuccessful: User is disabled")
-    public void userNotEnabledAndCheckErrorTest(UserAuthEntity user) {
+    public void unsuccessfulLoginUserDisabledTest(UserAuthEntity user) {
         steps
                 .unsuccessfullyLoginAndCheckAuthError(user, "User is disabled");
     }
@@ -49,7 +49,7 @@ public class LoginErrorTest extends BaseWebTest {
     @CreateUserInDB(accountNonExpired = false)
     @AllureId("1004")
     @DisplayName("Unsuccessful: User account has expired")
-    public void accountExpiredtest(UserAuthEntity user) {
+    public void unsuccessfulLoginAccountExpiredTest(UserAuthEntity user) {
         steps
                 .unsuccessfullyLoginAndCheckAuthError(user, "User account has expired");
     }
@@ -58,7 +58,7 @@ public class LoginErrorTest extends BaseWebTest {
     @CreateUserInDB(accountNonLocked = false)
     @AllureId("1005")
     @DisplayName("Unsuccessful: User account is locked")
-    public void accountLockedTest(UserAuthEntity user) {
+    public void unsuccessfulLoginAccountLockedTest(UserAuthEntity user) {
         steps
                 .unsuccessfullyLoginAndCheckAuthError(user, "User account is locked");
     }
@@ -67,7 +67,7 @@ public class LoginErrorTest extends BaseWebTest {
     @CreateUserInDB(credentialsNonExpired = false)
     @AllureId("1006")
     @DisplayName("Unsuccessful: Bad credentials. Credentials expired")
-    public void credentionalsExpiredTest(UserAuthEntity user) {
+    public void unsuccessfulLoginCredentionalsExpiredTest(UserAuthEntity user) {
         steps
                 .unsuccessfullyLoginAndCheckAuthError(user, "Bad credentials");
     }

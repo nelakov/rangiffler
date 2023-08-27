@@ -33,9 +33,13 @@ public abstract class CommonWebStep<T> {
         return (T) this;
     }
 
-    public <T> T openTravelsPage(T page) {
-        open(CLIENT_BASE_URL, TravelsTab.class);
-        return page;
+    public T openStartPageAndRedirectToRegister() {
+        step("Open 'Start page'",
+                () -> open(CLIENT_BASE_URL));
+        startPage
+                .openRegistrationPage()
+                .checkThatPageLoaded();
+        return (T) this;
     }
 
 }

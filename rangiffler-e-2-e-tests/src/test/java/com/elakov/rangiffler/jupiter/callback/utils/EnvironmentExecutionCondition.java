@@ -21,8 +21,11 @@ public class EnvironmentExecutionCondition implements ExecutionCondition {
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
         String activeEnvironment = System.getProperty("env");
         if (activeEnvironment == null) {
+            activeEnvironment = System.getenv("env");
+        } else if (activeEnvironment == null) {
             return disabled("there's no active environment");
         }
+
         Set<String> enabledEnvironments = getEnabledEnvironments(context);
         return enabledEnvironments.contains(activeEnvironment)
                 ? enabled("active environment is enabled")

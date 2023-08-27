@@ -48,17 +48,23 @@ public class LoginPage extends BasePage<LoginPage> {
         return this;
     }
 
-    @Step("Tap to Submit button")
-    public <T> T signIn(T page) {
+    @Step("Click to 'Sign in' button")
+    public <T> T signInClick(T page) {
         submitBtn.click();
         return page;
     }
 
-    @Step("Tap to Sign up button")
-    public RegistrationPage signUp() {
-        footerText.shouldHave(text("Have no account?"));
-        signUpBtn.shouldHave(text("Sign up!")).click();
-        return new RegistrationPage();
+    public RegistrationPage signUpClick() {
+        AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
+        return step("Click to Sign up button and redirect to Registration page", () -> {
+
+            softstep.add("Modal window contains text 'Have no account?' in the footer", () -> footerText.shouldHave(text("Have no account?")));
+            softstep.add("'Sign up' button contains text 'Sign up!' and clickable", () -> signUpBtn.shouldHave(text("Sign up!")).click());
+
+            softstep.execute();
+            return new RegistrationPage();
+        });
+
     }
 
     @Step("Check the 'Auth' error message")
