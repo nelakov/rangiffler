@@ -10,7 +10,7 @@ import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class AuthWebStep extends CommonWebStep<AuthWebStep> {
 
-    public AuthWebStep successfullyLoginAndRedirectToTravelsTab(UserJson userJson) {
+    public AuthWebStep fillLoginFormAndRedirectToTravelsTab(UserJson userJson) {
         AllureSoftStepsHelper softStep = new AllureSoftStepsHelper();
         softStep.add("Fill 'Login page' and tap Sign in'",
                 () -> loginPage
@@ -24,7 +24,7 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
     }
 
     //Overload
-    public AuthWebStep successfullyLoginAndRedirectToTravelsTab() {
+    public AuthWebStep fillLoginFormAndRedirectToTravelsTab() {
         AllureSoftStepsHelper softStep = new AllureSoftStepsHelper();
 
         softStep.add("Fill 'Login page' and tap Sign in'",
@@ -38,7 +38,7 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         return this;
     }
 
-    public AuthWebStep redirectToRegistrationViaSignUpBtn() {
+    public AuthWebStep clickSignUpAndRedirectToRegister() {
         loginPage
                 .signUpClick()
                 .checkThatPageLoaded();
@@ -46,7 +46,7 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         return this;
     }
 
-    public AuthWebStep successfullyRegistrationAndRedirectToLoginPage() {
+    public AuthWebStep fillRegisterFormAndRedirectToLogin() {
         TestContext.setUsername(faker.funnyName().name());
         TestContext.setPassword(DataFakeHelper.generateRandomPassword());
 
@@ -62,7 +62,7 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         return this;
     }
 
-    public AuthWebStep redirectToTravelsTabAfterApiLogin() {
+    public AuthWebStep apiLoginAndRedirectToTravelsTab() {
         startPage.openLoginPage(travelsTab);
         return this;
     }
@@ -77,7 +77,7 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         return this;
     }
 
-    public AuthWebStep unsuccessfullyLoginAndCheckAuthError(String errorMessage) {
+    public AuthWebStep fillLoginFormAndCheckErrorMessage(String errorMessage) {
         String username = faker.name().name();
         String pass = String.valueOf(faker.number().randomNumber());
         step("Fill 'Login page' and check error message",
@@ -91,7 +91,7 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         return this;
     }
 
-    public AuthWebStep unsuccessfullyLoginAndCheckAuthError(UserAuthEntity user, String errorMessage) {
+    public AuthWebStep fillLoginFormAndCheckErrorMessage(UserAuthEntity user, String errorMessage) {
         step("Fill 'Login page' and check error message",
                 () -> loginPage
                         .checkThatPageLoaded()

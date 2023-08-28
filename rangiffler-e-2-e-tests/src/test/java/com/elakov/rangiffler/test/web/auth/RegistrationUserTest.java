@@ -41,8 +41,8 @@ public class RegistrationUserTest extends BaseWebTest {
     @DisplayName("Successfully: Successfully registration")
     public void successRegistration() {
         steps
-                .successfullyRegistrationAndRedirectToLoginPage()
-                .successfullyLoginAndRedirectToTravelsTab();
+                .fillRegisterFormAndRedirectToLogin()
+                .fillLoginFormAndRedirectToTravelsTab();
     }
 
 }

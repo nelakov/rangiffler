@@ -24,16 +24,14 @@ public class LoginErrorTest extends BaseWebTest {
 
     @BeforeEach
     void setUp() {
-        steps
-                .openStartPageAndRedirectToLogin();
+        steps.openStartPageAndRedirectToLogin();
     }
 
     @Test
     @AllureId("1002")
     @DisplayName("Unsuccessful: Wrong auth userdata")
     public void unsuccessfulLoginWrongAuthUserdataTest() {
-        steps
-                .unsuccessfullyLoginAndCheckAuthError("Bad credentials");
+        steps.fillLoginFormAndCheckErrorMessage("Bad credentials");
     }
 
     @Test
@@ -41,8 +39,7 @@ public class LoginErrorTest extends BaseWebTest {
     @AllureId("1003")
     @DisplayName("Unsuccessful: User is disabled")
     public void unsuccessfulLoginUserDisabledTest(UserAuthEntity user) {
-        steps
-                .unsuccessfullyLoginAndCheckAuthError(user, "User is disabled");
+        steps.fillLoginFormAndCheckErrorMessage(user, "User is disabled");
     }
 
     @Test
@@ -50,8 +47,7 @@ public class LoginErrorTest extends BaseWebTest {
     @AllureId("1004")
     @DisplayName("Unsuccessful: User account has expired")
     public void unsuccessfulLoginAccountExpiredTest(UserAuthEntity user) {
-        steps
-                .unsuccessfullyLoginAndCheckAuthError(user, "User account has expired");
+        steps.fillLoginFormAndCheckErrorMessage(user, "User account has expired");
     }
 
     @Test
@@ -59,8 +55,7 @@ public class LoginErrorTest extends BaseWebTest {
     @AllureId("1005")
     @DisplayName("Unsuccessful: User account is locked")
     public void unsuccessfulLoginAccountLockedTest(UserAuthEntity user) {
-        steps
-                .unsuccessfullyLoginAndCheckAuthError(user, "User account is locked");
+        steps.fillLoginFormAndCheckErrorMessage(user, "User account is locked");
     }
 
     @Test
@@ -68,8 +63,7 @@ public class LoginErrorTest extends BaseWebTest {
     @AllureId("1006")
     @DisplayName("Unsuccessful: Bad credentials. Credentials expired")
     public void unsuccessfulLoginCredentionalsExpiredTest(UserAuthEntity user) {
-        steps
-                .unsuccessfullyLoginAndCheckAuthError(user, "Bad credentials");
+        steps.fillLoginFormAndCheckErrorMessage(user, "Bad credentials");
     }
 
 }

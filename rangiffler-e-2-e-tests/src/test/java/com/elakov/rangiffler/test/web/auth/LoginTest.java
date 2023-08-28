@@ -18,7 +18,7 @@ import static com.elakov.rangiffler.helper.allure.tags.AllureTag.WEB;
 @Epic("Auth service")
 @Feature("Login")
 @Tags({@Tag(WEB), @Tag(AUTH)})
-public class LoginNewUserTest extends BaseWebTest {
+public class LoginTest extends BaseWebTest {
 
     AuthWebStep steps = new AuthWebStep();
 
@@ -31,16 +31,14 @@ public class LoginNewUserTest extends BaseWebTest {
     @AllureId("1000")
     @DisplayName("Successful: Create new user and login")
     void createNewUserAndLoginTest(@CreateUser UserJson user) {
-        steps
-                .successfullyLoginAndRedirectToTravelsTab(user);
+        steps.fillLoginFormAndRedirectToTravelsTab(user);
     }
 
     @Test
     @AllureId("1001")
     @DisplayName("Successful: user hasn't account. Redirect to registration via Sign up")
-    void userHasntAccTest() {
-        steps
-                .redirectToRegistrationViaSignUpBtn();
+    void userHasntAccountTest() {
+        steps.clickSignUpAndRedirectToRegister();
     }
 
 }

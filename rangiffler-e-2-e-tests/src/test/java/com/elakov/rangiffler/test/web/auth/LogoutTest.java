@@ -2,7 +2,6 @@ package com.elakov.rangiffler.test.web.auth;
 
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.jupiter.annotation.test.ApiLogin;
-import com.elakov.rangiffler.model.UserJson;
 import com.elakov.rangiffler.step.web.AuthWebStep;
 import com.elakov.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.AllureId;
@@ -31,9 +30,9 @@ public class LogoutTest extends BaseWebTest {
     @Tag("WEB")
     @AllureId("1007")
     @DisplayName("Successful: logout")
-    void logoutTest(UserJson userJson) {
+    void logoutTest() {
         steps
-                .redirectToTravelsTabAfterApiLogin()
+                .apiLoginAndRedirectToTravelsTab()
                 .successfullyLogout();
     }
 }
