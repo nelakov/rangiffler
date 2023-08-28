@@ -3,6 +3,7 @@ package com.elakov.rangiffler.step.web;
 import com.elakov.rangiffler.data.entity.auth.UserAuthEntity;
 import com.elakov.rangiffler.helper.allure.AllureSoftStepsHelper;
 import com.elakov.rangiffler.helper.data.DataFakeHelper;
+import com.elakov.rangiffler.model.RegisterUserValue;
 import com.elakov.rangiffler.model.UserJson;
 import com.elakov.rangiffler.test.TestContext;
 
@@ -55,10 +56,9 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
                 .inputUsername(TestContext.getUsername())
                 .inputPassword(TestContext.getPassword())
                 .inputPasswordSubmit(TestContext.getPassword())
-                .signUpClick()
+                .signUpClick(registrationSuccessPage)
                 .checkThatPageLoaded()
                 .signInClick();
-
         return this;
     }
 
@@ -103,5 +103,31 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         return this;
     }
 
+    public AuthWebStep fillRegisterFormAndCheckErrorMessage(RegisterUserValue registerUserValue, String errorMessage) {
+        step("Fill 'Register page' and check error message",
+                () -> registrationPage
+                        .checkThatPageLoaded()
+                        .inputUsername(registerUserValue.username())
+                        .inputPassword(registerUserValue.password())
+                        .inputPasswordSubmit(registerUserValue.passwordSubmit())
+                        .signUpClick(registrationPage)
+                        .errorMessage(errorMessage)
+        );
+        return this;
+    }
+
+    public AuthWebStep fillRegisterFormAndCheckFewErrorMessage(RegisterUserValue registerUserValue, String usernameError, String passwordError) {
+        step("Fill 'Register page' and check error message",
+                () -> registrationPage
+                        .checkThatPageLoaded()
+                        .inputUsername(registerUserValue.username())
+                        .inputPassword(registerUserValue.password())
+                        .inputPasswordSubmit(registerUserValue.passwordSubmit())
+                        .signUpClick(registrationPage)
+                        .usernameErrorMessage(usernameError)
+                        .passwordErrorMessage(passwordError)
+        );
+        return this;
+    }
 
 }

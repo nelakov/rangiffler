@@ -5,16 +5,12 @@ import com.elakov.rangiffler.helper.allure.AllureSoftStepsHelper;
 import com.elakov.rangiffler.page.BasePage;
 import io.qameta.allure.Step;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
-import static com.elakov.rangiffler.config.services.ServicesProperties.AUTH_BASE_URL;
 import static com.elakov.rangiffler.helper.allure.AllureAttachHelper.addStepParameter;
 import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class RegistrationPage extends BasePage<RegistrationPage> {
-
-    public static final String authUrl = AUTH_BASE_URL + "/register";
     private final SelenideElement header = $(".form__header");
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
@@ -22,6 +18,8 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
     private final SelenideElement submitBtn = $("button[type='submit']");
     private final SelenideElement redirect = $("a[href*='redirect']");
     private final SelenideElement formError = $(".form__error");
+    private final SelenideElement formErrorUsername = $(".form__label:nth-child(4) > .form__error");
+    private final SelenideElement formErrorPassword = $(".form__label:nth-child(5) > .form__error");
 
     @Override
     public RegistrationPage checkThatPageLoaded() {
@@ -60,14 +58,26 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
     }
 
     @Step("Click to 'SIGN UP'")
-    public RegistrationSuccessPage signUpClick() {
+    public <T> T signUpClick(T page) {
         submitBtn.click();
-        return new RegistrationSuccessPage();
+        return (T) page;
     }
 
-    @Step("Check the 'Registration' error message")
-    public RegistrationPage checkErrorMessage(String expectedMessage) {
-        formError.shouldHave(text(expectedMessage));
+    @Step("Check the 'Registration form' should have error message")
+    public RegistrationPage errorMessage(String expectedMessage) {
+        formError.shouldHave(exactText(expectedMessage));
+        return this;
+    }
+
+    @Step("Check the 'Registration' should have username error message")
+    public RegistrationPage usernameErrorMessage(String expectedMessage) {
+        formErrorUsername.shouldHave(exactText(expectedMessage));
+        return this;
+    }
+
+    @Step("Check the 'Registration' should have username error message")
+    public RegistrationPage passwordErrorMessage(String expectedMessage) {
+        formErrorPassword.shouldHave(exactText(expectedMessage));
         return this;
     }
 
