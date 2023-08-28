@@ -58,7 +58,7 @@ public class RegistrationErrorTest extends BaseWebTest {
 
     @Test
     @AllureId("1012")
-    @DisplayName("Successfully : Error message 'Passwords should be equal' should be displayed")
+    @DisplayName("Successfully : Few error messages should be displayed")
     public void fewErrorMessageDisplayedTest() {
         var registerUser = new RegisterUserValue("t", "q", "qw");
 
