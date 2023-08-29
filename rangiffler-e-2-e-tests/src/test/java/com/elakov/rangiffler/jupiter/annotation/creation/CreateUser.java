@@ -17,9 +17,13 @@ public @interface CreateUser {
 
     String username() default "";
 
+    String firstname() default "";
+
+    String lastname() default "";
+
     String password() default "";
 
-    String avatarPath() default "";
+    String avatarClassPath() default "";
 
     CreatePhoto[] photos() default {};
 

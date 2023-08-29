@@ -4,8 +4,12 @@ import com.elakov.rangiffler.page.auth.LoginPage;
 import com.elakov.rangiffler.page.auth.RegistrationPage;
 import com.elakov.rangiffler.page.auth.RegistrationSuccessPage;
 import com.elakov.rangiffler.page.auth.StartPage;
+import com.elakov.rangiffler.page.component.FriendsComponent;
 import com.elakov.rangiffler.page.component.Header;
+import com.elakov.rangiffler.page.component.PhotoComponent;
+import com.elakov.rangiffler.page.component.ProfileComponent;
 import com.elakov.rangiffler.page.tabs.NavigatorTabs;
+import com.elakov.rangiffler.page.tabs.PeopleAroundTab;
 import com.elakov.rangiffler.page.tabs.TravelsTab;
 import com.github.javafaker.Faker;
 
@@ -22,6 +26,11 @@ public abstract class CommonWebStep<T> {
     protected Header header = new Header();
     protected NavigatorTabs navigatorTabs = new NavigatorTabs();
     protected TravelsTab travelsTab = new TravelsTab();
+    protected PeopleAroundTab peopleAroundTab = new PeopleAroundTab();
+    protected ProfileComponent profileComponent = new ProfileComponent();
+    protected FriendsComponent friendsComponent = new FriendsComponent();
+    protected PhotoComponent photoComponent = new PhotoComponent();
+
     protected Faker faker = new Faker();
 
     public T openStartPageAndRedirectToLogin() {

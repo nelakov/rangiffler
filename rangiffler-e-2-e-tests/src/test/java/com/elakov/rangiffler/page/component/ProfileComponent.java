@@ -39,9 +39,15 @@ public class ProfileComponent extends BaseComponent<ProfileComponent> {
         });
     }
 
-    @Step("Default image should be")
-    public ProfileComponent defaultImage(String imagePath) {
+    @Step("Default image should be visible")
+    public ProfileComponent defaultImageShouldBeVisible() {
         templatePhotoImg.shouldBe(visible);
+        return this;
+    }
+
+    @Step("Add photo to Profile")
+    public ProfileComponent addNewPhotoToProfile(String photoClasspath) {
+        addPhotoBtn.uploadFromClasspath(photoClasspath);
         return this;
     }
 
@@ -51,9 +57,31 @@ public class ProfileComponent extends BaseComponent<ProfileComponent> {
         return this;
     }
 
+    @Step("Input 'Last name'")
+    public ProfileComponent inputLastName(String lastname) {
+        lastnameInput.setValue(lastname);
+        return this;
+    }
+
+    @Step("Tap on the 'Save' button")
+    public void saveProfile() {
+        submitBtn.click();
+    }
+
+    @Step("'Save' button should be disabled")
+    public void saveBtnShouldNotBeVisible() {
+        submitBtn.shouldBe(disabled);
+    }
+
     @Step("'First name' should have inputted name")
     public ProfileComponent firstNameShouldHaveInputtedName(String firstname) {
         firstnameInput.shouldHave(value(firstname));
+        return this;
+    }
+
+    @Step("'Last name' should have inputted name")
+    public ProfileComponent lastNameShouldHaveInputtedName(String lastname) {
+        lastnameInput.shouldHave(value(lastname));
         return this;
     }
 
@@ -83,28 +111,6 @@ public class ProfileComponent extends BaseComponent<ProfileComponent> {
             softstep.execute();
             return this;
         });
-    }
-
-    @Step("Input 'Last name'")
-    public ProfileComponent inputLastName(String lastname) {
-        lastnameInput.setValue(lastname);
-        return this;
-    }
-
-    @Step("'Last name' should have inputted name")
-    public ProfileComponent lastNameShouldHaveInputtedName(String lastname) {
-        lastnameInput.shouldHave(value(lastname));
-        return this;
-    }
-
-    @Step("Tap on the 'Save' button")
-    public void savePhoto() {
-        submitBtn.click();
-    }
-
-    @Step("'Save' button should be disabled")
-    public void saveBtnShouldNotBeVisible() {
-        submitBtn.shouldBe(disabled);
     }
 
 }

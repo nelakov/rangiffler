@@ -61,12 +61,34 @@ public class UserService {
     public UserJson createUserViaApi(@Nonnull CreateUser annotation) {
         UserJson user = createRandomUserViaApi();
 
+        updateUserInfoIfPresent(annotation, user);
         addFriendsIfPresent(user, annotation.friends());
         addOutcomeInvitationsIfPresent(user, annotation.outcomeInvitations());
         addIncomeInvitationsIfPresent(user, annotation.incomeInvitations());
         addPhotoIfPresent(user, annotation.photos());
-        addAvatarIfPresent(user, annotation.avatarPath());
+        addAvatarIfPresent(user, annotation.avatarClassPath());
         return user;
+    }
+
+    /**
+     * This method update info from exist user
+     * @param annotation
+     * @param userJson
+     */
+    private void updateUserInfoIfPresent(CreateUser annotation, UserJson userJson) {
+        String firstname = annotation.firstname();
+        String lastname = annotation.lastname();
+        String avatarPath = annotation.avatarClassPath();
+
+        userJson.setFirstName(firstname);
+        userJson.setSurname(lastname);
+        if (!avatarPath.isEmpty()) {
+            userJson.setAvatar(getFileByClasspath(avatarPath));
+        }
+
+        if ((!firstname.isEmpty() || (!lastname.isEmpty())) || (!avatarPath.isEmpty())) {
+            userdataClient.updateUserInfo(userJson);
+        }
     }
 
     /**
@@ -75,8 +97,10 @@ public class UserService {
      * @param photos
      */
     private void addPhotoIfPresent(UserJson targetUser, CreatePhoto[] photos) {
+        //TODO: Исправить. Нужно положить значение photoClaaPath в TestContext, чтобы не создавать объект модели
+        PhotoJson photoJson = new PhotoJson();
         if (ArrayUtils.isNotEmpty(photos)) {
-            PhotoArray.Builder builder = PhotoArray.newBuilder();
+            PhotoArray.Builder photoArrayBuilder = PhotoArray.newBuilder();
             for (CreatePhoto createPhoto : photos) {
                 Country country = countryGrpcClient.getCountryByCode(createPhoto.countryCode());
                 com.elakov.grpc.rangiffler.grpc.Photo onePhoto =
@@ -86,10 +110,10 @@ public class UserService {
                                 .setDescription(createPhoto.description())
                                 .setCountryCode(country)
                                 .build();
-
-                builder.addPhotoArray(onePhoto);
+                photoArrayBuilder.addPhotoArray(onePhoto);
                 com.elakov.grpc.rangiffler.grpc.Photo grpcPhotoResponse = photoGrpcClient.addPhoto(onePhoto);
                 targetUser.getPhotos().add(PhotoJson.fromGrpcMessage(grpcPhotoResponse));
+                targetUser.getPhotos().get(0).setPhotoClassPath(createPhoto.photoPath());
             }
         }
     }
@@ -102,6 +126,7 @@ public class UserService {
     private void addAvatarIfPresent(UserJson userJson, String avatarPath) {
         if (!avatarPath.isBlank()) {
             userJson.setAvatar(getFileByClasspath(avatarPath));
+            userJson.setAvatarClassPath(avatarPath);
             userdataClient.updateUserInfo(userJson);
         }
     }

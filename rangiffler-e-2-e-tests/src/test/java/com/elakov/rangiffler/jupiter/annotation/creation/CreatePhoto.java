@@ -11,7 +11,7 @@ public @interface CreatePhoto {
 
     String photoPath() default "";
 
-    String countryCode() default "ES";
+    String countryCode() default "";
 
     String description() default "";
 

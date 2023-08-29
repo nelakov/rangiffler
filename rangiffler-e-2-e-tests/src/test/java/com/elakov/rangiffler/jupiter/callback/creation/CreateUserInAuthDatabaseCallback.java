@@ -9,7 +9,6 @@ import com.elakov.rangiffler.jupiter.annotation.creation.CreateUserInDB;
 import com.elakov.rangiffler.jupiter.callback.TestSuiteCallback;
 import com.elakov.rangiffler.jupiter.callback.service.UserService;
 import jakarta.persistence.EntityManagerFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 
@@ -20,7 +19,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.create;
 
-@Slf4j
 public class CreateUserInAuthDatabaseCallback implements
         BeforeEachCallback,
         ParameterResolver,

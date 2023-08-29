@@ -26,12 +26,14 @@ public class DataFakeHelper {
         return FAKER.name().lastName();
     }
 
-    public static String generateNewCategory() {
-        return FAKER.book().title();
-    }
-
     public static String generateRandomSentence(int wordsCount) {
         return FAKER.lorem().sentence(wordsCount);
+    }
+
+    public static String generateRandomDescription() {
+        return FAKER.hobbit().location() + "\n"
+                + FAKER.weather().description() + "\n"
+                + FAKER.hobbit().quote();
     }
 
     public static String randomLastname() {

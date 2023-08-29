@@ -39,6 +39,7 @@ public class UserJson {
     private transient List<UserJson> outcomeInvitations = new ArrayList<>();
     private transient List<UserJson> incomeInvitations = new ArrayList<>();
     private transient List<PhotoJson> photos = new ArrayList<>();
+    private transient String avatarClassPath;
 
 }
 

@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-
 public class CreateUserCallback implements BeforeEachCallback, ParameterResolver {
 
     public static ExtensionContext.Namespace CREATE_USER_NAMESPACE = ExtensionContext.Namespace
@@ -51,6 +50,7 @@ public class CreateUserCallback implements BeforeEachCallback, ParameterResolver
         return extensionContext.getStore(CREATE_USER_NAMESPACE).get(getTestId(extensionContext), UserJson.class);
     }
 
+    //TODO: Вынести в базовый экстеншион
     private String getTestId(ExtensionContext context) {
         return Objects
                 .requireNonNull(context.getRequiredTestMethod().getAnnotation(AllureId.class))

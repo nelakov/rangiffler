@@ -34,11 +34,11 @@ public class PhotoListComponent extends BaseComponent<PhotoListComponent> {
     }
 
     @Step("Tap on the photo for open 'Photo view'")
-    public PhotoListComponent openPhotoPopup(String pathImgFromResources) {
+    public PhotoComponent openPhotoModalView(String pathImgFromResources) {
         String expectImage = pathImgFromResources;
         String actualImage = firstPhoto.getAttribute("src");
         Assertions.assertEquals(expectImage, actualImage);
-        return this;
+        return new PhotoComponent();
     }
 
     @Step("Check that the 'List of photo' is hidden")

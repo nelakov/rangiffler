@@ -2,14 +2,18 @@ package com.elakov.rangiffler.model;
 
 import com.elakov.grpc.rangiffler.grpc.Photo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PhotoJson {
 
@@ -28,6 +32,7 @@ public class PhotoJson {
   @JsonProperty("username")
   private String username;
 
+  private transient String photoClassPath;
   public static PhotoJson fromGrpcMessage(Photo photoGrpc) {
     return Optional.ofNullable(photoGrpc)
             .map(photo -> PhotoJson.builder()

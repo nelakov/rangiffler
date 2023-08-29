@@ -14,6 +14,13 @@ import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class PhotoComponent extends BaseComponent<PhotoComponent> {
 
+    Header headerComponent = new Header();
+
+
+    public Header getHeader() {
+        return headerComponent;
+    }
+
     public PhotoComponent() {
         super($(".MuiPaper-root.MuiCard-root"));
     }
@@ -21,9 +28,9 @@ public class PhotoComponent extends BaseComponent<PhotoComponent> {
     // Add new photo mode
     private final SelenideElement templatePhotoImg = self.$("[alt='New image']");
     private final SelenideElement addPhotoBtn = self.$(By.id("file"));
-    private final SelenideElement countryDropDown = self.$("[data-testid='ArrowDropDownIcon']");
+    private final SelenideElement countryDropDown = self.$("div[class*='MuiSelect-root']");
     private final ElementsCollection countriesList = $$("ul.MuiMenu-list li");
-    private final SelenideElement descriptionInput = self.$(By.id(":r17:"));
+    private final SelenideElement descriptionInput = self.$("textarea.MuiInputBase-input[aria-invalid='false']");
 
     // Save / Delete
     private final SelenideElement submitBtn = self.$(" [type='submit']");
@@ -35,6 +42,7 @@ public class PhotoComponent extends BaseComponent<PhotoComponent> {
     private final SelenideElement photoPlace = self.$("[data-testid='PlaceIcon']");
     private final SelenideElement photoDescription = self.$("p.MuiTypography-body2");
 
+    //TODO: Переписать проверки (тк окно имеет разные состояния)
     @Override
     public PhotoComponent checkThatComponentDisplayed() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
@@ -107,7 +115,7 @@ public class PhotoComponent extends BaseComponent<PhotoComponent> {
 
     //region Description
     @Step("Tap on the 'Description' for photo")
-    public PhotoComponent setDescription(String description) {
+    public PhotoComponent addDescription(String description) {
         descriptionInput.setValue(description);
         return this;
     }
