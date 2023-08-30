@@ -6,7 +6,7 @@ import io.grpc.Channel;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
 
-//TODO: Настроить логирование для gRPC
+//TODO: Setting logging для gRPC
 public class BaseGrpcClient {
 
     // By default 4MB

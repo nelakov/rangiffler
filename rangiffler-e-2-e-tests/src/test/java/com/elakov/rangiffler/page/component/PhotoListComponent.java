@@ -28,16 +28,20 @@ public class PhotoListComponent extends BaseComponent<PhotoListComponent> {
     }
 
     @Step("Check count of photos")
-    public PhotoListComponent checkPhotosCount(int expectedCount) {
+    public PhotoListComponent checkCountOfPhotoList(int expectedCount) {
         photosList.shouldHave(size(expectedCount));
         return this;
     }
 
-    @Step("Tap on the photo for open 'Photo view'")
-    public PhotoComponent openPhotoModalView(String pathImgFromResources) {
-        String expectImage = pathImgFromResources;
-        String actualImage = firstPhoto.getAttribute("src");
-        Assertions.assertEquals(expectImage, actualImage);
+    @Step("Photo should exist'")
+    public PhotoListComponent photoShouldExist(String photoByClasspath) {
+        Assertions.assertEquals(photoByClasspath, firstPhoto.getAttribute("src"));
+        return this;
+    }
+
+    @Step("Click to 'Photo' from the 'Photo list'")
+    public PhotoComponent clickByPhoto() {
+        firstPhoto.click();
         return new PhotoComponent();
     }
 

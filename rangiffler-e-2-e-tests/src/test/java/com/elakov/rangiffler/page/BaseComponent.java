@@ -2,7 +2,7 @@ package com.elakov.rangiffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
-public abstract class BaseComponent<T extends BaseComponent> {
+public abstract class BaseComponent<T> {
 
     protected final SelenideElement self;
 
@@ -11,4 +11,5 @@ public abstract class BaseComponent<T extends BaseComponent> {
     }
 
     public abstract T checkThatComponentDisplayed();
+
 }

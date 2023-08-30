@@ -1,10 +1,13 @@
 package com.elakov.rangiffler.page.tabs;
 
+import com.elakov.rangiffler.command.CommandExecutor;
+import com.elakov.rangiffler.command.Refresh;
 import com.elakov.rangiffler.config.services.ServicesProperties;
 import com.elakov.rangiffler.page.BasePage;
 import com.elakov.rangiffler.page.component.Header;
 import com.elakov.rangiffler.page.component.MapComponent;
 import com.elakov.rangiffler.page.component.PhotoListComponent;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selenide.open;
 
@@ -17,6 +20,7 @@ public class TravelsTab extends BasePage<TravelsTab> {
     private final PhotoListComponent photoListComponent = new PhotoListComponent();
 
     @Override
+    @Step("Travel tab was loaded")
     public TravelsTab checkThatPageLoaded() {
         mapComponent
                 .checkThatComponentDisplayed();
@@ -24,8 +28,10 @@ public class TravelsTab extends BasePage<TravelsTab> {
     }
 
     @Override
+    @Step("Refresh page")
     public TravelsTab refreshPage() {
-        return super.refreshPage();
+        CommandExecutor.execute(new Refresh());
+        return this;
     }
 
     public <T> T openTravelsTab(T page) {

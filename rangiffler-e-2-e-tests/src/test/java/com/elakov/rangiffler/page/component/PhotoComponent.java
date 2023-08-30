@@ -39,7 +39,7 @@ public class PhotoComponent extends BaseComponent<PhotoComponent> {
     private final SelenideElement editPhotoBtn = self.$("button [data-testid='EditIcon']");
     private final SelenideElement deletePhotoBtn = self.$("button [data-testid='DeleteOutlineIcon']");
     private final SelenideElement closeEditPhotoViewBtn = self.$("button [data-testid='CloseIcon']");
-    private final SelenideElement photoPlace = self.$("[data-testid='PlaceIcon']");
+    private final SelenideElement photoPlace = self.$("[data-testid='PlaceIcon']").parent();
     private final SelenideElement photoDescription = self.$("p.MuiTypography-body2");
 
     //TODO: Переписать проверки (тк окно имеет разные состояния)
@@ -69,7 +69,7 @@ public class PhotoComponent extends BaseComponent<PhotoComponent> {
         submitBtn.click();
     }
 
-    @Step("Default image should be")
+    @Step("Default image should be visible")
     public PhotoComponent defaultImageShouldBeVisible() {
         templatePhotoImg.shouldBe(visible);
         return this;

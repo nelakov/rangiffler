@@ -1,5 +1,7 @@
 package com.elakov.rangiffler.test;
 
+
+//TODO: Realise Pattern Memento instead TestContext
 public final class TestContext {
 
     private static final ThreadLocal<String> username = new ThreadLocal<>();

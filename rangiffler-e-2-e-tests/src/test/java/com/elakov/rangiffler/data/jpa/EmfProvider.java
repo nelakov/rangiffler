@@ -19,7 +19,7 @@ public enum EmfProvider {
     private final Map<ServiceDataBase, EntityManagerFactory> emfStore = new ConcurrentHashMap<>();
 
     public EntityManagerFactory getEmf(ServiceDataBase serviceDataBase) {
-        return step("Set up connection", () -> emfStore.computeIfAbsent(serviceDataBase, db -> {
+        return step("Set up database connection", () -> emfStore.computeIfAbsent(serviceDataBase, db -> {
             log.debug("creating emf for unit {}", serviceDataBase.name());
             Map<String, Object> properties = new HashMap<>();
             log.debug("using dbConfig '{}' to create emf", properties);
