@@ -1,12 +1,11 @@
 package com.elakov.rangiffler.service;
 
+import com.elakov.rangiffler.data.FriendsEntity;
 import com.elakov.rangiffler.data.UserEntity;
+import com.elakov.rangiffler.data.repository.UserRepository;
 import com.elakov.rangiffler.exception.NotFoundException;
 import com.elakov.rangiffler.model.FriendJson;
-import com.elakov.rangiffler.data.FriendsEntity;
-import com.elakov.rangiffler.data.repository.FriendsRepository;
-import com.elakov.rangiffler.data.repository.UserRepository;
-import com.elakov.rangiffler.model.FriendState;
+import com.elakov.rangiffler.model.FriendStatus;
 import com.elakov.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
@@ -23,12 +22,10 @@ public class UserDataService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDataService.class);
     private final UserRepository userRepository;
-    private final FriendsRepository friendsRepository;
 
     @Autowired
-    public UserDataService(UserRepository userRepository, FriendsRepository friendsRepository) {
+    public UserDataService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.friendsRepository = friendsRepository;
     }
 
     public @Nonnull
@@ -76,18 +73,18 @@ public class UserDataService {
                 if (inviteToMe.isPresent()) {
                     FriendsEntity invite = inviteToMe.get();
                     result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
-                            ? FriendState.INVITE_RECEIVED
-                            : FriendState.FRIEND));
+                            ? FriendStatus.INVITATION_RECEIVED
+                            : FriendStatus.FRIEND));
                 }
                 if (inviteFromMe.isPresent()) {
                     FriendsEntity invite = inviteFromMe.get();
                     result.put(user.getId(), UserJson.fromEntity(user, invite.isPending()
-                            ? FriendState.INVITE_SENT
-                            : FriendState.FRIEND));
+                            ? FriendStatus.INVITATION_SENT
+                            : FriendStatus.FRIEND));
                 }
             }
             if (!result.containsKey(user.getId())) {
-                result.put(user.getId(), UserJson.fromEntity(user));
+                result.put(user.getId(), UserJson.fromEntity(user, FriendStatus.NOT_FRIEND));
             }
         }
         return new ArrayList<>(result.values());
@@ -104,8 +101,8 @@ public class UserDataService {
                 .stream()
                 .filter(fe -> !fe.isPending())
                 .map(fe -> UserJson.fromEntity(fe.getFriend(), fe.isPending()
-                        ? FriendState.INVITE_SENT
-                        : FriendState.FRIEND))
+                        ? FriendStatus.INVITATION_SENT
+                        : FriendStatus.FRIEND))
                 .toList();
     }
 
@@ -119,7 +116,7 @@ public class UserDataService {
                 .getInvites()
                 .stream()
                 .filter(FriendsEntity::isPending)
-                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendState.INVITE_RECEIVED))
+                .map(fe -> UserJson.fromEntity(fe.getUser(), FriendStatus.INVITATION_RECEIVED))
                 .toList();
     }
 
@@ -134,7 +131,7 @@ public class UserDataService {
         }
         currentUser.addFriends(true, friendEntity);
         userRepository.save(currentUser);
-        return UserJson.fromEntity(friendEntity, FriendState.INVITE_SENT);
+        return UserJson.fromEntity(friendEntity, FriendStatus.INVITATION_SENT);
     }
 
     public @Nonnull
@@ -158,7 +155,7 @@ public class UserDataService {
         currentUser.addFriends(false, inviteUser);
         userRepository.save(currentUser);
 
-        return UserJson.fromEntity(inviteUser, FriendState.FRIEND);
+        return UserJson.fromEntity(inviteUser, FriendStatus.FRIEND);
     }
 
     @Transactional
@@ -179,7 +176,7 @@ public class UserDataService {
         userRepository.save(currentUser);
         userRepository.save(friendToDecline);
 
-        return UserJson.fromEntity(currentUser, FriendState.NOT_FRIEND);
+        return UserJson.fromEntity(currentUser, FriendStatus.NOT_FRIEND);
     }
 
     @Transactional
@@ -202,6 +199,6 @@ public class UserDataService {
         userRepository.save(currentUser);
         userRepository.save(friendToRemove);
 
-        return UserJson.fromEntity(friendToRemove, FriendState.NOT_FRIEND);
+        return UserJson.fromEntity(friendToRemove, FriendStatus.NOT_FRIEND);
     }
 }

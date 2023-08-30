@@ -2,18 +2,19 @@ package com.elakov.rangiffler.model;
 
 import com.elakov.grpc.rangiffler.grpc.Country;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CountryJson {
 
   @JsonProperty("id")

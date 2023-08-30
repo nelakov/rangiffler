@@ -1,11 +1,11 @@
 server:
-  port: 9030
+  port: 9020
   error:
     include:
       message: true
 grpc:
   server:
-    port: 9031
+    port: 9021
     max-inbound-message-size: 50000000
 
 spring:
@@ -53,11 +53,11 @@ spring:
       ddl-auto: validate
 grpc:
   client:
-    grpcUserdataClient:
+    grpcCountryClient:
       address: 'static://127.0.0.1:9011'
       negotiationType: PLAINTEXT
-    grpcCountryClient:
-      address: 'static://127.0.0.1:9021'
+    grpcUserdataClient:
+      address: 'static://127.0.0.1:9031'
       negotiationType: PLAINTEXT
 
 ---
@@ -72,11 +72,10 @@ spring:
       ddl-auto: validate
 grpc:
   client:
-    grpcUserdataClient:
-      address: 'static://userdata.rangiffler.dc:9011'
-      negotiationType: PLAINTEXT
     grpcCountryClient:
-      address: 'static://country.rangiffler.dc:9021'
+      address: 'http://country.rangiffler.dc:9011'
       negotiationType: PLAINTEXT
-
+    grpcUserdataClient:
+      address: 'http://userdata.rangiffler.dc:9031'
+      negotiationType: PLAINTEXT
 ---

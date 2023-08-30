@@ -1,6 +1,7 @@
 package com.elakov.rangiffler.model;
 
 import com.elakov.rangiffler.data.UserEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +32,9 @@ public class UserJson {
     @JsonProperty("avatar")
     private String avatar;
 
-    @JsonProperty("friendState")
-    private FriendState friendState = FriendState.NOT_FRIEND;
+    @JsonProperty("friendStatus")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private FriendStatus friendStatus = FriendStatus.NOT_FRIEND;
 
     public static UserJson fromEntity(UserEntity entity) {
         UserJson usr = new UserJson();
@@ -45,9 +47,9 @@ public class UserJson {
         return usr;
     }
 
-    public static UserJson fromEntity(UserEntity entity, FriendState friendState) {
+    public static UserJson fromEntity(UserEntity entity, FriendStatus friendStatus) {
         UserJson userJson = fromEntity(entity);
-        userJson.setFriendState(friendState);
+        userJson.setFriendStatus(friendStatus);
         return userJson;
     }
 }

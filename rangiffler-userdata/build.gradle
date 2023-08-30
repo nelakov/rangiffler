@@ -1,26 +1,27 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.1'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.palantir.docker' version '0.35.0'
-    id "io.freefair.lombok" version "8.1.0"
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.docker)
 }
 
-group 'com.elakov'
-version '0.0.1-SNAPSHOT'
+group = libs.versions.group.get()
+version = libs.versions.app.get()
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     implementation project(':rangiffler-grpc-common')
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly    'mysql:mysql-connector-java:8.0.33'
+    implementation(
+            libs.spring.grpc.server.starter,
+            libs.spring.data.jpa.starter,
+            libs.spring.boot.starter
+    )
+    runtimeOnly libs.mysql
 }
 
 docker {

@@ -16,15 +16,15 @@ public class FriendsEntity {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserEntity user;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "friend_id", referencedColumnName = "id")
+    @JoinColumn(name = "friend_id", referencedColumnName = "id", nullable = false)
     private UserEntity friend;
 
-    @Column(name = "pending")
+    @Column(name = "pending", nullable = false)
     private boolean pending;
 
     @Override
