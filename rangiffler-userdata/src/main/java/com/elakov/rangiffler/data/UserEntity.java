@@ -24,8 +24,8 @@ public class UserEntity {
     @Column(name = "firstname")
     private String firstname;
 
-    @Column(name = "surname")
-    private String surname;
+    @Column(name = "lastname")
+    private String lastname;
 
     @Column(name = "avatar", columnDefinition = "LONGBLOB")
     private byte[] avatar;

@@ -29,7 +29,7 @@ public class RegistrationErrorTest extends BaseWebTest {
     @Test
     @AllureId("1009")
     @DisplayName("Successfully : Error message 'Allowed username length should be from 3 to 50 characters' should be displayed")
-    public void usernameLengthNotAllowedTest() {
+    public void successfullyUsernameLengthNotAllowedTest() {
         var registerUser = new RegisterUserValue("qw", "qwe", "qwe");
 
         steps.fillRegisterFormAndCheckErrorMessage(registerUser,
@@ -39,7 +39,7 @@ public class RegistrationErrorTest extends BaseWebTest {
     @Test
     @AllureId("1010")
     @DisplayName("Successfully : Error message 'Allowed password length should be from 3 to 12 characters' should be displayed")
-    public void passwordLengthNotAllowedTest() {
+    public void successfullyPasswordLengthNotAllowedTest() {
         var registerUser = new RegisterUserValue("test", "a", "a");
 
         steps.fillRegisterFormAndCheckErrorMessage(registerUser,
@@ -49,7 +49,7 @@ public class RegistrationErrorTest extends BaseWebTest {
     @Test
     @AllureId("1011")
     @DisplayName("Successfully : Error message 'Passwords should be equal' should be displayed")
-    public void passwordsShouldBeEqualsTest() {
+    public void successfullyPasswordsShouldBeEqualsTest() {
         var registerUser = new RegisterUserValue("test", "qwert", "qwerty");
 
         steps.fillRegisterFormAndCheckErrorMessage(registerUser,
@@ -59,7 +59,7 @@ public class RegistrationErrorTest extends BaseWebTest {
     @Test
     @AllureId("1012")
     @DisplayName("Successfully : Few error messages should be displayed")
-    public void fewErrorMessageDisplayedTest() {
+    public void successfullyFewErrorMessageDisplayedTest() {
         var registerUser = new RegisterUserValue("t", "q", "qw");
 
         steps.fillRegisterFormAndCheckFewErrorMessage(registerUser,

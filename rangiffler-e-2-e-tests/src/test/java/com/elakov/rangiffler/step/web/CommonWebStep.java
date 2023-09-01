@@ -31,7 +31,7 @@ public abstract class CommonWebStep<T> {
     protected FriendsComponent friendsComponent = new FriendsComponent();
     protected PhotoComponent photoComponent = new PhotoComponent();
 
-    //TODO: Убрать Faker отсюда
+    //TODO: Убрать Faker из данного класса
     protected Faker faker = new Faker();
 
     public T openStartPageAndRedirectToLogin() {

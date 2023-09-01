@@ -13,33 +13,27 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static com.elakov.rangiffler.helper.allure.tags.AllureOwner.ELAKOV;
-import static com.elakov.rangiffler.helper.allure.tags.AllureTag.AUTH;
 import static com.elakov.rangiffler.helper.allure.tags.AllureTag.WEB;
 
 @Owner(ELAKOV)
 @Epic("Header component")
-@Feature("Add photo to Profile")
-@Tags({@Tag(WEB), @Tag(AUTH)})
+@Feature("Photos in Travel tabs(Your and Friends)")
+@Tag(WEB)
 public class PhotoTest extends BaseWebTest {
 
     PhotoWebStep steps = new PhotoWebStep();
 
-    @AllureId("1013")
-    @ApiLogin(
-            user = @CreateUser
-                    (
-                        photos = @CreatePhoto(
-                                    photoPath = "images/place/georgia/1.jpg",
-                                    countryCode = "GE",
-                                    description = "Georgia In my Mind"
-    )))
     @Test
-    @DisplayName("Add photo")
-    void addPhoto(UserJson userJson) {
+    @AllureId("1013")
+    @ApiLogin(user = @CreateUser(
+            photos = @CreatePhoto(photoPath = "images/place/georgia/1.jpg",
+                    countryCode = "GE",
+                    description = "Georgia In my Mind")))
+    @DisplayName("Successfully: Add photo via login and check Photo Modal View")
+    void successfullyAddTravelPhoto(UserJson userJson) {
         PhotoJson photoJson = userJson.getPhotos().get(0);
 
         String photoElementPath = userJson.getPhotos().get(0).getPhoto();
@@ -47,7 +41,7 @@ public class PhotoTest extends BaseWebTest {
         String description = photoJson.getDescription();
 
         steps
-                .photoShouldBeVisibleAfterAddingAndHasCountryAndDescription(photoElementPath,countryCode, description);
+                .photoShouldBeVisibleAfterAddingAndHasCountryAndDescription(photoElementPath, countryCode, description);
 
     }
 }

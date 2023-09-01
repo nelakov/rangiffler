@@ -37,32 +37,32 @@ public class LoginErrorTest extends BaseWebTest {
     @Test
     @CreateUserInDB(enabled = false)
     @AllureId("1003")
-    @DisplayName("Unsuccessful: User is disabled")
-    public void unsuccessfulLoginUserDisabledTest(UserAuthEntity user) {
+    @DisplayName("Unsuccessfully: User is disabled")
+    public void unsuccessfullyLoginUserDisabledTest(UserAuthEntity user) {
         steps.fillLoginFormAndCheckErrorMessage(user, "User is disabled");
     }
 
     @Test
     @CreateUserInDB(accountNonExpired = false)
     @AllureId("1004")
-    @DisplayName("Unsuccessful: User account has expired")
-    public void unsuccessfulLoginAccountExpiredTest(UserAuthEntity user) {
+    @DisplayName("Unsuccessfully: User account has expired")
+    public void unsuccessfullyLoginAccountExpiredTest(UserAuthEntity user) {
         steps.fillLoginFormAndCheckErrorMessage(user, "User account has expired");
     }
 
     @Test
     @CreateUserInDB(accountNonLocked = false)
     @AllureId("1005")
-    @DisplayName("Unsuccessful: User account is locked")
-    public void unsuccessfulLoginAccountLockedTest(UserAuthEntity user) {
+    @DisplayName("Unsuccessfully: User account is locked")
+    public void unsuccessfullyLoginAccountLockedTest(UserAuthEntity user) {
         steps.fillLoginFormAndCheckErrorMessage(user, "User account is locked");
     }
 
     @Test
     @CreateUserInDB(credentialsNonExpired = false)
     @AllureId("1006")
-    @DisplayName("Unsuccessful: Bad credentials. Credentials expired")
-    public void unsuccessfulLoginCredentionalsExpiredTest(UserAuthEntity user) {
+    @DisplayName("Unsuccessfully: Bad credentials. Credentials expired")
+    public void unsuccessfullyLoginCredentionalsExpiredTest(UserAuthEntity user) {
         steps.fillLoginFormAndCheckErrorMessage(user, "Bad credentials");
     }
 

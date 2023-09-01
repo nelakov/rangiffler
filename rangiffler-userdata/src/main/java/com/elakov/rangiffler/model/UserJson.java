@@ -26,8 +26,8 @@ public class UserJson {
     @JsonProperty("firstName")
     private String firstname;
 
-    @JsonProperty("surname")
-    private String surname;
+    @JsonProperty("lastName")
+    private String lastName;
 
     @JsonProperty("avatar")
     private String avatar;
@@ -42,7 +42,7 @@ public class UserJson {
         usr.setId(entity.getId());
         usr.setUsername(entity.getUsername());
         usr.setFirstname(entity.getFirstname());
-        usr.setSurname(entity.getSurname());
+        usr.setLastName(entity.getLastname());
         usr.setAvatar(avatar != null && avatar.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
         return usr;
     }

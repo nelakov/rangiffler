@@ -15,6 +15,10 @@ public class DataFakeHelper {
         return FAKER.name().username();
     }
 
+    public static String generateName51Symbols() {
+        return FAKER.lorem().sentence(51);
+    }
+
     public static String generateRandomFunnyUsername() {
         return FAKER.funnyName().name();
     }

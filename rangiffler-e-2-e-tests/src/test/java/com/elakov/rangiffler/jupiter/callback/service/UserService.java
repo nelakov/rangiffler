@@ -81,7 +81,7 @@ public class UserService {
         String avatarPath = annotation.avatarClassPath();
 
         userJson.setFirstName(firstname);
-        userJson.setSurname(lastname);
+        userJson.setLastName(lastname);
         if (!avatarPath.isEmpty()) {
             userJson.setAvatar(getFileByClasspath(avatarPath));
         }

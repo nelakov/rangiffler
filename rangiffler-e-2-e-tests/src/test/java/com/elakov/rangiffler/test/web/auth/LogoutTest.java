@@ -29,8 +29,8 @@ public class LogoutTest extends BaseWebTest {
     @Test
     @Tag("WEB")
     @AllureId("1007")
-    @DisplayName("Successful: logout")
-    void logoutTest() {
+    @DisplayName("Successfully: logout")
+    void successfullylogoutTest() {
         steps
                 .apiLoginAndRedirectToTravelsTab()
                 .successfullyLogout();
