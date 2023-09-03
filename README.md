@@ -49,15 +49,13 @@
 - [Postgres](https://www.postgresql.org/about/)
 - [React](https://ru.reactjs.org/docs/getting-started.html)
 - [Thymeleaf](https://www.thymeleaf.org/)
-- [Jakarta Bean Validation](https://beanvalidation.org/)
-- [Jakarta JAXB](https://eclipse-ee4j.github.io/jaxb-ri/)
 - [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
 - [Allure](https://docs.qameta.io/allure/)
 - [Selenide](https://selenide.org/)
 - [Selenoid & Selenoid-UI](https://aerokube.com/selenoid/latest/)
 - [Allure-docker-service](https://github.com/fescobar/allure-docker-service)
 - [Java 19](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html)
-- [Gradle 7.6](https://docs.gradle.org/7.6/release-notes.html)
+- [Gradle 8.1](https://docs.gradle.org/7.6/release-notes.html)
 - And much more:)
 
 # Project Description
