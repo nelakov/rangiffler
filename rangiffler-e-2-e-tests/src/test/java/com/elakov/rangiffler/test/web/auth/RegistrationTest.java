@@ -39,7 +39,7 @@ public class RegistrationTest extends BaseWebTest {
     @Test
     @AllureId("1008")
     @DisplayName("Successfully: Successfully registration")
-    public void successRegistrationTest() {
+    public void successfullyRegistrationTest() {
         steps
                 .fillRegisterFormAndRedirectToLogin()
                 .fillLoginFormAndRedirectToTravelsTab();

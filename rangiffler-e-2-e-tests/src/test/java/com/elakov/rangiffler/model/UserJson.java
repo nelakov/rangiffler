@@ -23,8 +23,8 @@ public class UserJson {
     @JsonProperty("firstName")
     private String firstName;
 
-    @JsonProperty("surname")
-    private String surname;
+    @JsonProperty("lastName")
+    private String lastName;
 
     @JsonProperty("avatar")
     private String avatar;

@@ -65,7 +65,7 @@ public class GrpcUserdataService extends RangifflerUserdataServiceGrpc.Rangiffle
                 .setId(friend.getId().toString())
                 .setUsername(friend.getUsername())
                 .setFirstname(friend.getFirstname() == null ? "" : friend.getFirstname())
-                .setSurname(friend.getSurname() == null ? "" : friend.getSurname())
+                .setSurname(friend.getLastName() == null ? "" : friend.getLastName())
                 .setAvatar(friend.getAvatar() == null ? "" : friend.getAvatar())
                 .build();
     }

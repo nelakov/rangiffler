@@ -1,103 +1,88 @@
 package com.elakov.rangiffler.test.web.profile;
 
+import com.elakov.rangiffler.helper.data.DataFakeHelper;
+import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
+import com.elakov.rangiffler.jupiter.annotation.test.ApiLogin;
+import com.elakov.rangiffler.model.UserJson;
 import com.elakov.rangiffler.step.web.ProfileWebStep;
+import com.elakov.rangiffler.test.TestContext;
 import com.elakov.rangiffler.test.web.BaseWebTest;
+import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static com.elakov.rangiffler.helper.allure.tags.AllureOwner.ELAKOV;
+import static com.elakov.rangiffler.helper.allure.tags.AllureTag.WEB;
+import static com.elakov.rangiffler.helper.data.FileLoaderHelper.getFileByClasspath;
 
 @Owner(ELAKOV)
 @Epic("Header component")
-@Feature("Add photo to Profile")
+@Feature("Profile's photo")
+@Tag(WEB)
 public class ProfileTest extends BaseWebTest {
 
     ProfileWebStep steps = new ProfileWebStep();
 
-//    @AllureId("1013")
-//    @ApiLogin(
-//            user = @CreateUser(
-//                    friends = @CreateFriend(
-//                            photos = @CreatePhoto(
-//                                    photoPath = "images/place/georgia/1.jpg",
-//                                    countryCode = "GE",
-//                                    description = "Beautiful Georgia 1"
-//                            )
-//                    ),
-//                    avatarPath = "images/profile/avatar_1.jpg"
-//            )
-//    )
-//    @Test
-//    @DisplayName("Add info to profile")
-//    void shouldFillProfileWithAllFieldsSet(UserJson userJson) {
-//        steps.fillAllFieldsAndAddPhotoToProfile();
-//    }
+    @Test
+    @AllureId("1014")
+    @ApiLogin(user = @CreateUser(avatarClassPath = "images/profile/avatar_1.jpeg"))
+    @DisplayName("Successfully: Profile's info saved after added")
+    void successfullySavedProfileInfoTest(UserJson userJson) throws InterruptedException {
+        String avatarClassPath = userJson.getAvatar();
 
-/*    @Test
-    @AllureId("3002")
-    @DisplayName("WEB: User should be able update all fields in the profile")
-    @Tag("WEB")
-    @ApiLogin(rangifflerUser = @GenerateUser(firstname = "Test firstname", lastname = "Test lastname"))
-    void shouldUpdateProfileWithAllFieldsSet(@User UserGrpc user) {
-        String newFirstname = generateRandomFirstname();
-        String newLastname = generateRandomLastname();
+        steps
+                .updateProfileAndSaveWithoutUpdatePhoto()
+                .checkProfileInfoAndAvatarAfterUpdate(avatarClassPath);
 
-        MainPage mainPage = Selenide.open(MainPage.URL, MainPage.class);
-        mainPage.getHeader()
-                .openProfilePopup()
-                .setFirstname(newFirstname)
-                .setLastname(newLastname)
-                .saveProfile();
-
-        Selenide.refresh();
-
-        mainPage.getHeader()
-                .openProfilePopup()
-                .checkFirstname(newFirstname)
-                .checkLastname(newLastname);
     }
 
     @Test
-    @AllureId("3003")
-    @DisplayName("WEB: User should be able add an avatar in the profile")
-    @Tag("WEB")
-    @ApiLogin(rangifflerUser = @GenerateUser)
-    void shouldAddAvatarIntoProfile(@User UserGrpc user) {
-        String avatarPath = "img/avatar/avatar.jpg";
+    @AllureId("1015")
+    @ApiLogin(user = @CreateUser(
+            firstname = "Zaza",
+            lastname = "kakhetinskiy",
+            avatarClassPath = "images/profile/avatar_1.jpeg"))
+    @DisplayName("Successfully: Profile's info saved after update")
+    void successfullyUpdateProfileInfoTest(UserJson userJson) throws InterruptedException {
+        TestContext.setFirstName(DataFakeHelper.generateRandomFunnyUsername());
+        TestContext.setSurName(DataFakeHelper.generateRandomSurname());
+        String newAvatarClasspath = "images/profile/avatar_2.jpeg";
+        String convertClasspath = getFileByClasspath("images/profile/avatar_2.jpeg");
 
-        MainPage mainPage = Selenide.open(MainPage.URL, MainPage.class);
-        mainPage.getHeader()
-                .openProfilePopup()
-                .updateAvatar(avatarPath)
-                .saveProfile();
+        steps
+                .updateProfileAndSave(newAvatarClasspath)
+                .checkProfileInfoAndAvatarAfterUpdate(convertClasspath);
 
-        Selenide.refresh();
-
-        mainPage.getHeader()
-                .openProfilePopup()
-                .checkAvatar(avatarPath);
     }
 
     @Test
-    @AllureId("3004")
-    @DisplayName("WEB: User should be able update an avatar in the profile")
-    @Tag("WEB")
-    @ApiLogin(rangifflerUser = @GenerateUser(avatarPath = "img/avatar/dartWader.jpg"))
-    void shouldUpdateAvatarInProfile(@User UserGrpc user) {
-        String avatarPath = "img/avatar/avatar.jpg";
+    @AllureId("1016")
+    @ApiLogin(user = @CreateUser)
+    @DisplayName("Successfully: Profile's info doesn't update without save")
+    void successfullyDontSaveProfileInfo(UserJson userJson) {
+        TestContext.setFirstName(DataFakeHelper.generateRandomFunnyUsername());
+        TestContext.setSurName(DataFakeHelper.generateRandomSurname());
+        String avatarClassPath = userJson.getAvatarClassPath();
 
-        MainPage mainPage = Selenide.open(MainPage.URL, MainPage.class);
-        mainPage.getHeader()
-                .openProfilePopup()
-                .updateAvatar(avatarPath)
-                .saveProfile();
+        steps
+                .updateProfileWithoutSave(avatarClassPath)
+                .profileShouldBeEmpty();
 
-        Selenide.refresh();
+    }
 
-        mainPage.getHeader()
-                .openProfilePopup()
-                .checkAvatar(avatarPath);
-    }*/
+    @Test
+    @AllureId("1017")
+    @ApiLogin(user = @CreateUser)
+    @DisplayName("Successfully: Profile condition doesn't change. Save button should not be active condition")
+    void successfullySaveBtnShouldBeNotActiveTest() {
+
+        steps
+                .saveBtnShouldNotVisibleWithoutUpdates();
+
+    }
 
 }

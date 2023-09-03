@@ -42,7 +42,6 @@ public class PhotoComponent extends BaseComponent<PhotoComponent> {
     private final SelenideElement photoPlace = self.$("[data-testid='PlaceIcon']").parent();
     private final SelenideElement photoDescription = self.$("p.MuiTypography-body2");
 
-    //TODO: Переписать проверки (тк окно имеет разные состояния)
     @Override
     public PhotoComponent checkThatComponentDisplayed() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();

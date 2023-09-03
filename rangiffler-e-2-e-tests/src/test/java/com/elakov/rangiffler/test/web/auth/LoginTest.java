@@ -29,15 +29,15 @@ public class LoginTest extends BaseWebTest {
 
     @Test
     @AllureId("1000")
-    @DisplayName("Successful: Create new user and login")
-    void createNewUserAndLoginTest(@CreateUser UserJson user) {
+    @DisplayName("Successfully: Create new user and login")
+    void successfullyCreateNewUserAndLoginTest(@CreateUser UserJson user) {
         steps.fillLoginFormAndRedirectToTravelsTab(user);
     }
 
     @Test
     @AllureId("1001")
-    @DisplayName("Successful: user hasn't account. Redirect to registration via Sign up")
-    void userHasntAccountTest() {
+    @DisplayName("Successfully: user hasn't account. Redirect to registration via Sign up")
+    void successfullyUserHasntAccountTest() {
         steps.clickSignUpAndRedirectToRegister();
     }
 

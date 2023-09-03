@@ -35,7 +35,7 @@ public class UserDataService {
             throw new NotFoundException("Can`t find user by username: " + user.getUsername());
         }
         userEntity.setFirstname(user.getFirstname());
-        userEntity.setSurname(user.getSurname());
+        userEntity.setLastname(user.getLastName());
         userEntity.setAvatar(user.getAvatar() != null ? user.getAvatar().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
 
