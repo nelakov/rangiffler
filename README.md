@@ -7,7 +7,7 @@
 </div>
 
 <div align="center">
-  <i style="font-size: 18px;">Still not the Aviasales, already not the Tripadvisor</i>
+  <i style="font-size: 18px;">I haven't been everywhere but it's on my list</i>
 </div>
 
 <div id="badges" align="center">
