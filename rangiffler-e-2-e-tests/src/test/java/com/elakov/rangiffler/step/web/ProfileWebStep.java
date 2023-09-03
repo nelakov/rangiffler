@@ -8,8 +8,6 @@ public class ProfileWebStep extends CommonWebStep<ProfileWebStep> {
 
     public ProfileWebStep updateProfileAndSave(String avatarClassPath) {
         AllureSoftStepsHelper softStep = new AllureSoftStepsHelper();
-        TestContext.setFirstName(DataFakeHelper.generateRandomFunnyUsername());
-        TestContext.setSurName(DataFakeHelper.generateRandomSurname());
 
         softStep.add("Add Profile photo and fill Profile info",
                 () -> travelsTab
@@ -18,8 +16,8 @@ public class ProfileWebStep extends CommonWebStep<ProfileWebStep> {
                         .openProfile()
                         .checkThatComponentDisplayed()
                         .addNewPhotoToProfile(avatarClassPath)
-//                        .inputFirstName(TestContext.getFirstName())
-//                        .inputLastName(TestContext.getSurName())
+                        .inputFirstName(TestContext.getFirstName())
+                        .inputLastName(TestContext.getSurName())
                         .saveProfile()
         );
         softStep.execute();

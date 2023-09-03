@@ -29,7 +29,7 @@ public class PhotoTest extends BaseWebTest {
     @Test
     @AllureId("1013")
     @ApiLogin(user = @CreateUser(
-            photos = @CreatePhoto(photoPath = "images/place/georgia/1.jpg",
+            photos = @CreatePhoto(photoPath = "images/place/georgia/1.jpeg",
                     countryCode = "GE",
                     description = "Georgia In my Mind")))
     @DisplayName("Successfully: Add photo via login and check Photo Modal View")

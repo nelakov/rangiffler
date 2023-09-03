@@ -29,7 +29,7 @@ public class ProfileTest extends BaseWebTest {
 
     @Test
     @AllureId("1014")
-    @ApiLogin(user = @CreateUser(avatarClassPath = "images/profile/avatar_1.jpg"))
+    @ApiLogin(user = @CreateUser(avatarClassPath = "images/profile/avatar_1.jpeg"))
     @DisplayName("Successfully: Profile's info saved after added")
     void successfullySavedProfileInfoTest(UserJson userJson) throws InterruptedException {
         String avatarClassPath = userJson.getAvatar();
@@ -43,16 +43,17 @@ public class ProfileTest extends BaseWebTest {
     @Test
     @AllureId("1015")
     @ApiLogin(user = @CreateUser(
-//            firstname = "Zaza",
-//            lastname = "kakhetinskiy",
-            avatarClassPath = "images/profile/avatar_1.jpg"))
+            firstname = "Zaza",
+            lastname = "kakhetinskiy",
+            avatarClassPath = "images/profile/avatar_1.jpeg"))
     @DisplayName("Successfully: Profile's info saved after update")
     void successfullyUpdateProfileInfoTest(UserJson userJson) throws InterruptedException {
-        String newAvatarClasspath = "images/profile/avatar_2.jpg";
-        String convertClasspath = getFileByClasspath("images/profile/avatar_2.jpg");
+        TestContext.setFirstName(DataFakeHelper.generateRandomFunnyUsername());
+        TestContext.setSurName(DataFakeHelper.generateRandomSurname());
+        String newAvatarClasspath = "images/profile/avatar_2.jpeg";
+        String convertClasspath = getFileByClasspath("images/profile/avatar_2.jpeg");
 
         steps
-                .updateProfileAndSaveWithoutUpdatePhoto()
                 .updateProfileAndSave(newAvatarClasspath)
                 .checkProfileInfoAndAvatarAfterUpdate(convertClasspath);
 

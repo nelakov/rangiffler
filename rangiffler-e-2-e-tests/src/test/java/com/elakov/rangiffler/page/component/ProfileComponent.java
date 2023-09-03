@@ -11,6 +11,7 @@ import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.executeJavaScript;
 import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class ProfileComponent extends BaseComponent<ProfileComponent> {
@@ -57,17 +58,21 @@ public class ProfileComponent extends BaseComponent<ProfileComponent> {
 
     @Step("Input 'First name'")
     public ProfileComponent inputFirstName(String firstname) {
-        firstnameInput.sendKeys(Keys.COMMAND + "A");
-        firstnameInput.sendKeys(Keys.BACK_SPACE);
+        executeJavaScript("arguments[0].value = '';", firstnameInput);
+        firstnameInput.setValue(firstname);
+        // TODO: Temporary solution - need fix
+        executeJavaScript("arguments[0].value = '';", firstnameInput);
         firstnameInput.setValue(firstname);
         return this;
     }
 
     @Step("Input 'Last name'")
     public ProfileComponent inputLastName(String lastname) {
-        lastnameInput.sendKeys(Keys.COMMAND + "A");
-        lastnameInput.sendKeys(Keys.BACK_SPACE);
-        lastnameInput.setValue(lastname);
+        executeJavaScript("arguments[0].value = '';", lastnameInput);
+        lastnameInput.sendKeys(lastname);
+        // TODO: Temporary solution - need fix
+        executeJavaScript("arguments[0].value = '';", lastnameInput);
+        lastnameInput.sendKeys(lastname);
         return this;
     }
 
