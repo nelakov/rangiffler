@@ -404,7 +404,7 @@ To work with the Rangiffler project, you need to ensure the following minimum re
 </div>
 
 <div align="center">
-  <i style="font-size: 18px;">Travel! It's worth it!</i>
+  <i style="font-size: 18px;">Six month vacation twice a year</i>
 </div>
 
 <hr>
