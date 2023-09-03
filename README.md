@@ -44,7 +44,7 @@
 - [Spring gRPC by https://github.com/yidongnan](https://yidongnan.github.io/grpc-spring-boot-starter/en/server/getting-started.html)
 - [Spring web-services](https://docs.spring.io/spring-ws/docs/current/reference/html/)
 - [Docker](https://www.docker.com/resources/what-container/)
-- [Spring-Feign](https://github.com/OpenFeign/feign)
+- [Retrofit](https://github.com/square/retrofit)
 - [Docker-compose](https://docs.docker.com/compose/)
 - [Postgres](https://www.postgresql.org/about/)
 - [React](https://ru.reactjs.org/docs/getting-started.html)
