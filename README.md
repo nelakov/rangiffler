@@ -20,12 +20,13 @@
 
 <hr>
 
+- [Technology stack](#technology-stack)
 - [Project Description](#project-description)
 - [About the Project](#about-the-project)
-- [Technology stack](#technology-stack)
+- [Ports of microservices](#ports)
+- [Project modules](#modules)
+- [Testing](#testing)
 - [Documentation](#documentation)
-- [Microservices architecture](#architecture)
-- [Ports of microservices](#ports of microservices)
 - [Local launch in IDE](#local launch in IDE)
 - [Docker launch](#docker launch)
 - [Local test launch](#local test launch)
@@ -130,6 +131,7 @@ The project includes several modules, each serving specific functions and offeri
 
 </div>
 
+<a name="modules"></a>
 ## Project Modules
 
 <hr>
@@ -182,7 +184,8 @@ The "Photo Service" is a reliable repository of user photo details.
 
 Interaction with the Gateway module also utilizes the gRPC protocol, ensuring reliability and speedy data processing.
 
-### Testing
+<a name="testing"></a>
+## Testing
 
 <hr>
 
