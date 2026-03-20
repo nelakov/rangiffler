@@ -16,23 +16,22 @@ repositories {
 
 dependencies {
     implementation project(':rangiffler-grpc-common')
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
-    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
-    runtimeOnly    'mysql:mysql-connector-java:8.0.33'
+    implementation(
+            libs.spring.grpc.server.starter,
+            libs.spring.grpc.client.starter,
+            libs.spring.data.jpa.starter
+    )
+    runtimeOnly(libs.mysql)
 }
 
-docker {
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+tasks.register('dockerBuild', DockerBuildImage) {
     dependsOn build
-    name "nelakov/rangiffler-gateway:${project.version}"
-    tag 'latest', 'nelakov/rangiffler-photo:latest'
-    files bootJar.archiveFile
-    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
-    noCache true
-}
-
-task dockerRmi(type: Exec) {
-    workingDir "${buildDir}"
-    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rangiffler')\n"
+    inputDir = projectDir
+    images.add("nelakov/rangiffler-photo:${project.version}")
+    images.add("nelakov/rangiffler-photo:latest")
+    buildArgs.put('APP_VER', project.version.toString())
+    buildArgs.put('DOCKER', project.ext.dockerImage.toString())
+    noCache = true
 }

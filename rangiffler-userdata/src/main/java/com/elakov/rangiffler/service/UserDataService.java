@@ -30,13 +30,13 @@ public class UserDataService {
 
     public @Nonnull
     UserJson update(@Nonnull UserJson user) {
-        UserEntity userEntity = userRepository.findByUsername(user.getUsername());
+        UserEntity userEntity = userRepository.findByUsername(user.username());
         if (userEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + user.getUsername());
+            throw new NotFoundException("Can`t find user by username: " + user.username());
         }
-        userEntity.setFirstname(user.getFirstname());
-        userEntity.setLastname(user.getLastName());
-        userEntity.setAvatar(user.getAvatar() != null ? user.getAvatar().getBytes(StandardCharsets.UTF_8) : null);
+        userEntity.setFirstname(user.firstname());
+        userEntity.setLastname(user.lastName());
+        userEntity.setAvatar(user.avatar() != null ? user.avatar().getBytes(StandardCharsets.UTF_8) : null);
         UserEntity saved = userRepository.save(userEntity);
 
         return UserJson.fromEntity(saved);
@@ -122,12 +122,12 @@ public class UserDataService {
 
     public UserJson addFriend(@Nonnull String username, @Nonnull FriendJson friend) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity friendEntity = userRepository.findByUsername(friend.getUsername());
+        UserEntity friendEntity = userRepository.findByUsername(friend.username());
         if (currentUser == null) {
             throw new NotFoundException("Can`t find user by username: " + username);
         }
         if (friendEntity == null) {
-            throw new NotFoundException("Can`t find user by username: " + friend.getUsername());
+            throw new NotFoundException("Can`t find user by username: " + friend.username());
         }
         currentUser.addFriends(true, friendEntity);
         userRepository.save(currentUser);
@@ -137,12 +137,12 @@ public class UserDataService {
     public @Nonnull
     UserJson acceptInvitation(@Nonnull String username, @Nonnull FriendJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity inviteUser = userRepository.findByUsername(invitation.getUsername());
+        UserEntity inviteUser = userRepository.findByUsername(invitation.username());
         if (currentUser == null) {
             throw new NotFoundException("Can`t find user by username: " + username);
         }
         if (inviteUser == null) {
-            throw new NotFoundException("Can`t find user by username: " + invitation.getUsername());
+            throw new NotFoundException("Can`t find user by username: " + invitation.username());
         }
 
         FriendsEntity invite = currentUser.getInvites()
@@ -162,12 +162,12 @@ public class UserDataService {
     public @Nonnull
     UserJson declineInvitation(@Nonnull String username, @Nonnull UserJson invitation) {
         UserEntity currentUser = userRepository.findByUsername(username);
-        UserEntity friendToDecline = userRepository.findByUsername(invitation.getUsername());
+        UserEntity friendToDecline = userRepository.findByUsername(invitation.username());
         if (currentUser == null) {
             throw new NotFoundException("Can`t find user by username: " + username);
         }
         if (friendToDecline == null) {
-            throw new NotFoundException("Can`t find user by username: " + invitation.getUsername());
+            throw new NotFoundException("Can`t find user by username: " + invitation.username());
         }
 
         currentUser.removeInvites(friendToDecline);
