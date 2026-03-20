@@ -6,7 +6,7 @@ group = "com.elakov"
 junit-jupiter = "5.11.4"
 
 # ALLURE
-allure = "2.29.0"
+allure-bom = "2.29.0"
 
 # SELENIDE
 selenide = "7.6.1"
@@ -28,9 +28,8 @@ sql-formatter = "2.0.5"
 hibernate = "6.6.5.Final"
 
 # GRPC
-grpc = "1.70.0"
-grpc-protobuf = "1.70.0"
-protobuf-java = "4.29.3"
+grpc-version = "1.70.0"
+protobuf-version = "4.29.3"
 
 # LOGS
 slf4j = "2.0.16"
@@ -48,11 +47,11 @@ aspectj = "1.9.22.1"
 database-rider = "1.44.0"
 commons-logging = "1.3.5"
 # PLUGINS VERSION
-lombok = "8.11"
+lombok = "8.14"
 allure-plugin = "2.12.0"
-springframework-boot = "3.4.3"
+springframework-boot = "3.5.3"
 spring-dependency-management = "1.1.7"
-docker-palantir = "0.36.0"
+docker-bmuschko = "9.4.0"
 protobuf-plugin = "0.9.4"
 
 [libraries]
@@ -76,18 +75,18 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 retrofit-converter = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }
 reactor-netty = { module = "io.projectreactor.netty:reactor-netty" }
 
-grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
-grpc-netty = { module = "io.grpc:grpc-netty", version.ref = "grpc" }
-grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc-protobuf" }
-protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-java" }
+grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc-version" }
+grpc-netty = { module = "io.grpc:grpc-netty", version.ref = "grpc-version" }
+grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc-version" }
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-version" }
 #################################################################################### TESTING ####################################################################################
 junit5-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
-allure-junit5 = { module = "io.qameta.allure:allure-junit5", version.ref = "allure" }
-allure-assertj = { module = "io.qameta.allure:allure-assertj", version.ref = "allure" }
-allure-selenide = { module = "io.qameta.allure:allure-selenide", version.ref = "allure" }
-allure-okkhttp3 = { module = "io.qameta.allure:allure-okhttp3", version.ref = "allure" }
-allure-grpc = { module = "io.qameta.allure:allure-grpc", version.ref = "allure" }
-allure-attachments = { module = "io.qameta.allure:allure-attachments", version.ref = "allure" }
+allure-junit5 = { module = "io.qameta.allure:allure-junit5", version.ref = "allure-bom" }
+allure-assertj = { module = "io.qameta.allure:allure-assertj", version.ref = "allure-bom" }
+allure-selenide = { module = "io.qameta.allure:allure-selenide", version.ref = "allure-bom" }
+allure-okkhttp3 = { module = "io.qameta.allure:allure-okhttp3", version.ref = "allure-bom" }
+allure-grpc = { module = "io.qameta.allure:allure-grpc", version.ref = "allure-bom" }
+allure-attachments = { module = "io.qameta.allure:allure-attachments", version.ref = "allure-bom" }
 selenide = { module = "com.codeborne:selenide", version.ref = "selenide" }
 selenide-core = { module = "com.codeborne:selenide-core", version.ref = "selenide" }
 #################################################################################### DATABASE ####################################################################################
@@ -172,5 +171,5 @@ lombok = { id = "io.freefair.lombok", version.ref = "lombok" }
 allure = { id = "io.qameta.allure", version.ref = "allure-plugin" }
 allure-report = { id = "io.qameta.allure-report", version.ref = "allure-plugin" }
 allure-adapter = { id = "io.qameta.allure-adapter", version.ref = "allure-plugin" }
-docker = { id = "com.palantir.docker", version.ref = "docker-palantir" }
+docker = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-bmuschko" }
 google-protobuf = { id = 'com.google.protobuf', version.ref = "protobuf-plugin" }

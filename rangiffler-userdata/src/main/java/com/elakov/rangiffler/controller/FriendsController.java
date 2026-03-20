@@ -53,6 +53,6 @@ public class FriendsController {
     @PostMapping("/removeFriend")
     public UserJson removeFriend(@RequestParam String username,
                                  @RequestBody UserJson friend) {
-        return userService.removeFriend(username, friend.getUsername());
+        return userService.removeFriend(username, friend.username());
     }
 }

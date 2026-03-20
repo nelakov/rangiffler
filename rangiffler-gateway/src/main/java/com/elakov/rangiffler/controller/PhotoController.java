@@ -1,5 +1,5 @@
 package com.elakov.rangiffler.controller;
-;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -42,8 +42,7 @@ public class PhotoController {
     public PhotoJson addPhoto(@AuthenticationPrincipal Jwt principal,
                              @RequestBody PhotoJson photoDto) {
         String username = principal.getClaim("sub");
-        photoDto.setUsername(username);
-        return grpcPhotoClient.addPhoto(photoDto);
+        return grpcPhotoClient.addPhoto(photoDto.withUsername(username));
     }
 
     @PatchMapping("/photos/{id}")

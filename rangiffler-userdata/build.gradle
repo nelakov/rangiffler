@@ -24,18 +24,16 @@ dependencies {
     runtimeOnly libs.mysql
 }
 
-docker {
-    dependsOn build
-    name "nelakov/rangiffler-userdata:${project.version}"
-    tag 'latest', 'nelakov/rangiffler-userdata:latest'
-    files bootJar.archiveFile
-    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
-    noCache true
-}
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
-task dockerRmi(type: Exec) {
-    workingDir "${buildDir}"
-    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'rangiffler')\n"
+tasks.register('dockerBuild', DockerBuildImage) {
+    dependsOn build
+    inputDir = projectDir
+    images.add("nelakov/rangiffler-userdata:${project.version}")
+    images.add("nelakov/rangiffler-userdata:latest")
+    buildArgs.put('APP_VER', project.version.toString())
+    buildArgs.put('DOCKER', project.ext.dockerImage.toString())
+    noCache = true
 }
 
 tasks.named('bootJar') {
