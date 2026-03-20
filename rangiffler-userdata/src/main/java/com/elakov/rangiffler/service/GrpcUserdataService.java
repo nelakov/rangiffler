@@ -62,11 +62,11 @@ public class GrpcUserdataService extends RangifflerUserdataServiceGrpc.Rangiffle
 
     private User buildUserResponse(UserJson friend) {
         return User.newBuilder()
-                .setId(friend.getId().toString())
-                .setUsername(friend.getUsername())
-                .setFirstname(friend.getFirstname() == null ? "" : friend.getFirstname())
-                .setSurname(friend.getLastName() == null ? "" : friend.getLastName())
-                .setAvatar(friend.getAvatar() == null ? "" : friend.getAvatar())
+                .setId(friend.id().toString())
+                .setUsername(friend.username())
+                .setFirstname(friend.firstname() == null ? "" : friend.firstname())
+                .setSurname(friend.lastName() == null ? "" : friend.lastName())
+                .setAvatar(friend.avatar() == null ? "" : friend.avatar())
                 .build();
     }
 }
