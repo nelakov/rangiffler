@@ -11,7 +11,6 @@ import io.qameta.allure.attachment.AttachmentProcessor;
 import io.qameta.allure.attachment.DefaultAttachmentProcessor;
 import io.qameta.allure.attachment.FreemarkerAttachmentRenderer;
 
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class AllureSqlAppender extends StdoutLogger {
 
@@ -24,7 +23,7 @@ public class AllureSqlAppender extends StdoutLogger {
     public void logSQL(int connectionId, String now, long elapsed, Category category,
                        String prepared, String sql, String url) {
         super.logSQL(connectionId, now, elapsed, category, prepared, sql, url);
-        if (isNotEmpty(prepared) && isNotEmpty(sql)) {
+        if (prepared != null && !prepared.isEmpty() && sql != null && !sql.isEmpty()) {
             AllureSqlAttachmentHelper attachment = new AllureSqlAttachmentHelper(
                     "SQL statement and query",
                     SqlFormatter.of(Dialect.StandardSql).format(prepared),
