@@ -15,11 +15,6 @@ public class AllureAttachHelper {
                 .getParameters().add(ResultsUtils.createParameter(name, value)));
     }
 
-    // TODO: Добавлять sql запрос как параметр степа через p6spy
-/*    public static void addSqlStepParameter(String name, Object value) {
-
-    }*/
-
     public static void attachText(String fileName, String content) {
         addAttachment(fileName, "text/plain", content, "txt");
     }
@@ -28,5 +23,4 @@ public class AllureAttachHelper {
         addAttachment(fileName, "application/json", content, "json");
     }
 
-    // TODO: Добавить аттачи картинки и видео
 }

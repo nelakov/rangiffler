@@ -1,45 +1,46 @@
 package com.elakov.rangiffler.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserJson {
+public record UserJson(
+        @JsonProperty("id") UUID id,
+        @JsonProperty("username") String username,
+        @JsonProperty("firstName") String firstName,
+        @JsonProperty("lastName") String lastName,
+        @JsonProperty("avatar") String avatar,
+        @JsonIgnore String password,
+        @JsonProperty("friendStatus") FriendStatus friendStatus,
+        @JsonIgnore List<UserJson> friends,
+        @JsonIgnore List<UserJson> outcomeInvitations,
+        @JsonIgnore List<UserJson> incomeInvitations,
+        @JsonIgnore List<PhotoJson> photos,
+        @JsonIgnore String avatarClassPath
+) {
 
-    @JsonProperty("id")
-    private UUID id;
+    public UserJson {
+        if (friends == null) friends = new ArrayList<>();
+        if (outcomeInvitations == null) outcomeInvitations = new ArrayList<>();
+        if (incomeInvitations == null) incomeInvitations = new ArrayList<>();
+        if (photos == null) photos = new ArrayList<>();
+    }
 
-    @JsonProperty("username")
-    private String username;
+    public UserJson withPassword(String password) {
+        return new UserJson(id, username, firstName, lastName, avatar, password,
+                friendStatus, friends, outcomeInvitations, incomeInvitations, photos, avatarClassPath);
+    }
 
-    @JsonProperty("firstName")
-    private String firstName;
+    public UserJson withUserInfo(String firstName, String lastName, String avatar) {
+        return new UserJson(id, username, firstName, lastName, avatar, password,
+                friendStatus, friends, outcomeInvitations, incomeInvitations, photos, avatarClassPath);
+    }
 
-    @JsonProperty("lastName")
-    private String lastName;
-
-    @JsonProperty("avatar")
-    private String avatar;
-
-    @JsonProperty("password")
-    private transient String password;
-
-    @JsonProperty("friendStatus")
-    private FriendStatus friendStatus;
-
-    private transient List<UserJson> friends = new ArrayList<>();
-    private transient List<UserJson> outcomeInvitations = new ArrayList<>();
-    private transient List<UserJson> incomeInvitations = new ArrayList<>();
-    private transient List<PhotoJson> photos = new ArrayList<>();
-    private transient String avatarClassPath;
-
+    public UserJson withAvatar(String avatar, String avatarClassPath) {
+        return new UserJson(id, username, firstName, lastName, avatar, password,
+                friendStatus, friends, outcomeInvitations, incomeInvitations, photos, avatarClassPath);
+    }
 }
-

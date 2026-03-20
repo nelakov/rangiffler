@@ -1,77 +1,65 @@
 package com.elakov.rangiffler.model;
 
 import com.elakov.grpc.rangiffler.grpc.Photo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PhotoJson {
+public record PhotoJson(
+        @JsonProperty("id") UUID id,
+        @JsonProperty("country") CountryJson countryJson,
+        @JsonProperty("photo") String photo,
+        @JsonProperty("description") String description,
+        @JsonProperty("username") String username,
+        @JsonIgnore String photoClassPath
+) {
 
-  @JsonProperty("id")
-  private UUID id;
+    public static PhotoJson fromGrpcMessage(Photo photoGrpc) {
+        if (photoGrpc == null) {
+            return null;
+        }
+        return new PhotoJson(
+                !photoGrpc.getId().isEmpty() ? UUID.fromString(photoGrpc.getId()) : null,
+                CountryJson.fromGrpcMessage(photoGrpc.getCountryCode()),
+                photoGrpc.getPhoto(),
+                photoGrpc.getDescription(),
+                photoGrpc.getUsername(),
+                null
+        );
+    }
 
-  @JsonProperty("country")
-  private CountryJson countryJson;
+    public PhotoJson withPhotoClassPath(String photoClassPath) {
+        return new PhotoJson(id, countryJson, photo, description, username, photoClassPath);
+    }
 
-  @JsonProperty("photo")
-  private String photo;
+    public Photo toGrpcMessage() {
+        Photo.Builder builder = Photo.newBuilder()
+                .setUsername(username)
+                .setDescription(description)
+                .setPhoto(photo)
+                .setCountryCode(countryJson.toGrpcMessage());
+        if (id != null) {
+            builder.setId(id.toString());
+        }
+        return builder.build();
+    }
 
-  @JsonProperty("description")
-  private String description;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhotoJson photoJson = (PhotoJson) o;
+        return Objects.equals(id, photoJson.id)
+                && Objects.equals(countryJson, photoJson.countryJson)
+                && Objects.equals(photo, photoJson.photo)
+                && Objects.equals(description, photoJson.description)
+                && Objects.equals(username, photoJson.username);
+    }
 
-  @JsonProperty("username")
-  private String username;
-
-  private transient String photoClassPath;
-  public static PhotoJson fromGrpcMessage(Photo photoGrpc) {
-    return Optional.ofNullable(photoGrpc)
-            .map(photo -> PhotoJson.builder()
-                    .id(!photo.getId().isEmpty() ? UUID.fromString(photo.getId()) : null)
-                    .photo(photo.getPhoto())
-                    .countryJson(CountryJson.fromGrpcMessage(photo.getCountryCode()))
-                    .description(photo.getDescription())
-                    .username(photo.getUsername())
-                    .build())
-            .orElse(null);
-  }
-
-  public Photo toGrpcMessage() {
-    return Optional.ofNullable(id)
-            .map(id -> Photo.newBuilder()
-                    .setId(id.toString())
-                    .setUsername(username)
-                    .setDescription(description)
-                    .setPhoto(photo)
-                    .setCountryCode(countryJson.toGrpcMessage())
-                    .build())
-            .orElseGet(() -> Photo.newBuilder()
-                    .setUsername(username)
-                    .setDescription(description)
-                    .setPhoto(photo)
-                    .setCountryCode(countryJson.toGrpcMessage())
-                    .build());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    PhotoJson photoJson = (PhotoJson) o;
-    return Objects.equals(id, photoJson.id) && Objects.equals(countryJson, photoJson.countryJson) && Objects.equals(photo, photoJson.photo) && Objects.equals(description, photoJson.description) && Objects.equals(username, photoJson.username);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, countryJson, photo, description, username);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, countryJson, photo, description, username);
+    }
 }

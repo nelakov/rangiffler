@@ -26,6 +26,7 @@ public class AllureSoftStepsHelper {
         var lastError = new AtomicReference<Throwable>();
 
         var isRootSoftStep = loggedError.get() == null;
+        
         if (isRootSoftStep) {
             loggedError.set(new HashSet<>());
         }
@@ -77,7 +78,7 @@ public class AllureSoftStepsHelper {
         public int failedStepsCount;
 
         public SoftStepError(int failedStepsCount) {
-            super("ERROR WAS HAPPEND IN {" + failedStepsCount + "}  STEPS -> " +
+            super("ERROR HAS HAPPENED IN {" + failedStepsCount + "} STEPS -> " +
                     "MORE DETAILS IN ALLURE REPORT AND LOG FILE");
             this.failedStepsCount = failedStepsCount;
         }

@@ -31,7 +31,7 @@ public class CreateUserInAuthDatabaseCallback implements
     private static final AuthRepository authRepository = new AuthRepositoryImpl();
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         //TODO: Вынести в общий класс получение testID
         String testID = getTestId(context);
         List<UserAuthEntity> userAuthEntities = new ArrayList<>();

@@ -5,7 +5,7 @@ import com.codeborne.selenide.Selenide;
 public class Refresh implements Command{
 
     @Override
-    public void execute() {
+    public void perform() {
         Selenide.refresh();
     }
 

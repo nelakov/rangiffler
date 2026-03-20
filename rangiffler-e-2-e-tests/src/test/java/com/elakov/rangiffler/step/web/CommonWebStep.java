@@ -11,7 +11,7 @@ import com.elakov.rangiffler.page.component.ProfileComponent;
 import com.elakov.rangiffler.page.tabs.NavigatorTabs;
 import com.elakov.rangiffler.page.tabs.PeopleAroundTab;
 import com.elakov.rangiffler.page.tabs.TravelsTab;
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.elakov.rangiffler.config.services.ServicesProperties.CLIENT_BASE_URL;
