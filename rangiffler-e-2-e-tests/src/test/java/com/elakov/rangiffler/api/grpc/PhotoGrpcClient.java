@@ -7,7 +7,7 @@ import com.elakov.grpc.rangiffler.grpc.RangifflerPhotoServiceGrpc;
 import com.elakov.rangiffler.config.services.ServicesProperties;
 import com.elakov.rangiffler.model.PhotoJson;
 
-//TODO: Настроить логирование для gRPC
+
 public class PhotoGrpcClient extends BaseGrpcClient {
     private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub photoServiceBlockingStub;
 

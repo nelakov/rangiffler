@@ -4,11 +4,13 @@ import com.elakov.rangiffler.api.rest.auth.context.SessionContext;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 public class RecievedCodeInterceptor implements Interceptor {
 
+    @NotNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Response response = chain.proceed(chain.request());
