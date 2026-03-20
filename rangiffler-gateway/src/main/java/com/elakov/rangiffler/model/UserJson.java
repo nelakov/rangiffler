@@ -1,36 +1,19 @@
 package com.elakov.rangiffler.model;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public record UserJson(
+        @JsonProperty("id") UUID id,
+        @JsonProperty("username") String username,
+        @JsonProperty("firstName") String firstName,
+        @JsonProperty("lastName") String lastName,
+        @JsonProperty("avatar") String avatar,
+        @JsonProperty("friendStatus") FriendStatus friendStatus
+) {
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class UserJson {
-
-  @JsonProperty("id")
-  private UUID id;
-
-  @JsonProperty("username")
-  private String username;
-
-  @JsonProperty("firstName")
-  private String firstName;
-
-  @JsonProperty("lastName")
-  private String lastLame;
-
-  @JsonProperty("avatar")
-  private String avatar;
-
-  @JsonProperty("friendStatus")
-  private FriendStatus friendStatus;
-
+    public UserJson withUsername(String username) {
+        return new UserJson(id, username, firstName, lastName, avatar, friendStatus);
+    }
 }

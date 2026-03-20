@@ -3,53 +3,45 @@ package com.elakov.rangiffler.model;
 import com.elakov.rangiffler.data.UserEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserJson {
+public record UserJson(
+        @JsonProperty("id") UUID id,
+        @JsonProperty("username") String username,
+        @JsonProperty("firstName") String firstname,
+        @JsonProperty("lastName") String lastName,
+        @JsonProperty("avatar") String avatar,
+        @JsonProperty("friendStatus")
+        @JsonInclude(JsonInclude.Include.NON_NULL) FriendStatus friendStatus
+) {
 
-    @JsonProperty("id")
-    private UUID id;
-
-    @JsonProperty("username")
-    private String username;
-
-    @JsonProperty("firstName")
-    private String firstname;
-
-    @JsonProperty("lastName")
-    private String lastName;
-
-    @JsonProperty("avatar")
-    private String avatar;
-
-    @JsonProperty("friendStatus")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private FriendStatus friendStatus = FriendStatus.NOT_FRIEND;
+    public UserJson {
+        if (friendStatus == null) friendStatus = FriendStatus.NOT_FRIEND;
+    }
 
     public static UserJson fromEntity(UserEntity entity) {
-        UserJson usr = new UserJson();
         byte[] avatar = entity.getAvatar();
-        usr.setId(entity.getId());
-        usr.setUsername(entity.getUsername());
-        usr.setFirstname(entity.getFirstname());
-        usr.setLastName(entity.getLastname());
-        usr.setAvatar(avatar != null && avatar.length > 0 ? new String(entity.getAvatar(), StandardCharsets.UTF_8) : null);
-        return usr;
+        return new UserJson(
+                entity.getId(),
+                entity.getUsername(),
+                entity.getFirstname(),
+                entity.getLastname(),
+                avatar != null && avatar.length > 0 ? new String(avatar, StandardCharsets.UTF_8) : null,
+                FriendStatus.NOT_FRIEND
+        );
     }
 
     public static UserJson fromEntity(UserEntity entity, FriendStatus friendStatus) {
-        UserJson userJson = fromEntity(entity);
-        userJson.setFriendStatus(friendStatus);
-        return userJson;
+        byte[] avatar = entity.getAvatar();
+        return new UserJson(
+                entity.getId(),
+                entity.getUsername(),
+                entity.getFirstname(),
+                entity.getLastname(),
+                avatar != null && avatar.length > 0 ? new String(avatar, StandardCharsets.UTF_8) : null,
+                friendStatus
+        );
     }
 }

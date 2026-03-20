@@ -28,8 +28,7 @@ public class UserController {
     public UserJson updateUserInfo(@AuthenticationPrincipal Jwt principal,
                                    @Validated @RequestBody UserJson user) {
         String username = principal.getClaim("sub");
-        user.setUsername(username);
-        return restUserdataClient.updateUserInfo(user);
+        return restUserdataClient.updateUserInfo(user.withUsername(username));
     }
 
     @GetMapping("/currentUser")

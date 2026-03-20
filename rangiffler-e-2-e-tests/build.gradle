@@ -15,14 +15,14 @@ repositories {
 
 allure {
     report {
-        version.set(libs.versions.allure.get())
+        version.set(libs.versions.allure.bom.get())
     }
     adapter {
         autoconfigure.set(true)
         aspectjWeaver.set(true)
         frameworks {
             junit5 {
-                adapterVersion.set(libs.versions.allure.get())
+                adapterVersion.set(libs.versions.allure.bom.get())
             }
         }
     }
