@@ -25,11 +25,14 @@ export const MainTab: FC = () => {
 
   useEffect(() => {
     const countryData: MapCountry[] = [];
-    countries.map((dataItem: ApiCountry) => {
-      countryData.push({
-        country: dataItem.code,
-        value: photos.filter(photo => photo.countryCode === dataItem.code).length || 0
-      });
+    countries.forEach((dataItem: ApiCountry) => {
+      const count = photos.filter(photo => photo.countryCode === dataItem.code).length;
+      if (count > 0) {
+        countryData.push({
+          country: dataItem.code,
+          value: count,
+        });
+      }
     });
     setData(countryData);
   }, [photos]);
