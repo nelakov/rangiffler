@@ -3,13 +3,12 @@ package com.elakov.rangiffler.api.rest.userdata;
 import com.elakov.rangiffler.api.rest.BaseRestClient;
 import com.elakov.rangiffler.model.FriendJson;
 import com.elakov.rangiffler.model.UserJson;
-import lombok.NonNull;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
 import java.util.List;
 
-//TODO: Настроить логирование для Retrofit
+
 public class UserdataRestClient extends BaseRestClient {
 
     public UserdataRestClient() {
@@ -27,10 +26,9 @@ public class UserdataRestClient extends BaseRestClient {
         }
     }
 
-    public @NonNull UserJson addFriend(String username, String friendUsername) {
+    public UserJson addFriend(String username, String friendUsername) {
         try {
-            FriendJson friendJson = new FriendJson();
-            friendJson.setUsername(friendUsername);
+            FriendJson friendJson = new FriendJson(friendUsername);
             return userDataService.addFriend(username, friendJson).execute().body();
         } catch (IOException e) {
             Assertions.fail("Can`t execute api call to rangiffler-userdata: " + e.getMessage());
@@ -38,10 +36,9 @@ public class UserdataRestClient extends BaseRestClient {
         }
     }
 
-    public @NonNull UserJson acceptInvitation(String username, String inviteUsername) {
+    public UserJson acceptInvitation(String username, String inviteUsername) {
         try {
-            FriendJson friendJson = new FriendJson();
-            friendJson.setUsername(inviteUsername);
+            FriendJson friendJson = new FriendJson(inviteUsername);
             return userDataService.acceptInvitation(username, friendJson).execute().body();
         } catch (IOException e) {
             Assertions.fail("Can`t execute api call to rangiffler-userdata: " + e.getMessage());

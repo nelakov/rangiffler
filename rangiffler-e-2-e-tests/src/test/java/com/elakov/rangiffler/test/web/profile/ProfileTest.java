@@ -32,7 +32,7 @@ public class ProfileTest extends BaseWebTest {
     @ApiLogin(user = @CreateUser(avatarClassPath = "images/profile/avatar_1.jpeg"))
     @DisplayName("Successfully: Profile's info saved after added")
     void successfullySavedProfileInfoTest(UserJson userJson) throws InterruptedException {
-        String avatarClassPath = userJson.getAvatar();
+        String avatarClassPath = userJson.avatar();
 
         steps
                 .updateProfileAndSaveWithoutUpdatePhoto()
@@ -66,7 +66,7 @@ public class ProfileTest extends BaseWebTest {
     void successfullyDontSaveProfileInfo(UserJson userJson) {
         TestContext.setFirstName(DataFakeHelper.generateRandomFunnyUsername());
         TestContext.setSurName(DataFakeHelper.generateRandomSurname());
-        String avatarClassPath = userJson.getAvatarClassPath();
+        String avatarClassPath = userJson.avatarClassPath();
 
         steps
                 .updateProfileWithoutSave(avatarClassPath)

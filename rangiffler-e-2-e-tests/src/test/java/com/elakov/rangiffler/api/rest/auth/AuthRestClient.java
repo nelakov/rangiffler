@@ -16,7 +16,7 @@ import java.util.Base64;
 import static com.elakov.rangiffler.config.services.ServicesProperties.AUTH_BASE_URL;
 import static com.elakov.rangiffler.config.services.ServicesProperties.CLIENT_BASE_URL;
 
-//TODO: Настроить логирование для Retrofit
+
 public class AuthRestClient extends BaseRestClient implements AuthClient {
     public AuthRestClient() {
         super(

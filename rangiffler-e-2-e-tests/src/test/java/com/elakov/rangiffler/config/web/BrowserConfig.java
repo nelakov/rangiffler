@@ -16,6 +16,4 @@ public interface BrowserConfig extends Config {
 
     @Key("browser.size")
     String browserSize();
-
-
 }

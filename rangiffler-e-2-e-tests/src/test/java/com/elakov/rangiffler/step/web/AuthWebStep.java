@@ -15,8 +15,8 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
         AllureSoftStepsHelper softStep = new AllureSoftStepsHelper();
         softStep.add("Fill 'Login page' and tap Sign in'",
                 () -> loginPage
-                        .inputUsername(userJson.getUsername())
-                        .inputPassword(userJson.getPassword())
+                        .inputUsername(userJson.username())
+                        .inputPassword(userJson.password())
                         .signInClick(travelsTab)
                         .checkThatPageLoaded()
         );

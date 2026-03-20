@@ -23,13 +23,22 @@ public class StartPage extends BasePage<StartPage> {
     @Step("Check that 'Start page' was loaded")
     public StartPage checkThatPageLoaded() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
-        return step("Check the 'Login page' was loaded", () -> {
-            softstep.add("Check that header visible", () -> header.shouldHave(text("Be like Rangiffler")));
-            softstep.add("Check username input visible", () -> loginBtn.should(visible).shouldHave(text("LOGIN")));
-            softstep.add("Check password input visible", () -> registerBtn.should(visible).shouldHave(text("REGISTER")));
-            softstep.execute();
-            return this;
-        });
+
+        return step("Check the 'Login page' was loaded",
+                () -> {
+                    softstep.add("Check that header visible",
+                            () -> header.shouldHave(text("Be like Rangiffler"))
+                    );
+                    softstep.add("Check username input visible",
+                            () -> loginBtn.should(visible).shouldHave(text("LOGIN"))
+                    );
+                    softstep.add("Check password input visible",
+                            () -> registerBtn.should(visible).shouldHave(text("REGISTER"))
+                    );
+                    softstep.execute();
+
+                    return this;
+                });
     }
 
     @Step("Open Start page")
@@ -49,5 +58,4 @@ public class StartPage extends BasePage<StartPage> {
         registerBtn.click();
         return new RegistrationPage();
     }
-
 }

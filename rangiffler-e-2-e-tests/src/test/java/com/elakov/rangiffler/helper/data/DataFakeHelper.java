@@ -1,14 +1,10 @@
 package com.elakov.rangiffler.helper.data;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 public class DataFakeHelper {
 
-    // Нельзя гибко настроить метод
 
-    // Создать фабрику для генерации данных
-
-    // Статичная фабрика на Enum (см Блоха)
     private static final Faker FAKER = new Faker();
 
     public static String generateRandomUsername() {
