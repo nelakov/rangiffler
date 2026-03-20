@@ -17,10 +17,17 @@ export const Redirect = () => {
       const client = CLIENT;
 
       const verifier = sessionStorage.getItem("codeVerifier");
-      const initialUrl = `/oauth2/token?client_id=${client}&redirect_uri=${FRONT_URL}/authorized&grant_type=authorization_code`;
-      const url = `${initialUrl}&code=${code}&code_verifier=${verifier}`;
+      const params = new URLSearchParams({
+        client_id: client,
+        redirect_uri: `${FRONT_URL}/authorized`,
+        grant_type: "authorization_code",
+        code: code!,
+        code_verifier: verifier!,
+      });
 
-      authClient.post(url).then((res) => {
+      authClient.post("/oauth2/token", params, {
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      }).then((res) => {
         if (res?.data?.id_token) {
           sessionStorage.setItem("id_token", res.data.id_token);
           apiClient(res.data.id_token)
