@@ -19,7 +19,6 @@ import org.openqa.selenium.Cookie;
 import java.util.Objects;
 
 import static com.elakov.rangiffler.config.services.ServicesProperties.CLIENT_BASE_URL;
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 public class ApiLoginCallback implements BeforeEachCallback, AfterTestExecutionCallback {
 
@@ -35,7 +34,7 @@ public class ApiLoginCallback implements BeforeEachCallback, AfterTestExecutionC
             String password;
 
             if ("".equals(apiLoginAnnotation.username()) || "".equals(apiLoginAnnotation.password())) {
-                if (isEmpty(apiLoginAnnotation.user())) {
+                if (apiLoginAnnotation.user().length == 0) {
                     throw new IllegalStateException();
                 } else {
                     UserJson createdUser = USER_SERVICE.createUserViaApi(apiLoginAnnotation.user()[0]);

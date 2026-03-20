@@ -16,13 +16,10 @@ import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUserInDB;
 import com.elakov.rangiffler.model.PhotoJson;
 import com.elakov.rangiffler.model.UserJson;
-import org.apache.commons.lang3.ArrayUtils;
-
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 import static com.elakov.rangiffler.helper.data.FileLoaderHelper.getFileByClasspath;
-import static org.hibernate.internal.util.StringHelper.isNotEmpty;
 
 public class UserService {
 
@@ -79,7 +76,7 @@ public class UserService {
     }
 
     private void addPhotoIfPresent(UserJson targetUser, CreatePhoto[] photos) {
-        if (ArrayUtils.isNotEmpty(photos)) {
+        if (photos != null && photos.length > 0) {
             for (CreatePhoto createPhoto : photos) {
                 Country country = countryGrpcClient.getCountryByCode(createPhoto.countryCode());
                 com.elakov.grpc.rangiffler.grpc.Photo onePhoto =
@@ -106,7 +103,7 @@ public class UserService {
     }
 
     private void addFriendsIfPresent(UserJson targetUser, CreateFriend[] createFriends) {
-        if (isNotEmpty(Arrays.toString(createFriends))) {
+        if (createFriends != null && createFriends.length > 0) {
             for (CreateFriend createFriend : createFriends) {
                 UserJson friendJson = createRandomUserViaApi();
                 userdataClient.addFriend(targetUser.username(), friendJson.username());
@@ -118,7 +115,7 @@ public class UserService {
     }
 
     private void addOutcomeInvitationsIfPresent(UserJson targetUser, CreateFriend[] outcomeInvitations) {
-        if (isNotEmpty(Arrays.toString(outcomeInvitations))) {
+        if (outcomeInvitations != null && outcomeInvitations.length > 0) {
             for (CreateFriend oi : outcomeInvitations) {
                 UserJson friendJson = createRandomUserViaApi();
                 userdataClient.addFriend(targetUser.username(), friendJson.username());
@@ -128,7 +125,7 @@ public class UserService {
     }
 
     private void addIncomeInvitationsIfPresent(UserJson targetUser, CreateFriend[] incomeInvitations) {
-        if (isNotEmpty(Arrays.toString(incomeInvitations))) {
+        if (incomeInvitations != null && incomeInvitations.length > 0) {
             for (CreateFriend ii : incomeInvitations) {
                 UserJson friendJson = createRandomUserViaApi();
                 userdataClient.addFriend(friendJson.username(), targetUser.username());
