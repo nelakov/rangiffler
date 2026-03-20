@@ -34,11 +34,11 @@ public class PhotoTest extends BaseWebTest {
                     description = "Georgia In my Mind")))
     @DisplayName("Successfully: Add photo via login and check Photo Modal View")
     void successfullyAddTravelPhoto(UserJson userJson) {
-        PhotoJson photoJson = userJson.getPhotos().get(0);
+        PhotoJson photoJson = userJson.photos().get(0);
 
-        String photoElementPath = userJson.getPhotos().get(0).getPhoto();
-        String countryCode = photoJson.getCountryJson().getCode();
-        String description = photoJson.getDescription();
+        String photoElementPath = userJson.photos().get(0).photo();
+        String countryCode = photoJson.countryJson().code();
+        String description = photoJson.description();
 
         steps
                 .photoShouldBeVisibleAfterAddingAndHasCountryAndDescription(photoElementPath, countryCode, description);

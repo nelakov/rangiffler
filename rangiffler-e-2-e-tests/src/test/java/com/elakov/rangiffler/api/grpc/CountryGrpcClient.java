@@ -7,7 +7,7 @@ import com.elakov.grpc.rangiffler.grpc.RangifflerCountryServiceGrpc;
 import com.elakov.rangiffler.config.services.ServicesProperties;
 import com.google.protobuf.Empty;
 
-//TODO: Настроить логирование для gRPC
+
 public class CountryGrpcClient extends BaseGrpcClient {
 
     private RangifflerCountryServiceGrpc.RangifflerCountryServiceBlockingStub countryServiceBlockingStub;

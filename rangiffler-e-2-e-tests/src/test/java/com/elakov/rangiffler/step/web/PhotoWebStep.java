@@ -48,6 +48,34 @@ public class PhotoWebStep extends CommonWebStep<PhotoWebStep> {
         return this;
     }
 
+    public PhotoWebStep friendsPhotoShouldBeVisibleAfterAddingAndHasCountryAndDescription(String photoByClasspath, String countryCode, String description) {
+        AllureSoftStepsHelper softStep = new AllureSoftStepsHelper();
+
+        softStep.add("Open friend's travel photo and check photo and info",
+                () -> travelsTab
+                        .getImagesList()
+                        .checkCountOfPhotoList(1)
+                        .photoShouldExist(photoByClasspath)
+                        .clickByPhoto()
+                        .photoPlaceShouldBeSelectedCountry(getCountry(countryCode))
+                        .descriptionShouldBeInputtedText(description)
+        );
+        softStep.execute();
+        return this;
+    }
+
+    public PhotoWebStep openFriendsTravels() {
+
+        travelsTab
+                .openTravelsTab(travelsTab)
+                .getHeader()
+                .checkFriendsCountInHeader(1);
+        navigatorTabs
+                .openFriendsTravelsTab();
+        return this;
+    }
+
+
     // TODO: Оставить в этом классе или вынести?
     @Step("Get country from database by country code")
     public String getCountry(String countryCode) {

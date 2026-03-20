@@ -3,14 +3,12 @@ package com.elakov.rangiffler.page.component;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.elakov.rangiffler.model.UserJson;
 import com.elakov.rangiffler.page.BaseComponent;
 import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.elakov.rangiffler.condition.FriendsCondition.friends;
 
 public class FriendsComponent extends BaseComponent<FriendsComponent> {
 
@@ -30,12 +28,6 @@ public class FriendsComponent extends BaseComponent<FriendsComponent> {
     @Step("'Friends' component displayed and close icon visible")
     public FriendsComponent checkThatComponentDisplayed() {
         closeIcon.shouldBe(Condition.visible);
-        return null;
-    }
-
-    @Step("Friend's list contain friends")
-    public FriendsComponent checkTableContainsFriends(UserJson...friend) {
-        friendsTable.shouldHave(friends(friend));
         return this;
     }
 

@@ -46,7 +46,7 @@ public class AllureLogAppender<E> extends AppenderBase<E> {
         text = text.replaceAll("\r\n", "<br>");
         text = text.replaceAll("\n", "<br>");
         text = text.replaceAll(" ", "&nbsp;");
-        text = text.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        text = text.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
         int level = event.getLevel().levelInt;
         if (level == Level.WARN_INT) {
             text = "<div style=\"color:rgb(249,194,107)\">" + text + "</div>";

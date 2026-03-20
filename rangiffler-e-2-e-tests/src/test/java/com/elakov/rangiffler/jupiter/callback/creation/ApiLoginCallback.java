@@ -39,8 +39,8 @@ public class ApiLoginCallback implements BeforeEachCallback, AfterTestExecutionC
                     throw new IllegalStateException();
                 } else {
                     UserJson createdUser = USER_SERVICE.createUserViaApi(apiLoginAnnotation.user()[0]);
-                    username = createdUser.getUsername();
-                    password = createdUser.getPassword();
+                    username = createdUser.username();
+                    password = createdUser.password();
                     context.getStore(CreateUserCallback.CREATE_USER_NAMESPACE).put(getTestId(context), createdUser);
                 }
             } else {

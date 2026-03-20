@@ -25,13 +25,13 @@ public class LoginPage extends BasePage<LoginPage> {
     @Override
     public LoginPage checkThatPageLoaded() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
-        return step("Check the 'Login page' was loaded", () -> {
 
+        return step("Check the 'Login page' was loaded", () -> {
             softstep.add("Check that header visible", () -> header.shouldHave(text("Login to Rangiffler")));
             softstep.add("Check username input visible", () -> usernameInput.should(visible));
             softstep.add("Check password input visible", () -> passwordInput.should(visible));
-
             softstep.execute();
+
             return this;
         });
     }
@@ -57,14 +57,14 @@ public class LoginPage extends BasePage<LoginPage> {
     public RegistrationPage signUpClick() {
         AllureSoftStepsHelper softstep = new AllureSoftStepsHelper();
         return step("Click to Sign up button and redirect to Registration page", () -> {
-
-            softstep.add("Modal window contains text 'Have no account?' in the footer", () -> footerText.shouldHave(text("Have no account?")));
-            softstep.add("'Sign up' button contains text 'Sign up!' and clickable", () -> signUpBtn.shouldHave(text("Sign up!")).click());
-
+            softstep.add("Modal window contains text 'Have no account?' in the footer",
+                    () -> footerText.shouldHave(text("Have no account?")));
+            softstep.add("'Sign up' button contains text 'Sign up!' and clickable",
+                    () -> signUpBtn.shouldHave(text("Sign up!")).click());
             softstep.execute();
+
             return new RegistrationPage();
         });
-
     }
 
     @Step("Check the 'Auth' error message")

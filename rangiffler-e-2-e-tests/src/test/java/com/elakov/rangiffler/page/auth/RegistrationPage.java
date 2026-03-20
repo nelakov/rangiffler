@@ -30,8 +30,8 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
             softstep.add("Check username input visible", () -> usernameInput.should(visible));
             softstep.add("Check password input visible", () -> passwordInput.should(visible));
             softstep.add("Check password submit input visible", () -> passwordSubmitInput.should(visible));
-
             softstep.execute();
+
             return this;
         });
     }
