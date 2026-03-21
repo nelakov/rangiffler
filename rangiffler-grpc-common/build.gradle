@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     implementation libs.bundles.grpc
-    compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+    compileOnly libs.javax.annotation
 }
 
 protobuf {
