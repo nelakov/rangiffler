@@ -20,6 +20,7 @@ allure {
     adapter {
         autoconfigure.set(true)
         aspectjWeaver.set(true)
+        aspectjVersion.set(libs.versions.aspectj.get())
         frameworks {
             junit5 {
                 adapterVersion.set(libs.versions.allure.bom.get())

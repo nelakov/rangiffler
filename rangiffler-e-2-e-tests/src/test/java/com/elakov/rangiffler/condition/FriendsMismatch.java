@@ -16,7 +16,6 @@ public class FriendsMismatch extends UIAssertionError {
                            List<UserJson> expectedFriends, List<UserJson> actualFriends,
                            @Nullable String explanation, long timeoutMs) {
         super(
-                collection.driver(),
                 "Friends table mismatch" +
                         lineSeparator() + "Actual: " + actualFriends +
                         lineSeparator() + "Expected: " + expectedFriends +
