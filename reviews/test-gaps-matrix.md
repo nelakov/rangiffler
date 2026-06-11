@@ -102,3 +102,21 @@ Deliberately NOT unit-tested (low value / wrong layer):
 
 Still open from prior analysis: GAP №1 (API gRPC + DB e2e tests), nested data-factory
 annotations, @RetryingTest, custom AssertJ/SoftAssertions, Selenide conditions.
+
+---
+
+## BACKLOG (deferred, separate branch)
+
+- **Structured logging + distributed tracing (logging skill, option B)** — Boot 4.1
+  supports native structured logging (`logging.structured.format.console: ecs`,
+  no extra deps) + a `human-logs` profile for local readability. Real value is a
+  `requestId`/`traceId` MDC propagated gateway -> gRPC metadata -> 3 services so
+  the 4 services' logs correlate (a format without correlation is just structured
+  noise). Deferred from the niffler-parity branch to keep the merge focused;
+  needs careful gRPC metadata propagation. Motivated by this session: hours lost
+  grepping noisy plain-text logs (Kafka trace, OAuth exchange, test stdout).
+- **Web e2e against production frontend build** — run UI tests against the nginx
+  static build, not `npm start`; the dev server's react-refresh-overlay iframe
+  intercepts Selenide clicks (false failures in ProfileTest 1014/1015).
+- **Nested data-factory annotations** — @CreateFriend recursion (friends-of-friends)
+  + friendship-status params; current flat graph covers friends/invitations/photos.
