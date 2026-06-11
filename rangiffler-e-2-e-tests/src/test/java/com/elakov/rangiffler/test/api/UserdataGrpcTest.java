@@ -3,6 +3,7 @@ package com.elakov.rangiffler.test.api;
 import com.elakov.grpc.rangiffler.grpc.UserArray;
 import com.elakov.grpc.rangiffler.grpc.User;
 import com.elakov.rangiffler.data.entity.userdata.UserEntity;
+import com.elakov.rangiffler.helper.AllureSoftSteps;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
@@ -37,15 +38,14 @@ class UserdataGrpcTest extends BaseGrpcTest {
         String expectedFriend = user.friends().getFirst().username();
 
         UserArray friends = userdataGrpcClient.getAllFriends(user.username());
-
-        assertThat(friends.getUsersList())
-                .extracting(User::getUsername)
-                .containsExactly(expectedFriend);
-
-        // DB cross-check: the friend row really exists in userdata
         UserEntity friendInDb = userdataRepository.findByUsername(expectedFriend);
-        assertThat(friendInDb).isNotNull();
-        assertThat(friendInDb.getUsername()).isEqualTo(expectedFriend);
+
+        new AllureSoftSteps()
+                .add("friend is in the gRPC response", () -> assertThat(friends.getUsersList())
+                        .extracting(User::getUsername).containsExactly(expectedFriend))
+                .add("friend row exists in the DB", () -> assertThat(friendInDb).isNotNull())
+                .add("DB username matches", () -> assertThat(friendInDb.getUsername()).isEqualTo(expectedFriend))
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -69,10 +69,11 @@ class UserdataGrpcTest extends BaseGrpcTest {
 
         UserArray friends = userdataGrpcClient.getAllFriends(user.username());
 
-        assertThat(friends.getUsersList()).hasSize(1);
-        User friend = friends.getUsers(0);
-        assertThat(friend.getUsername()).isEqualTo(expectedUsername);
-        assertThat(friend.getFirstname()).isEqualTo("Joe");
-        assertThat(friend.getSurname()).isEqualTo("Mate");
+        new AllureSoftSteps()
+                .add("exactly one friend", () -> assertThat(friends.getUsersList()).hasSize(1))
+                .add("username matches", () -> assertThat(friends.getUsers(0).getUsername()).isEqualTo(expectedUsername))
+                .add("firstname is Joe", () -> assertThat(friends.getUsers(0).getFirstname()).isEqualTo("Joe"))
+                .add("surname is Mate", () -> assertThat(friends.getUsers(0).getSurname()).isEqualTo("Mate"))
+                .execute();
     }
 }
