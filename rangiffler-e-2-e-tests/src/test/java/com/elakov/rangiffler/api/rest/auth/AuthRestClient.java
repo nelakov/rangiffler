@@ -20,6 +20,11 @@ import static com.elakov.rangiffler.config.services.ServicesProperties.CLIENT_BA
 public class AuthRestClient extends BaseRestClient implements AuthClient {
     public AuthRestClient() {
         super(
+                // Redirects ARE followed so the authorize -> login chain establishes
+                // the session/XSRF cookies. The only redirect we must NOT follow is the
+                // final one to the frontend (:3001/authorized?code=...) — there is no
+                // frontend in API tests. RecievedCodeInterceptor scrapes the code from
+                // that 302 and short-circuits it to a 200 so OkHttp stops there.
                 AUTH_BASE_URL,
                 true,
                 new RecievedCookiesInterceptor(),
