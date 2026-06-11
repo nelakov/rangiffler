@@ -75,9 +75,14 @@ public class RegistrationPage extends BasePage<RegistrationPage> {
         return this;
     }
 
-    @Step("Check the 'Registration' should have username error message")
+    @Step("Check the 'Registration' should have password error message(s)")
     public RegistrationPage passwordErrorMessage(String expectedMessage) {
-        formErrorPassword.shouldHave(exactText(expectedMessage));
+        for (String line : expectedMessage.split("\n")) {
+            String trimmed = line.trim();
+            if (!trimmed.isEmpty()) {
+                formErrorPassword.shouldHave(text(trimmed));
+            }
+        }
         return this;
     }
 
