@@ -1,26 +1,52 @@
-version: '3.9'
+# Rangiffler e2e stack: app services + Selenoid + Allure.
+#
+# KNOWN GAP: the e2e tests currently configure a local Chrome only —
+# there is no Selenide remote-driver (Selenoid) wiring in the test code
+# yet, and config/docker/web_docker.properties is empty. The app side of
+# this stack is current; the rangiffler-e-2-e service will not pass
+# until remote-browser support is added to BrowserConfigExtension.
+#
+# Allure results flow via the shared allure-results volume — the
+# allure-docker-service watches it directly, no upload script needed.
 
-networks:
-  test-network:
-    driver: bridge
+name: rangiffler-test
 
 services:
   rangiffler-all-db:
     container_name: rangiffler-all-db
-    image: postgres:15.1
+    image: mysql:8.0
     environment:
-      - POSTGRES_MULTIPLE_DATABASES="rangiffler-auth","rangiffler-currency","rangiffler-spend","rangiffler-userdata"
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=secret
-    volumes:
-      - ./postgres:/docker-entrypoint-initdb.d
+      - MYSQL_ROOT_PASSWORD=secret
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-psecret" ]
       interval: 3s
       timeout: 3s
-      retries: 5
+      retries: 10
     expose:
-      - "5432"
+      - "3306"
+    networks:
+      - test-network
+    dns_search: .
+
+  kafka:
+    container_name: kafka
+    image: apache/kafka:latest
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9092'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    expose:
+      - "9092"
     networks:
       - test-network
     dns_search: .
@@ -31,47 +57,29 @@ services:
     ports:
       - "9000:9000"
     healthcheck:
-      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9000'" ]
       interval: 5s
       timeout: 5s
       retries: 10
     depends_on:
       rangiffler-all-db:
         condition: service_healthy
-    networks:
-      - test-network
-    dns_search: .
-
-  currency.rangiffler.dc:
-    container_name: currency.rangiffler.dc
-    image: nelakov/rangiffler-currency:latest
-    expose:
-      - "8091"
-      - "8092"
-    depends_on:
-      rangiffler-all-db:
+      kafka:
         condition: service_healthy
     networks:
       - test-network
     dns_search: .
 
-  gateway.rangiffler.dc:
-    container_name: gateway.rangiffler.dc
-    image: nelakov/rangiffler-gateway:latest
-    ports:
-      - "8090:8090"
-    depends_on:
-      auth.rangiffler.dc:
-        condition: service_started
-    networks:
-      - test-network
-    dns_search: .
-
-  spend.rangiffler.dc:
-    container_name: spend.rangiffler.dc
-    image: nelakov/rangiffler-spend:latest
+  country.rangiffler.dc:
+    container_name: country.rangiffler.dc
+    image: nelakov/rangiffler-country:latest
     expose:
-      - "8093"
+      - "9011"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9011'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     depends_on:
       rangiffler-all-db:
         condition: service_healthy
@@ -83,7 +91,13 @@ services:
     container_name: userdata.rangiffler.dc
     image: nelakov/rangiffler-userdata:latest
     expose:
-      - "8089"
+      - "9030"
+      - "9031"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9031'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     depends_on:
       rangiffler-all-db:
         condition: service_healthy
@@ -91,14 +105,58 @@ services:
       - test-network
     dns_search: .
 
-  frontend.rangiffler.dc:
-    container_name: frontend.rangiffler.dc
-    image: nelakov/rangiffler-frontend-test:latest
+  photo.rangiffler.dc:
+    container_name: photo.rangiffler.dc
+    image: nelakov/rangiffler-photo:latest
+    expose:
+      - "9021"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9021'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+      country.rangiffler.dc:
+        condition: service_healthy
+      userdata.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  gateway.rangiffler.dc:
+    container_name: gateway.rangiffler.dc
+    image: nelakov/rangiffler-gateway:latest
     ports:
-      - "80:80"
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8080'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+      country.rangiffler.dc:
+        condition: service_healthy
+      photo.rangiffler.dc:
+        condition: service_healthy
+      userdata.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  client.rangiffler.dc:
+    container_name: client.rangiffler.dc
+    image: nelakov/rangiffler-client:latest
+    ports:
+      - "3001:80"
     depends_on:
       gateway.rangiffler.dc:
-        condition: service_started
+        condition: service_healthy
     networks:
       - test-network
     dns_search: .
@@ -106,12 +164,12 @@ services:
   selenoid:
     container_name: selenoid
     image: aerokube/selenoid:1.10.12
-    platform: "${ARCH}"
     volumes:
       - ./selenoid:/etc/selenoid
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
-    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "3", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "rangiffler-st2_test-network" ]
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "3",
+               "-container-network", "rangiffler-test-network" ]
     ports:
       - "4444:4444"
     networks:
@@ -133,10 +191,14 @@ services:
 
   rangiffler-e-2-e:
     container_name: rangiffler-e-2-e
-    image: nelakov/rangiffler-e-2-e-tests
+    image: nelakov/rangiffler-e-2-e-tests:latest
     depends_on:
-      frontend.rangiffler.dc:
+      client.rangiffler.dc:
         condition: service_started
+      selenoid:
+        condition: service_started
+    volumes:
+      - allure-results:/rangiffler/rangiffler-e-2-e-tests/build/allure-results
     networks:
       - test-network
     dns_search: .
@@ -149,8 +211,18 @@ services:
     environment:
       CHECK_RESULTS_EVERY_SECONDS: 3
       KEEP_HISTORY: 0
+    volumes:
+      - allure-results:/app/allure-results
     ports:
       - "5050:5050"
     networks:
       - test-network
     dns_search: .
+
+volumes:
+  allure-results:
+
+networks:
+  test-network:
+    name: rangiffler-test-network
+    driver: bridge
