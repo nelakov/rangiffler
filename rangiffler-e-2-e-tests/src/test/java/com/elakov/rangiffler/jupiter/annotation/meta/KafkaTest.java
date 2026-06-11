@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Logger
 @ExtendWith({AllureJunit5.class, KafkaExtension.class})
 public @interface KafkaTest {
 }

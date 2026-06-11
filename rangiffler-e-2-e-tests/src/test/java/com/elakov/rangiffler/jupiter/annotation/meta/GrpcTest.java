@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Logger
 @ExtendWith({AllureJunit5.class})
 public @interface GrpcTest {
 }
