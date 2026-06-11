@@ -21,6 +21,7 @@ dependencies {
             libs.spring.data.jpa.starter
     )
     runtimeOnly(libs.mysql, libs.flyway, libs.flyway.mysql)
+    testImplementation(libs.spring.test.starter)
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -33,4 +34,8 @@ tasks.register('dockerBuild', DockerBuildImage) {
     buildArgs.put('APP_VER', project.version.toString())
     buildArgs.put('DOCKER', project.ext.dockerImage.toString())
     noCache = true
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
