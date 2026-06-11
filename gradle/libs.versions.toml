@@ -109,6 +109,7 @@ okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercept
 
 # Testing
 junit5-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+spring-test-starter = { module = "org.springframework.boot:spring-boot-starter-test" }
 allure-junit5 = { module = "io.qameta.allure:allure-junit5", version.ref = "allure-bom" }
 allure-assertj = { module = "io.qameta.allure:allure-assertj", version.ref = "allure-bom" }
 allure-selenide = { module = "io.qameta.allure:allure-selenide", version.ref = "allure-bom" }

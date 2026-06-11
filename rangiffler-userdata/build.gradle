@@ -23,6 +23,7 @@ dependencies {
             libs.spring.kafka.starter
     )
     runtimeOnly(libs.mysql, libs.flyway, libs.flyway.mysql)
+    testImplementation(libs.spring.test.starter)
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -39,4 +40,8 @@ tasks.register('dockerBuild', DockerBuildImage) {
 
 tasks.named('bootJar') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
