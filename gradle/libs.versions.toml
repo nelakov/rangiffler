@@ -30,6 +30,7 @@ sql-formatter = "2.0.5"
 
 # HTTP / API testing
 rest-assured = "6.0.0"
+json-unit = "5.1.2"
 
 # Testing
 junit-jupiter = "6.1.0"
@@ -103,6 +104,7 @@ sql-formatter = { module = "com.github.vertical-blank:sql-formatter", version.re
 
 # HTTP / API testing
 rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
+json-unit-assertj = { module = "net.javacrumbs.json-unit:json-unit-assertj", version.ref = "json-unit" }
 
 # Testing
 junit5-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
@@ -187,6 +189,7 @@ test-utils = [
     "database-rider-junit5",
     "kafka-clients",
     "awaitility",
+    "json-unit-assertj",
 ]
 
 [plugins]
