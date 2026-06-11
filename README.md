@@ -21,6 +21,7 @@ The project doubles as a playground for a production-style test harness: Selenid
 - [Observability](#observability)
 - [Testing](#testing)
 - [Test Utilities](#test-utilities)
+- [Allure Report Examples](#allure-report-examples)
 - [Known Issues](#known-issues)
 
 ## Technology Stack
@@ -241,6 +242,30 @@ new AllureSoftSteps()
 ```
 
 Use it where a test has **2+ independent** checks (so one run reports them all). For a single assertion or an atomic comparison, a plain assert is clearer. When a step depends on an earlier one (e.g. `list.get(0)` after a size check), evaluate that access **inside** the step lambda so an empty/null upstream surfaces as that step's own failure.
+
+## Allure Report Examples
+
+Run the suite, then `allure serve rangiffler-e-2-e-tests/build/allure-results` to open the report. What each test attaches:
+
+### Per-test log
+Every test's color-coded log (steps, levels, START/FINISH) is attached as `logs.html`.
+
+![Per-test log in Allure](utils/Images/allure-test-logs.png)
+
+### SQL queries (p6spy)
+Each JDBC statement from the DB cross-checks is captured by p6spy and attached, formatted.
+
+![SQL query attached via p6spy](utils/Images/allure-sql.png)
+
+### JSON diff (JsonComparator)
+A side-by-side Actual/Expect diff with differing paths highlighted (ignored paths noted).
+
+![Structural JSON diff](utils/Images/allure-json-diff.png)
+
+### Request / response (masked)
+Each HTTP request/response is attached with secrets (password, tokens, cookies) masked as `***`.
+
+![Request/response with masked secrets](utils/Images/allure-req-resp.png)
 
 ## Known Issues
 
