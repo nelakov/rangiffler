@@ -3,11 +3,10 @@ package com.elakov.rangiffler.api.rest.userdata;
 import com.elakov.rangiffler.api.rest.BaseRestClient;
 import com.elakov.rangiffler.model.FriendJson;
 import com.elakov.rangiffler.model.UserJson;
-import org.junit.jupiter.api.Assertions;
+import io.restassured.http.ContentType;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-
 
 public class UserdataRestClient extends BaseRestClient {
 
@@ -15,52 +14,39 @@ public class UserdataRestClient extends BaseRestClient {
         super(CFG.userdataBaseUrl());
     }
 
-    UserdataService userDataService = retrofit.create(UserdataService.class);
-
     public UserJson currentUser(String username) {
-        try {
-            return userDataService.currentUser(username).execute().body();
-        } catch (IOException e) {
-            Assertions.fail("Can`t execute api call to rangiffler-userdata: " + e.getMessage());
-            return null;
-        }
+        return asOrNull(spec()
+                .queryParam("username", username)
+                .get("/currentUser"), UserJson.class);
     }
 
     public UserJson addFriend(String username, String friendUsername) {
-        try {
-            FriendJson friendJson = new FriendJson(friendUsername);
-            return userDataService.addFriend(username, friendJson).execute().body();
-        } catch (IOException e) {
-            Assertions.fail("Can`t execute api call to rangiffler-userdata: " + e.getMessage());
-            return null;
-        }
+        return asOrNull(spec()
+                .queryParam("username", username)
+                .contentType(ContentType.JSON)
+                .body(new FriendJson(friendUsername))
+                .post("/addFriend"), UserJson.class);
     }
 
     public UserJson acceptInvitation(String username, String inviteUsername) {
-        try {
-            FriendJson friendJson = new FriendJson(inviteUsername);
-            return userDataService.acceptInvitation(username, friendJson).execute().body();
-        } catch (IOException e) {
-            Assertions.fail("Can`t execute api call to rangiffler-userdata: " + e.getMessage());
-            return null;
-        }
+        return asOrNull(spec()
+                .queryParam("username", username)
+                .contentType(ContentType.JSON)
+                .body(new FriendJson(inviteUsername))
+                .post("/acceptInvitation"), UserJson.class);
     }
 
     public UserJson updateUserInfo(UserJson userJson) {
-        try {
-            return userDataService.updateUserInfo(userJson).execute().body();
-        } catch (IOException e) {
-            Assertions.fail("unsuccessful connection to the service niffler-userData " + e.getMessage());
-            return null;
-        }
+        return asOrNull(spec()
+                .contentType(ContentType.JSON)
+                .body(userJson)
+                .patch("/updateUserInfo"), UserJson.class);
     }
 
     public List<UserJson> allUsers(String username) {
-        try {
-            return userDataService.allUsers(username).execute().body();
-        } catch (IOException e) {
-            Assertions.fail("Can`t execute api call to rangiffler-userdata: " + e.getMessage());
-            return null;
-        }
+        UserJson[] users = asOrNull(spec()
+                .queryParam("username", username)
+                .get("/allUsers"), UserJson[].class);
+        return users == null ? List.of() : Arrays.asList(users);
     }
 }
