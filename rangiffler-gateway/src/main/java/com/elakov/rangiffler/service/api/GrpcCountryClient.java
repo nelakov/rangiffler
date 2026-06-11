@@ -5,7 +5,6 @@ import com.elakov.rangiffler.model.CountryJson;
 import com.google.protobuf.Empty;
 import io.grpc.StatusRuntimeException;
 import jakarta.annotation.Nonnull;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,11 @@ public class GrpcCountryClient {
     private static final Logger LOG = LoggerFactory.getLogger(GrpcCountryClient.class);
     private static final Empty EMPTY = Empty.getDefaultInstance();
 
-    @GrpcClient("grpcCountryClient")
-    private RangifflerCountryServiceGrpc.RangifflerCountryServiceBlockingStub rangifflerCountryServiceBlockingStub;
+    private final RangifflerCountryServiceGrpc.RangifflerCountryServiceBlockingStub rangifflerCountryServiceBlockingStub;
+
+    public GrpcCountryClient(RangifflerCountryServiceGrpc.RangifflerCountryServiceBlockingStub countryBlockingStub) {
+        this.rangifflerCountryServiceBlockingStub = countryBlockingStub;
+    }
 
     public @Nonnull
     List<CountryJson> getAllCountries() {

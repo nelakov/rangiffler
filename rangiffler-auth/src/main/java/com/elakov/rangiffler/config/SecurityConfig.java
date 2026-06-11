@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -44,15 +43,14 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .permitAll())
                 .logout(logout ->
-                        logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // https://github.com/spring-projects/spring-authorization-server/issues/266
+                        logout.logoutUrl("/logout") // https://github.com/spring-projects/spring-authorization-server/issues/266
                                 .deleteCookies("JSESSIONID", "XSRF-TOKEN")
                                 .invalidateHttpSession(true)
                                 .clearAuthentication(true)
                                 .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
                 )
-                .sessionManagement()
-                .invalidSessionUrl("/login");
+                .sessionManagement(session -> session.invalidSessionUrl("/login"));
 
-        return http.formLogin().and().build();
+        return http.build();
     }
 }
