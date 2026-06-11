@@ -20,6 +20,7 @@ The project doubles as a playground for a production-style test harness: Selenid
 - [Running Locally](#running-locally)
 - [Observability](#observability)
 - [Testing](#testing)
+- [Test Utilities](#test-utilities)
 - [Known Issues](#known-issues)
 
 ## Technology Stack
@@ -203,6 +204,43 @@ Test data is provisioned through JUnit 5-style extensions — `@ApiLogin`, `@Cre
 > **Web tests:** serve the frontend with `npm run start:e2e` (production webpack build, no react-refresh overlay) instead of `npm start` — the dev server's overlay iframe intercepts Selenide clicks.
 
 Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config/local/web_local.properties`.
+
+## Test Utilities
+
+Two helpers (`com.elakov.rangiffler.helper.*`) make e2e assertions richer in the Allure report.
+
+### JsonComparator — structural JSON diff
+
+Asserts a JSON body equals an expected one and attaches a side-by-side **Actual / Expect HTML diff** to the Allure report (differing paths highlighted), on both pass and fail — so a failure shows exactly what mismatched.
+
+```java
+// REST (raw body)
+new JsonComparator()
+        .assertThatJson(gatewayApiClient.currentUserRaw(token))
+        .ignorePaths("id")                       // volatile/server-generated paths
+        .equalsToJson(expectedJson);
+
+// A model object (serialized via Jackson) — e.g. a gRPC response mapped to a record
+new JsonComparator()
+        .assertThatObject(PhotoJson.fromGrpcMessage(photo))
+        .ignorePaths("id", "photo", "country.id")
+        .equalsToJson(expectedJson);
+```
+
+Comparison is backed by **json-unit**; `assertThatObject` serializes the object first. For a protobuf message with no model mapping, convert it with `JsonFormat.printer().includingDefaultValueFields().print(message)` and use `assertThatJson`.
+
+### AllureSoftSteps — soft assertions as Allure steps
+
+Runs every check (not stopping at the first failure), each as its own Allure step; one failure rethrows the original cause, more than one throws a single error summarizing the count.
+
+```java
+new AllureSoftSteps()
+        .add("count matches the DB", () -> assertThat(countries).hasSameSizeAs(fromDb))
+        .add("contains FJ and GE",   () -> assertThat(countries).extracting(Country::getCode).contains("FJ", "GE"))
+        .execute();
+```
+
+Use it where a test has **2+ independent** checks (so one run reports them all). For a single assertion or an atomic comparison, a plain assert is clearer. When a step depends on an earlier one (e.g. `list.get(0)` after a size check), evaluate that access **inside** the step lambda so an empty/null upstream surfaces as that step's own failure.
 
 ## Known Issues
 
