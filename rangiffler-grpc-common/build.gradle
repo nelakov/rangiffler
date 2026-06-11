@@ -21,10 +21,6 @@ protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.version.get()}"
     }
-    generatedFilesBaseDir = "$projectDir/src/generated"
-    clean {
-        delete generatedFilesBaseDir
-    }
     plugins {
         grpc {
             artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.version.get()}"
@@ -39,9 +35,7 @@ protobuf {
 
 idea {
     module {
-        sourceDirs += file("src/generated/main/java")
-        sourceDirs += file("src/generated/main/grpc")
-        generatedSourceDirs += file("src/generated/main/java")
-        generatedSourceDirs += file("src/generated/main/grpc")
+        generatedSourceDirs += file("${layout.buildDirectory.get()}/generated/source/proto/main/java")
+        generatedSourceDirs += file("${layout.buildDirectory.get()}/generated/source/proto/main/grpc")
     }
 }

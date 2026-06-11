@@ -3,12 +3,11 @@ server:
   error:
     include:
       message: true
-grpc:
-  server:
-    port: 9021
-    max-inbound-message-size: 50000000
-
 spring:
+  grpc:
+    server:
+      port: 9021
+      max-inbound-message-size: 50000000
   application:
     name: rangiffler-photo
   datasource:
@@ -51,14 +50,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-grpc:
-  client:
-    grpcCountryClient:
-      address: 'static://127.0.0.1:9011'
-      negotiationType: PLAINTEXT
-    grpcUserdataClient:
-      address: 'static://127.0.0.1:9031'
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCountryClient:
+          address: 'static://127.0.0.1:9011'
+          negotiation-type: plaintext
+        grpcUserdataClient:
+          address: 'static://127.0.0.1:9031'
+          negotiation-type: plaintext
 
 ---
 spring:
@@ -70,12 +70,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-grpc:
-  client:
-    grpcCountryClient:
-      address: 'http://country.rangiffler.dc:9011'
-      negotiationType: PLAINTEXT
-    grpcUserdataClient:
-      address: 'http://userdata.rangiffler.dc:9031'
-      negotiationType: PLAINTEXT
+  grpc:
+    client:
+      channels:
+        grpcCountryClient:
+          address: 'static://country.rangiffler.dc:9011'
+          negotiation-type: plaintext
+        grpcUserdataClient:
+          address: 'static://userdata.rangiffler.dc:9031'
+          negotiation-type: plaintext
 ---

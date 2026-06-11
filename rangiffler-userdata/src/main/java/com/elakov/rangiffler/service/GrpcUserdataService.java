@@ -11,13 +11,13 @@ import com.elakov.rangiffler.model.FriendStatus;
 import com.elakov.rangiffler.model.UserJson;
 import io.grpc.stub.StreamObserver;
 import jakarta.transaction.Transactional;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@GrpcService
+@Service
 public class GrpcUserdataService extends RangifflerUserdataServiceGrpc.RangifflerUserdataServiceImplBase {
     private final UserRepository userRepository;
 
