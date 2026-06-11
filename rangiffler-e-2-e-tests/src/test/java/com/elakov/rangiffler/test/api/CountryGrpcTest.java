@@ -2,6 +2,7 @@ package com.elakov.rangiffler.test.api;
 
 import com.elakov.grpc.rangiffler.grpc.Country;
 import com.elakov.rangiffler.data.entity.country.CountryEntity;
+import com.elakov.rangiffler.helper.AllureSoftSteps;
 import io.grpc.StatusRuntimeException;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -34,10 +35,12 @@ class CountryGrpcTest extends BaseGrpcTest {
         List<Country> fromApi = countryGrpcClient.getAllCountries().getCountriesList();
         List<CountryEntity> fromDb = countryRepository.findAll();
 
-        assertThat(fromApi).isNotEmpty();
-        assertThat(fromApi).hasSameSizeAs(fromDb);
-        assertThat(fromApi).extracting(Country::getCode)
-                .containsExactlyInAnyOrderElementsOf(fromDb.stream().map(CountryEntity::getCode).toList());
+        new AllureSoftSteps()
+                .add("countries are returned", () -> assertThat(fromApi).isNotEmpty())
+                .add("count matches the DB", () -> assertThat(fromApi).hasSameSizeAs(fromDb))
+                .add("codes match the DB", () -> assertThat(fromApi).extracting(Country::getCode)
+                        .containsExactlyInAnyOrderElementsOf(fromDb.stream().map(CountryEntity::getCode).toList()))
+                .execute();
     }
 
     @Test
@@ -48,9 +51,11 @@ class CountryGrpcTest extends BaseGrpcTest {
 
         Country actual = countryGrpcClient.getCountryByCode("FJ");
 
-        assertThat(actual.getCode()).isEqualTo(expected.getCode());
-        assertThat(actual.getName()).isEqualTo(expected.getName());
-        assertThat(UUID.fromString(actual.getId())).isEqualTo(expected.getId());
+        new AllureSoftSteps()
+                .add("code matches the DB", () -> assertThat(actual.getCode()).isEqualTo(expected.getCode()))
+                .add("name matches the DB", () -> assertThat(actual.getName()).isEqualTo(expected.getName()))
+                .add("id matches the DB", () -> assertThat(UUID.fromString(actual.getId())).isEqualTo(expected.getId()))
+                .execute();
     }
 
     @Test
