@@ -10,8 +10,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE, ElementType.METHOD,ElementType.PARAMETER})
+// Order matters: JUnit runs afterEach callbacks in reverse registration order,
+// so AllureLogAttachCallback is registered FIRST to attach LAST — capturing the
+// FINISH line (EventLogger) and the failure stack (ErrorLogger) in the same
+// per-test log. beforeEach runs in order, so its clear() still happens first.
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith({ErrorLoggerCallback.class, EventLoggerCallback.class, AllureLogAttachCallback.class})
+@ExtendWith({AllureLogAttachCallback.class, EventLoggerCallback.class, ErrorLoggerCallback.class})
 public @interface Logger {
 }
