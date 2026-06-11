@@ -137,3 +137,4 @@ Test data setup uses JUnit 5 extensions (`@ApiLogin`, `@CreateUser`, `@CreatePho
 - **eslint**: flat config (`eslint.config.mjs`); stay on eslint 9.x — eslint-plugin-react is runtime-incompatible with eslint 10.
 - **userdata gRPC port**: userdata is a servlet web app, so `spring.grpc.server.servlet.enabled: false` is required to keep gRPC on its own port (9031) instead of being served through HTTP (9030).
 - **@Env-annotated e2e tests**: silently disabled unless `-Denv=local` (or matching `env` environment variable) is passed — they show as skipped, not failed (`EnvironmentExecutionCondition`).
+- **Web e2e frontend**: serve with `npm run start:e2e` (production-mode webpack at :3001), NOT `npm start`. The dev server's react-refresh overlay iframe (z-index max) intercepts Selenide clicks → false `element click intercepted` failures (e.g. ProfileTest). `start:e2e` uses `NODE_ENV=e2e` → `.env.e2e` (localhost backend) + production mode, so no react-refresh.
