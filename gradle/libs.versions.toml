@@ -94,6 +94,10 @@ jakarta-validation = { module = "jakarta.validation:jakarta.validation-api", ver
 
 # Database
 mysql = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
+# Boot 4 modularized autoconfig: spring-boot-flyway carries FlywayAutoConfiguration
+# + flyway-core transitively; flyway-mysql adds MySQL 8 support (Flyway 10+ split DBs out)
+flyway = { module = "org.springframework.boot:spring-boot-flyway" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql" }
 hibernate = { module = "org.hibernate.orm:hibernate-core", version.ref = "hibernate" }
 p6spy = { module = "p6spy:p6spy", version.ref = "p6spy" }
 sql-formatter = { module = "com.github.vertical-blank:sql-formatter", version.ref = "sql-formatter" }

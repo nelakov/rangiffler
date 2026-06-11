@@ -21,7 +21,7 @@ dependencies {
             libs.spring.grpc.client.starter,
             libs.spring.data.jpa.starter
     )
-    runtimeOnly(libs.mysql)
+    runtimeOnly(libs.mysql, libs.flyway, libs.flyway.mysql)
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
