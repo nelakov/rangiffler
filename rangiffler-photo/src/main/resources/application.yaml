@@ -77,4 +77,8 @@ spring:
         grpcUserdataClient:
           address: 'static://userdata.rangiffler.dc:9031'
           negotiation-type: plaintext
+logging:
+  structured:
+    format:
+      console: ecs
 ---

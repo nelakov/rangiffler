@@ -70,4 +70,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+logging:
+  structured:
+    format:
+      console: ecs
 ---
