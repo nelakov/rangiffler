@@ -39,6 +39,10 @@ export const Profile: FC<ProfileInterface> = ({ onClose }) => {
 
   const hasFormAnyError: boolean =
     Object.values(fieldErrors).filter((v) => v !== null).length > 0;
+  const isDirty: boolean =
+    profileData?.firstName !== user?.firstName ||
+    profileData?.lastName !== user?.lastName ||
+    profileData?.avatar !== user?.avatar;
   const resetFieldErrors = (fieldName: string): void => {
     setFieldErrors({ ...fieldErrors, [fieldName]: null });
   };
@@ -244,7 +248,7 @@ export const Profile: FC<ProfileInterface> = ({ onClose }) => {
                       <LoadingButton
                         variant="contained"
                         type="submit"
-                        disabled={hasFormAnyError}
+                        disabled={hasFormAnyError || !isDirty}
                       >
                         Save
                       </LoadingButton>
