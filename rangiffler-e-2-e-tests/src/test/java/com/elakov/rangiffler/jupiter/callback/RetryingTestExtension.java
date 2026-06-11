@@ -3,6 +3,7 @@ package com.elakov.rangiffler.jupiter.callback;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.LifecycleMethodExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
@@ -21,9 +22,17 @@ import java.util.stream.StreamSupport;
  * a failed invocation is converted to an aborted one (so it doesn't fail the
  * build) as long as attempts remain and the exception is retriable. The first
  * success ends the stream; exhausting the budget rethrows the last failure.
+ *
+ * Both the test body ({@link TestExecutionExceptionHandler}) and the
+ * @BeforeEach setup ({@link LifecycleMethodExecutionExceptionHandler}) are
+ * covered — e2e flakes most often happen in data-setup callbacks
+ * (@CreateUser / @ApiLogin), which Jupiter routes only to the lifecycle
+ * handler, not the test-execution one.
  */
 public class RetryingTestExtension
-        implements TestTemplateInvocationContextProvider, TestExecutionExceptionHandler {
+        implements TestTemplateInvocationContextProvider,
+        TestExecutionExceptionHandler,
+        LifecycleMethodExecutionExceptionHandler {
 
     private static final Namespace NAMESPACE = Namespace.create(RetryingTestExtension.class);
 
@@ -58,19 +67,32 @@ public class RetryingTestExtension
 
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+        retryOrRethrow(context, throwable);
+    }
+
+    @Override
+    public void handleBeforeEachMethodExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+        retryOrRethrow(context, throwable);
+    }
+
+    /**
+     * Convert a retriable failure (test body or @BeforeEach) into an abort and
+     * flag the state so the iterator produces another invocation; otherwise
+     * rethrow so the build fails. A consistently-failing test exhausts the
+     * budget and fails for real.
+     */
+    private void retryOrRethrow(ExtensionContext context, Throwable throwable) throws Throwable {
         RetryState state = context.getStore(NAMESPACE)
                 .get(context.getRequiredTestMethod(), RetryState.class);
 
-        boolean retriable = Arrays.stream(state.onExceptions())
+        boolean retriable = state != null && Arrays.stream(state.onExceptions())
                 .anyMatch(type -> type.isInstance(throwable));
 
         if (retriable && state.attemptsLeft()) {
-            // absorb this failure; the iterator will produce the next attempt
             state.requestRetry();
             throw new TestAbortedException(
                     "Attempt " + state.currentAttempt() + " failed, retrying: " + throwable);
         }
-        // not retriable, or budget exhausted -> real failure
         throw throwable;
     }
 

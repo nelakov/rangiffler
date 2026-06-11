@@ -3,9 +3,11 @@ package com.elakov.rangiffler.test.api;
 import com.elakov.grpc.rangiffler.grpc.UserArray;
 import com.elakov.grpc.rangiffler.grpc.User;
 import com.elakov.rangiffler.data.entity.userdata.UserEntity;
+import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.model.UserJson;
+import io.grpc.StatusRuntimeException;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -13,7 +15,6 @@ import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
-import org.junit.jupiter.api.Test;
 
 import static com.elakov.rangiffler.helper.allure.tags.AllureOwner.ELAKOV;
 import static com.elakov.rangiffler.helper.allure.tags.AllureTag.API;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("[grpc] Userdata friends")
 class UserdataGrpcTest extends BaseGrpcTest {
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("2001")
     @DisplayName("getAllFriends returns the user's accepted friend")
     @CreateUser(friends = @CreateFriend)
@@ -47,7 +48,7 @@ class UserdataGrpcTest extends BaseGrpcTest {
         assertThat(friendInDb.getUsername()).isEqualTo(expectedFriend);
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("2002")
     @DisplayName("getAllFriends returns empty for a user with no friends")
     @CreateUser

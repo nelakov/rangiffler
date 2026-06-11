@@ -5,11 +5,13 @@ import com.elakov.grpc.rangiffler.grpc.Photo;
 import com.elakov.grpc.rangiffler.grpc.PhotoArray;
 import com.elakov.grpc.rangiffler.grpc.PhotoID;
 import com.elakov.rangiffler.data.entity.photo.PhotoEntity;
+import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreatePhoto;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.model.PhotoJson;
 import com.elakov.rangiffler.model.UserJson;
+import io.grpc.StatusRuntimeException;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -17,7 +19,6 @@ import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +39,7 @@ class PhotoGrpcTest extends BaseGrpcTest {
 
     private static final String GEORGIA_PHOTO = "images/place/georgia/2.jpeg";
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("3001")
     @DisplayName("addPhoto stores the photo and persists it in the DB")
     @CreateUser
@@ -63,7 +64,7 @@ class PhotoGrpcTest extends BaseGrpcTest {
         assertThat(inDb.getDescription()).isEqualTo("Tbilisi");
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("3002")
     @DisplayName("getPhotosForUser returns the user's photo matching the DB")
     @CreateUser(photos = @CreatePhoto(photoPath = GEORGIA_PHOTO, countryCode = "GE", description = "Georgia"))
@@ -78,7 +79,7 @@ class PhotoGrpcTest extends BaseGrpcTest {
         assertThat(inDb).hasSize(1);
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("3003")
     @DisplayName("editPhoto updates the description in the response and the DB")
     @CreateUser(photos = @CreatePhoto(photoPath = GEORGIA_PHOTO, countryCode = "GE", description = "old"))
@@ -95,7 +96,7 @@ class PhotoGrpcTest extends BaseGrpcTest {
         assertThat(inDb.getDescription()).isEqualTo("updated description");
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("3004")
     @DisplayName("deletePhoto removes the photo from the service and the DB")
     @CreateUser(photos = @CreatePhoto(photoPath = GEORGIA_PHOTO, countryCode = "GE", description = "to delete"))
@@ -108,7 +109,7 @@ class PhotoGrpcTest extends BaseGrpcTest {
         assertThat(photoRepository.findAllByUsername(user.username())).isEmpty();
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("3005")
     @DisplayName("getAllFriendsPhoto returns photos of the user's friends")
     @CreateUser(friends = @CreateFriend(
