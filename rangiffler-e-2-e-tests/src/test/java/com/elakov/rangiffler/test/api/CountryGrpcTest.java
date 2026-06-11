@@ -3,6 +3,8 @@ package com.elakov.rangiffler.test.api;
 import com.elakov.grpc.rangiffler.grpc.Country;
 import com.elakov.rangiffler.data.entity.country.CountryEntity;
 import com.elakov.rangiffler.helper.AllureSoftSteps;
+import com.elakov.rangiffler.helper.comparator.JsonComparator;
+import com.elakov.rangiffler.model.CountryJson;
 import io.grpc.StatusRuntimeException;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -65,5 +67,23 @@ class CountryGrpcTest extends BaseGrpcTest {
                 .isInstanceOf(StatusRuntimeException.class)
                 .extracting(e -> ((StatusRuntimeException) e).getStatus().getCode())
                 .isEqualTo(io.grpc.Status.Code.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("getCountryByCode body matches the expected JSON (structural diff in Allure)")
+    void getCountryByCodeBodyMatchesExpectedJson() {
+        CountryJson country = CountryJson.fromGrpcMessage(countryGrpcClient.getCountryByCode("FJ"));
+
+        // id is server-generated → ignored; code and name compared structurally.
+        String expected = """
+                {
+                  "code": "FJ",
+                  "name": "Fiji"
+                }""";
+
+        new JsonComparator()
+                .assertThatObject(country)
+                .ignorePaths("id")
+                .equalsToJson(expected);
     }
 }
