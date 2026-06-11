@@ -32,50 +32,58 @@ public class RequestIdServerInterceptor implements ServerInterceptor {
         String requestId = (incoming == null || incoming.isBlank())
                 ? UUID.randomUUID().toString()
                 : incoming;
+        String method = call.getMethodDescriptor().getFullMethodName();
 
-        // Access log: one line per gRPC call carrying the request-id (MDC -> ECS field).
-        MDC.put(RequestIdSupport.MDC_KEY, requestId);
-        try {
-            LOG.info("gRPC call: {}", call.getMethodDescriptor().getFullMethodName());
-        } finally {
-            MDC.remove(RequestIdSupport.MDC_KEY);
+        // Access log: one line per call carrying the request-id (MDC -> ECS field).
+        // Skip gRPC infra plumbing (health probes, reflection) — those are polled
+        // continuously and would flood the logs without business value.
+        if (!isInfrastructureCall(method)) {
+            runWithRequestId(requestId, () -> LOG.info("gRPC call: {}", method));
         }
 
         ServerCall.Listener<ReqT> delegate = next.startCall(call, headers);
         return new ForwardingServerCallListener.SimpleForwardingServerCallListener<>(delegate) {
             @Override
             public void onMessage(ReqT message) {
-                withRequestId(() -> super.onMessage(message));
+                runWithRequestId(requestId, () -> super.onMessage(message));
             }
 
             @Override
             public void onHalfClose() {
-                withRequestId(super::onHalfClose);
+                runWithRequestId(requestId, super::onHalfClose);
             }
 
             @Override
             public void onCancel() {
-                withRequestId(super::onCancel);
+                runWithRequestId(requestId, super::onCancel);
             }
 
             @Override
             public void onComplete() {
-                withRequestId(super::onComplete);
+                runWithRequestId(requestId, super::onComplete);
             }
 
             @Override
             public void onReady() {
-                withRequestId(super::onReady);
-            }
-
-            private void withRequestId(Runnable action) {
-                MDC.put(RequestIdSupport.MDC_KEY, requestId);
-                try {
-                    action.run();
-                } finally {
-                    MDC.remove(RequestIdSupport.MDC_KEY);
-                }
+                runWithRequestId(requestId, super::onReady);
             }
         };
+    }
+
+    private static boolean isInfrastructureCall(String fullMethodName) {
+        return fullMethodName.startsWith("grpc.health.")
+                || fullMethodName.startsWith("grpc.reflection.");
+    }
+
+    /** Binds the request-id to MDC for the action, then always clears it — the
+     * listener may run on a pooled gRPC executor thread, so leaving it set would
+     * leak the id into the next call on that thread. */
+    private static void runWithRequestId(String requestId, Runnable action) {
+        MDC.put(RequestIdSupport.MDC_KEY, requestId);
+        try {
+            action.run();
+        } finally {
+            MDC.remove(RequestIdSupport.MDC_KEY);
+        }
     }
 }
