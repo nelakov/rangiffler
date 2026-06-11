@@ -1,0 +1,9 @@
+rootProject.name = "rangiffler"
+
+include("rangiffler-gateway")
+include("rangiffler-auth")
+include("rangiffler-userdata")
+include("rangiffler-country")
+include("rangiffler-grpc-common")
+include("rangiffler-photo")
+include("rangiffler-e-2-e-tests")

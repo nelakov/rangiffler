@@ -1,5 +1,7 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
-    id 'java'
+    java
     alias(libs.plugins.allure.report)
     alias(libs.plugins.allure.adapter)
     alias(libs.plugins.lombok)
@@ -32,31 +34,27 @@ allure {
 dependencies {
     implementation(libs.jakarta.validation)
     implementation(libs.jakarta.annotation)
-    testImplementation(
-            project(':rangiffler-grpc-common'),
-            libs.junit5.jupiter,
-            libs.bundles.selenide,
-            libs.bundles.allure,
-            libs.bundles.rest.assured,
-            libs.bundles.logs,
-            libs.bundles.grpc,
-            libs.bundles.database,
-            libs.bundles.test.utils
-    )
+    testImplementation(project(":rangiffler-grpc-common"))
+    testImplementation(libs.junit5.jupiter)
+    testImplementation(libs.bundles.selenide)
+    testImplementation(libs.bundles.allure)
+    testImplementation(libs.bundles.rest.assured)
+    testImplementation(libs.bundles.logs)
+    testImplementation(libs.bundles.grpc)
+    testImplementation(libs.bundles.database)
+    testImplementation(libs.bundles.test.utils)
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
 }
 
-tasks.withType(Test).configureEach {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     // Test JVM is forked: propagate -Denv so @Env-gated tests are not silently skipped
-    if (System.getProperty('env') != null) {
-        systemProperty 'env', System.getProperty('env')
-    }
+    System.getProperty("env")?.let { systemProperty("env", it) }
     testLogging {
-        exceptionFormat = 'full'
+        exceptionFormat = TestExceptionFormat.FULL
         showCauses = true
     }
 }

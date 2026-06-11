@@ -1,6 +1,8 @@
+import com.google.protobuf.gradle.id
+
 plugins {
-    id 'java-library'
-    id 'idea'
+    id("java-library")
+    idea
     alias(libs.plugins.google.protobuf)
 }
 
@@ -14,9 +16,9 @@ repositories {
 
 dependencies {
     // api: generated stubs + shared tracing interceptors expose gRPC + slf4j types to consumers
-    api libs.bundles.grpc
-    api libs.slf4j.api
-    compileOnly libs.javax.annotation
+    api(libs.bundles.grpc)
+    api(libs.slf4j.api)
+    compileOnly(libs.javax.annotation)
 }
 
 protobuf {
@@ -24,20 +26,18 @@ protobuf {
         artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.version.get()}"
     }
     plugins {
-        grpc {
+        id("grpc") {
             artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.version.get()}"
         }
     }
     generateProtoTasks {
-        all()*.plugins {
-            grpc {}
-        }
+        all().forEach { it.plugins { id("grpc") } }
     }
 }
 
 idea {
     module {
-        generatedSourceDirs += file("${layout.buildDirectory.get()}/generated/source/proto/main/java")
-        generatedSourceDirs += file("${layout.buildDirectory.get()}/generated/source/proto/main/grpc")
+        generatedSourceDirs.add(file("${layout.buildDirectory.get()}/generated/source/proto/main/java"))
+        generatedSourceDirs.add(file("${layout.buildDirectory.get()}/generated/source/proto/main/grpc"))
     }
 }
