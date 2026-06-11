@@ -12,7 +12,8 @@ public class AllureStepListener implements StepLifecycleListener {
     @Override
     public void beforeStepStart(StepResult result) {
         if (!"step".equals(result.getName())) {
-            log.info(result.getName());
+            // Prefix so AllureLogAppender colors step lines distinctly in the per-test log.
+            log.info(STEP_PREFIX + result.getName());
         }
         StepLifecycleListener.super.beforeStepStart(result);
     }
