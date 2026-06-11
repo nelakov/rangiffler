@@ -21,8 +21,8 @@ public interface HibernateConfig extends Config {
     String dialect();
 
     @Key("hibernate.driver_class")
-//    @DefaultValue("com.p6spy.engine.spy.P6SpyDriver")
-    @DefaultValue("com.mysql.cj.jdbc.Driver")
+    // p6spy wraps the real MySQL driver so every JDBC statement is logged + attached to Allure
+    @DefaultValue("com.p6spy.engine.spy.P6SpyDriver")
     String driverClass();
 
     @Key("auth.hibernate.url")
