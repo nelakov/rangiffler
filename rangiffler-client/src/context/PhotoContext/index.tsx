@@ -1,5 +1,5 @@
-import {createContext} from "react";
-import {Photo} from "../../types/types";
+import { createContext } from "react";
+import { Photo } from "../../types/types";
 
 interface PhotoContextInterface {
   photos: Array<Photo>;
@@ -10,12 +10,9 @@ interface PhotoContextInterface {
 
 const defaultState = {
   photos: [],
-  handleAddPhoto: () => {
-  },
-  handleEditPhoto: () => {
-  },
-  handleDeletePhoto: () => {
-  },
+  handleAddPhoto: () => {},
+  handleEditPhoto: () => {},
+  handleDeletePhoto: () => {},
 };
 
 export const PhotoContext = createContext<PhotoContextInterface>(defaultState);
