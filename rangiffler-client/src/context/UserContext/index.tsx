@@ -1,5 +1,5 @@
-import {createContext} from "react";
-import {User} from "../../types/types";
+import { createContext } from "react";
+import { User } from "../../types/types";
 
 interface UserContextInterface {
   user: Partial<User>;
@@ -12,9 +12,7 @@ const defaultState = {
     firstname: "",
     lastName: "",
   },
-  handleChangeUser: () => {
-  },
+  handleChangeUser: () => {},
 };
 
 export const UserContext = createContext<UserContextInterface>(defaultState);
-
