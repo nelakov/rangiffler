@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'idea'
     alias(libs.plugins.google.protobuf)
 }
@@ -13,7 +13,9 @@ repositories {
 }
 
 dependencies {
-    implementation libs.bundles.grpc
+    // api: generated stubs + shared tracing interceptors expose gRPC + slf4j types to consumers
+    api libs.bundles.grpc
+    api libs.slf4j.api
     compileOnly libs.javax.annotation
 }
 
