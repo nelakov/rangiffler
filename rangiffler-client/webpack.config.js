@@ -11,6 +11,7 @@ const Dotenv = require('dotenv-webpack');
 
 const IS_DEV = process.env.NODE_ENV === "development";
 const IS_PROD = !IS_DEV;
+const IS_E2E = process.env.NODE_ENV === "e2e";
 
 const filename = (ext) => IS_DEV ? `[name].${ext}` : `[hash].${ext}`;
 
@@ -33,7 +34,8 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     port: 3001,
-    hot: true,
+    hot: !IS_E2E,
+    client: IS_E2E ? { overlay: false } : undefined,
     static: __dirname + "/dist/",
   },
   devtool: "source-map",
@@ -46,8 +48,6 @@ module.exports = {
   },
   plugins: [
     new Dotenv({
-      // e2e: production-mode build (no react-refresh overlay) pointed at the
-      // local backend, for web tests that must run against the prod artifact.
       path: `./.env.${process.env.NODE_ENV === "development" ? "dev" : process.env.NODE_ENV === "e2e" ? "e2e" : process.env.NODE_ENV === "production" ? "docker" : "test"}`,
     }),
     new HTMLWebpackPlugin({
@@ -71,8 +71,6 @@ module.exports = {
   module: {
     rules: [
       {
-        // MUI 9 ships .mjs that imports react-transition-group subpaths
-        // without extensions; relax strict ESM resolution for node_modules
         test: /\.mjs$/,
         include: /node_modules/,
         resolve: { fullySpecified: false },
