@@ -74,6 +74,9 @@
     "react-router-dom": "^7.13.1",
     "react-svg-worldmap": "^2.0.2"
   },
+  "overrides": {
+    "uuid": "^11.1.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
