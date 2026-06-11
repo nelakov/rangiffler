@@ -2,6 +2,7 @@ package com.elakov.rangiffler.test.api;
 
 import com.elakov.rangiffler.data.entity.country.CountryEntity;
 import com.elakov.rangiffler.data.entity.userdata.UserEntity;
+import com.elakov.rangiffler.helper.AllureSoftSteps;
 import com.elakov.rangiffler.helper.comparator.JsonComparator;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
@@ -41,10 +42,11 @@ class GatewayRestTest extends BaseRestTest {
         List<CountryJson> countries = gatewayApiClient.allCountries(token);
         List<CountryEntity> fromDb = countryRepository.findAll();
 
-        assertThat(countries).isNotEmpty();
-        assertThat(countries).hasSameSizeAs(fromDb);
-        assertThat(countries).extracting(CountryJson::code)
-                .contains("FJ", "GE");
+        new AllureSoftSteps()
+                .add("countries are returned", () -> assertThat(countries).isNotEmpty())
+                .add("count matches the DB", () -> assertThat(countries).hasSameSizeAs(fromDb))
+                .add("contains FJ and GE", () -> assertThat(countries).extracting(CountryJson::code).contains("FJ", "GE"))
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -55,11 +57,13 @@ class GatewayRestTest extends BaseRestTest {
         String token = login(user.username(), user.password());
 
         UserJson currentUser = gatewayApiClient.currentUser(token);
-
-        assertThat(currentUser.username()).isEqualTo(user.username());
         UserEntity inDb = userdataRepository.findByUsername(user.username());
-        assertThat(inDb).isNotNull();
-        assertThat(inDb.getUsername()).isEqualTo(user.username());
+
+        new AllureSoftSteps()
+                .add("JWT subject is the user", () -> assertThat(currentUser.username()).isEqualTo(user.username()))
+                .add("user row exists in the DB", () -> assertThat(inDb).isNotNull())
+                .add("DB username matches", () -> assertThat(inDb.getUsername()).isEqualTo(user.username()))
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -71,8 +75,10 @@ class GatewayRestTest extends BaseRestTest {
 
         List<UserJson> users = gatewayApiClient.allUsers(token);
 
-        assertThat(users).isNotNull();
-        assertThat(users).extracting(UserJson::username).doesNotContain(user.username());
+        new AllureSoftSteps()
+                .add("a user list is returned", () -> assertThat(users).isNotNull())
+                .add("list excludes the requester", () -> assertThat(users).extracting(UserJson::username).doesNotContain(user.username()))
+                .execute();
     }
 
     @Test
