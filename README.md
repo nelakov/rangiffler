@@ -80,6 +80,73 @@ Browser ──► rangiffler-client (React SPA, :3001)
 - **gateway** validates JWTs and fans client REST calls out to backend services: gRPC to country/photo, REST to userdata.
 - **photo** is also a gRPC *client* of country and userdata (resolves photo country, fetches friend lists for the friends feed).
 
+### Request Flows
+
+**Authentication — OAuth2 Authorization Code + PKCE.** The SPA logs in against the auth server, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant SPA as client (React :3001)
+    participant AUTH as auth (:9000)
+    participant GW as gateway (:8080)
+
+    U->>SPA: open app
+    SPA->>AUTH: GET /oauth2/authorize (PKCE challenge)
+    AUTH-->>U: login form (Thymeleaf)
+    U->>AUTH: POST credentials
+    AUTH-->>SPA: 302 redirect + authorization code
+    SPA->>AUTH: POST /oauth2/token (code + PKCE verifier, form-urlencoded)
+    AUTH-->>SPA: access token (JWT)
+    Note over SPA,GW: every API call now carries Authorization: Bearer <JWT>
+    SPA->>GW: GET /currentUser (Bearer JWT)
+    GW->>GW: validate JWT (issuer discovered from auth)
+    GW-->>SPA: 200 user profile
+```
+
+**Friends' photo feed — gateway fan-out across the gRPC mesh.** One client request triggers nested gRPC calls: the gateway asks photo, which itself asks userdata (who are my friends?) and country (resolve each photo's country).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant SPA as client
+    participant GW as gateway (:8080)
+    participant PH as photo (:9021)
+    participant UD as userdata (:9031)
+    participant CO as country (:9011)
+
+    SPA->>GW: GET /friends/photos (Bearer JWT)
+    GW->>GW: validate JWT
+    GW->>PH: gRPC getAllFriendsPhoto(username)
+    PH->>UD: gRPC getAllFriends(username)
+    UD-->>PH: friend list
+    PH->>CO: gRPC resolve photo countries
+    CO-->>PH: countries
+    PH-->>GW: PhotoArray (photos + country)
+    GW-->>SPA: 200 friends' photos
+```
+
+**Registration — asynchronous user propagation over Kafka.** Auth owns credentials; userdata owns profiles. On registration, auth persists the account and publishes a `users` event that userdata consumes to create the matching profile.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant AUTH as auth (:9000)
+    participant K as Kafka (topic: users)
+    participant UD as userdata
+    participant DB as userdata DB
+
+    U->>AUTH: POST /register (username, password)
+    AUTH->>AUTH: persist credentials
+    AUTH--)K: publish UserJson(username)
+    AUTH-->>U: 200 registered
+    Note over K,UD: async — @KafkaListener(topics = "users", groupId = "userdata")
+    K--)UD: consume user event
+    UD->>DB: create user profile row
+```
+
 ## Service Ports
 
 | Service  | HTTP | gRPC | Database (MySQL schema) |
