@@ -69,6 +69,13 @@ module.exports = {
   module: {
     rules: [
       {
+        // MUI 9 ships .mjs that imports react-transition-group subpaths
+        // without extensions; relax strict ESM resolution for node_modules
+        test: /\.mjs$/,
+        include: /node_modules/,
+        resolve: { fullySpecified: false },
+      },
+      {
         test: /\.(scss|css)$/,
         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
         exclude: /node_modules/,

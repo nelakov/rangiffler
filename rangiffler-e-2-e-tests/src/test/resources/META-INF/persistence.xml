@@ -7,6 +7,8 @@
         <class>com.elakov.rangiffler.data.entity.auth.AuthorityEntity</class>
         <class>com.elakov.rangiffler.data.entity.country.CountryEntity</class>
         <class>com.elakov.rangiffler.data.entity.photo.PhotoEntity</class>
+        <class>com.elakov.rangiffler.data.entity.userdata.UserEntity</class>
+        <class>com.elakov.rangiffler.data.entity.userdata.FriendsEntity</class>
     </persistence-unit>
 
 </persistence>

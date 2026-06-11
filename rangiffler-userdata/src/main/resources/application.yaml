@@ -4,11 +4,12 @@ server:
     include:
       message: true
 
-grpc:
-  server:
-    port: 9031
-
 spring:
+  grpc:
+    server:
+      port: 9031
+      servlet:
+        enabled: false
   application:
     name: rangiffler-userdata
   datasource:
@@ -27,12 +28,10 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: false
-    generate-ddl: true
-  sql:
-    init:
-      mode: always
+  flyway:
+    baseline-on-migrate: true
 
 logging:
   level:
@@ -45,10 +44,15 @@ spring:
   config:
     activate:
       on-profile: 'local'
+  kafka:
+    bootstrap-servers: 'localhost:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://localhost:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: validate
 ---
@@ -56,6 +60,11 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
+    consumer:
+      group-id: 'userdata'
+      auto-offset-reset: earliest
   datasource:
     url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-userdata?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:

@@ -5,6 +5,8 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
 
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ThreadLocalEmf implements EntityManagerFactory {
 
@@ -87,5 +89,40 @@ public class ThreadLocalEmf implements EntityManagerFactory {
     @Override
     public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
         delegate.addNamedEntityGraph(graphName, entityGraph);
+    }
+
+    @Override
+    public <R> R callInTransaction(Function<EntityManager, R> work) {
+        return delegate.callInTransaction(work);
+    }
+
+    @Override
+    public void runInTransaction(Consumer<EntityManager> work) {
+        delegate.runInTransaction(work);
+    }
+
+    @Override
+    public String getName() {
+        return delegate.getName();
+    }
+
+    @Override
+    public SchemaManager getSchemaManager() {
+        return delegate.getSchemaManager();
+    }
+
+    @Override
+    public PersistenceUnitTransactionType getTransactionType() {
+        return delegate.getTransactionType();
+    }
+
+    @Override
+    public <E> Map<String, EntityGraph<? extends E>> getNamedEntityGraphs(Class<E> entityType) {
+        return delegate.getNamedEntityGraphs(entityType);
+    }
+
+    @Override
+    public <R> Map<String, TypedQueryReference<R>> getNamedQueries(Class<R> resultType) {
+        return delegate.getNamedQueries(resultType);
     }
 }

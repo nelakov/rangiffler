@@ -66,7 +66,10 @@ public class ProfileTest extends BaseWebTest {
     void successfullyDontSaveProfileInfo(UserJson userJson) {
         TestContext.setFirstName(DataFakeHelper.generateRandomFunnyUsername());
         TestContext.setSurName(DataFakeHelper.generateRandomSurname());
-        String avatarClassPath = userJson.avatarClassPath();
+        // The user is created without an avatar (baseline must be empty so
+        // profileShouldBeEmpty is meaningful); upload a real fixture that is
+        // intentionally NOT saved. userJson.avatarClassPath() would be null here.
+        String avatarClassPath = "images/profile/avatar_1.jpeg";
 
         steps
                 .updateProfileWithoutSave(avatarClassPath)

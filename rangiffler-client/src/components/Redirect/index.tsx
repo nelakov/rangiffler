@@ -1,13 +1,13 @@
-import {CircularProgress} from "@mui/material";
-import React, {useContext, useEffect} from "react";
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {apiClient} from "../../api/apiClient";
-import {authClient} from "../../api/authClient";
-import {AUTH_URL, CLIENT, FRONT_URL} from "../../api/config";
-import {UserContext} from "../../context/UserContext/index";
+import { CircularProgress } from "@mui/material";
+import React, { useContext, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { apiClient } from "../../api/apiClient";
+import { authClient } from "../../api/authClient";
+import { AUTH_URL, CLIENT, FRONT_URL } from "../../api/config";
+import { UserContext } from "../../context/UserContext/index";
 
 export const Redirect = () => {
-  const {handleChangeUser} = useContext(UserContext);
+  const { handleChangeUser } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -25,27 +25,29 @@ export const Redirect = () => {
         code_verifier: verifier!,
       });
 
-      authClient.post("/oauth2/token", params, {
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-      }).then((res) => {
-        if (res?.data?.id_token) {
-          sessionStorage.setItem("id_token", res.data.id_token);
-          apiClient(res.data.id_token)
-          .get("/currentUser")
-          .then((res) => {
-            if (res?.data) {
-              handleChangeUser(res.data);
-              navigate("/");
-            } else {
-              navigate("/landing");
-            }
-          })
-        }
-      })
-      .catch((err) => {
-        navigate("/landing");
-        console.error(err);
-      })
+      authClient
+        .post("/oauth2/token", params, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+        .then((res) => {
+          if (res?.data?.id_token) {
+            sessionStorage.setItem("id_token", res.data.id_token);
+            apiClient(res.data.id_token)
+              .get("/currentUser")
+              .then((res) => {
+                if (res?.data) {
+                  handleChangeUser(res.data);
+                  navigate("/");
+                } else {
+                  navigate("/landing");
+                }
+              });
+          }
+        })
+        .catch((err) => {
+          navigate("/landing");
+          console.error(err);
+        });
     }
   }, []);
 
@@ -56,5 +58,10 @@ export const Redirect = () => {
       window.location.href = link;
     }
   }, []);
-  return <CircularProgress color="primary" sx={{position: "absolute", top: "50%", right: "50%"}}/>;
-}
+  return (
+    <CircularProgress
+      color="primary"
+      sx={{ position: "absolute", top: "50%", right: "50%" }}
+    />
+  );
+};

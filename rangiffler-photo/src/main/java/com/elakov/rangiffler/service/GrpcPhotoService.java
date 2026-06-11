@@ -7,8 +7,8 @@ import com.elakov.rangiffler.service.api.GrpcCountryClient;
 import com.elakov.rangiffler.service.api.GrpcUserdataClient;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@GrpcService
+@Service
 public class GrpcPhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServiceImplBase {
 
     private final PhotoRepository photoRepository;

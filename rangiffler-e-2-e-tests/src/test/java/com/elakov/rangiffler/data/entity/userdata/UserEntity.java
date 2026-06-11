@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "users", catalog = "userdata")
+@Table(name = "users")
 public class UserEntity {
 
     @Id
@@ -21,7 +21,7 @@ public class UserEntity {
     @Column(name = "firstname")
     private String firstname;
 
-    @Column(name = "surname")
+    @Column(name = "lastname")
     private String surname;
 
     @Column(name = "avatar", columnDefinition = "LONGBLOB")

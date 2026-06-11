@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS `rangiffler-userdata`;
-USE `rangiffler-userdata`;
 
 CREATE TABLE IF NOT EXISTS users
 (

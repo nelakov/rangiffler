@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS `rangiffler-photo`;
-USE `rangiffler-photo`;
 
 CREATE TABLE IF NOT EXISTS photos
 (

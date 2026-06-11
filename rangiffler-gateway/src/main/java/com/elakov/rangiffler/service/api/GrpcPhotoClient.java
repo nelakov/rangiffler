@@ -2,7 +2,6 @@ package com.elakov.rangiffler.service.api;
 
 import com.elakov.grpc.rangiffler.grpc.*;
 import com.elakov.rangiffler.model.PhotoJson;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,8 +13,11 @@ import static com.elakov.rangiffler.model.PhotoJson.fromGrpcMessage;
 @Component
 public class GrpcPhotoClient {
 
-    @GrpcClient("grpcPhotoClient")
-    private RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub rangifflerPhotoServiceBlockingStub;
+    private final RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub rangifflerPhotoServiceBlockingStub;
+
+    public GrpcPhotoClient(RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub photoBlockingStub) {
+        this.rangifflerPhotoServiceBlockingStub = photoBlockingStub;
+    }
 
     public List<PhotoJson> getPhotosForUser(String username) {
         PhotoArray photoList = rangifflerPhotoServiceBlockingStub

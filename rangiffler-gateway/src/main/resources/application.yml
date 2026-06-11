@@ -32,15 +32,14 @@ rangiffler-photo:
   base-uri: 'http://127.0.0.1:9020'
 rangiffler-userdata:
     base-uri: 'http://127.0.0.1:9030'
-grpc:
-  client:
-    grpcCountryClient:
-      address: 'static://localhost:9011'
-      negotiationType: PLAINTEXT
-    grpcPhotoClient:
-      address: 'static://localhost:9021'
-      negotiationType: PLAINTEXT
-      max-inbound-message-size: 50000000
+spring.grpc.client.channels:
+  grpcCountryClient:
+    address: 'static://localhost:9011'
+    negotiation-type: plaintext
+  grpcPhotoClient:
+    address: 'static://localhost:9021'
+    negotiation-type: plaintext
+    max-inbound-message-size: 50000000
 ---
 spring:
   config:
@@ -59,13 +58,12 @@ rangiffler-photo:
   base-uri: 'http://photo.rangiffler.dc:9020'
   rangiffler-userdata:
     base-uri: 'http://userdata.rangiffler.dc:9030'
-grpc:
-  client:
-    grpcCountryClient:
-      address: 'http://country.rangiffler.dc:9011'
-      negotiationType: PLAINTEXT
-    grpcPhotoClient:
-      address: 'http://photo.rangiffler.dc:9021'
-      negotiationType: PLAINTEXT
-      max-inbound-message-size: 50000000
+spring.grpc.client.channels:
+  grpcCountryClient:
+    address: 'static://country.rangiffler.dc:9011'
+    negotiation-type: plaintext
+  grpcPhotoClient:
+    address: 'static://photo.rangiffler.dc:9021'
+    negotiation-type: plaintext
+    max-inbound-message-size: 50000000
 ---
