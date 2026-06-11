@@ -57,4 +57,22 @@ class UserdataGrpcTest extends BaseGrpcTest {
 
         assertThat(friends.getUsersList()).isEmpty();
     }
+
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
+    @AllureId("2003")
+    @DisplayName("getAllFriends returns a friend with first/last name from nested @CreateFriend")
+    @CreateUser(friends = @CreateFriend(firstname = "Joe", lastname = "Mate"))
+    void getAllFriendsReturnsNamedFriend(UserJson user) {
+        // username stays random (unique-constrained, no cleanup), but first/last
+        // name are set by the nested @CreateFriend — the new identity capability.
+        String expectedUsername = user.friends().getFirst().username();
+
+        UserArray friends = userdataGrpcClient.getAllFriends(user.username());
+
+        assertThat(friends.getUsersList()).hasSize(1);
+        User friend = friends.getUsers(0);
+        assertThat(friend.getUsername()).isEqualTo(expectedUsername);
+        assertThat(friend.getFirstname()).isEqualTo("Joe");
+        assertThat(friend.getSurname()).isEqualTo("Mate");
+    }
 }
