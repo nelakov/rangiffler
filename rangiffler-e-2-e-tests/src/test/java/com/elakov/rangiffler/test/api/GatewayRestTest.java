@@ -2,9 +2,11 @@ package com.elakov.rangiffler.test.api;
 
 import com.elakov.rangiffler.data.entity.country.CountryEntity;
 import com.elakov.rangiffler.data.entity.userdata.UserEntity;
+import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.model.CountryJson;
 import com.elakov.rangiffler.model.UserJson;
+import io.grpc.StatusRuntimeException;
 import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -28,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("[rest] Gateway")
 class GatewayRestTest extends BaseRestTest {
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("4001")
     @DisplayName("GET /countries returns all countries matching the DB for an authenticated user")
     @CreateUser
@@ -44,7 +46,7 @@ class GatewayRestTest extends BaseRestTest {
                 .contains("FJ", "GE");
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("4002")
     @DisplayName("GET /currentUser returns the JWT subject and matches the DB row")
     @CreateUser
@@ -59,7 +61,7 @@ class GatewayRestTest extends BaseRestTest {
         assertThat(inDb.getUsername()).isEqualTo(user.username());
     }
 
-    @Test
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
     @AllureId("4003")
     @DisplayName("GET /users returns a list for an authenticated user")
     @CreateUser

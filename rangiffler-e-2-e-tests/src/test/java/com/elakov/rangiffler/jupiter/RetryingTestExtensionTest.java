@@ -7,20 +7,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Self-test for {@link RetryingTest} / RetryingTestExtension — no external
- * stack needed. The method throws on the first two attempts and passes on the
- * third; the build stays green (the two failures abort, not fail), proving the
- * extension retries on the configured exception and stops on first success.
+ * Self-test for {@link RetryingTest} — proves the test-BODY retry path with no
+ * external stack: the method fails its first two attempts and passes on the
+ * third, and the build stays green because the failed attempts abort rather
+ * than fail. The @BeforeEach (setup) retry path is covered by
+ * {@link RetryingTestSetupFlakeTest}.
  */
 class RetryingTestExtensionTest {
 
     private static final AtomicInteger ATTEMPTS = new AtomicInteger(0);
 
     @RetryingTest(value = 3, onExceptions = IllegalStateException.class)
-    void retriesUntilItPasses() {
+    void retriesBodyUntilItPasses() {
         int attempt = ATTEMPTS.incrementAndGet();
         if (attempt < 3) {
-            throw new IllegalStateException("transient failure on attempt " + attempt);
+            throw new IllegalStateException("transient body failure on attempt " + attempt);
         }
         assertThat(attempt).isEqualTo(3);
     }
