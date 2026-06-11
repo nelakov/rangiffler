@@ -1,7 +1,6 @@
 package com.elakov.rangiffler.api.rest;
 
 import com.elakov.rangiffler.config.services.ServicesConfig;
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.aeonbits.owner.ConfigCache;
@@ -27,7 +26,7 @@ public abstract class BaseRestClient {
     protected RequestSpecification spec() {
         return given()
                 .baseUri(baseUri)
-                .filter(new AllureRestAssured());
+                .filter(new AllureMaskingFilter());
     }
 
     /**
