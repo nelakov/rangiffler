@@ -11,7 +11,7 @@ import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 
 public class AuthWebStep extends CommonWebStep<AuthWebStep> {
 
-    public AuthWebStep fillLoginFormAndRedirectToTravelsTab(UserJson userJson) {
+    public void fillLoginFormAndRedirectToTravelsTab(UserJson userJson) {
         AllureSoftStepsHelper softStep = new AllureSoftStepsHelper();
         softStep.add("Fill 'Login page' and tap Sign in'",
                 () -> loginPage
@@ -21,7 +21,6 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
                         .checkThatPageLoaded()
         );
         softStep.execute();
-        return this;
     }
 
     //Overload
@@ -63,7 +62,11 @@ public class AuthWebStep extends CommonWebStep<AuthWebStep> {
     }
 
     public AuthWebStep apiLoginAndRedirectToTravelsTab() {
-        startPage.openLoginPage(travelsTab);
+        // Navigate straight to the travels tab with the @ApiLogin token (as the other
+        // @ApiLogin web tests do). The old path clicked the landing's Login button, which
+        // re-ran the full browser OAuth redirect (/redirect -> authorize -> token) and did
+        // not reliably land on the main tab, so the header/logout button was never there.
+        travelsTab.openTravelsTab(travelsTab).checkThatPageLoaded();
         return this;
     }
 
