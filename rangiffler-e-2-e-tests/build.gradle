@@ -37,7 +37,6 @@ dependencies {
             libs.junit5.jupiter,
             libs.bundles.selenide,
             libs.bundles.allure,
-            libs.bundles.retrofit,
             libs.bundles.rest.assured,
             libs.bundles.logs,
             libs.bundles.grpc,
