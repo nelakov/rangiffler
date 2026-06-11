@@ -34,7 +34,7 @@ public class RestUserdataClient {
     List<UserJson> getAllUsers(@Nonnull String username) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/allUsers").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/allUsers").queryParams(params).build().toUri();
 
         return webClient.get()
                 .uri(uri)
@@ -48,7 +48,7 @@ public class RestUserdataClient {
     UserJson currentUser(@Nonnull String username) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/currentUser").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/currentUser").queryParams(params).build().toUri();
 
         return webClient.get()
                 .uri(uri)
@@ -61,7 +61,7 @@ public class RestUserdataClient {
     List<UserJson> friends(@Nonnull String username) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/friends").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/friends").queryParams(params).build().toUri();
 
         return webClient.get()
                 .uri(uri)
@@ -75,7 +75,7 @@ public class RestUserdataClient {
     List<UserJson> invitations(@Nonnull String username) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/invitations").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/invitations").queryParams(params).build().toUri();
 
         return webClient.get()
                 .uri(uri)
@@ -89,7 +89,7 @@ public class RestUserdataClient {
                               @Nonnull FriendJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/addFriend").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/addFriend").queryParams(params).build().toUri();
 
         return webClient.post()
                 .uri(uri)
@@ -104,7 +104,7 @@ public class RestUserdataClient {
                           @Nonnull UserJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/removeFriend").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/removeFriend").queryParams(params).build().toUri();
 
         return webClient.post()
                 .uri(uri)
@@ -119,7 +119,7 @@ public class RestUserdataClient {
                               @Nonnull UserJson friend) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/acceptInvitation").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/acceptInvitation").queryParams(params).build().toUri();
 
         return webClient.post()
                 .uri(uri)
@@ -134,7 +134,7 @@ public class RestUserdataClient {
                                @Nonnull UserJson invitation) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(userdataUri + "/declineInvitation").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(userdataUri + "/declineInvitation").queryParams(params).build().toUri();
 
         return webClient.post()
                 .uri(uri)

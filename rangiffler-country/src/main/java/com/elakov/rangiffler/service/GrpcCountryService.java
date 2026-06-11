@@ -9,13 +9,13 @@ import com.elakov.rangiffler.data.repository.CountryRepository;
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@GrpcService
+@Service
 public class GrpcCountryService extends RangifflerCountryServiceGrpc.RangifflerCountryServiceImplBase {
 
     private CountryRepository countryRepository;

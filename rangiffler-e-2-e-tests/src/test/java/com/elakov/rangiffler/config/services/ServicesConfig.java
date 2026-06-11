@@ -14,6 +14,9 @@ public interface ServicesConfig extends Config {
     @Key("auth.base.url")
     String authBaseUrl();
 
+    @Key("gateway.base.url")
+    String gatewayBaseUrl();
+
     @Key("country.grpc.service.host")
     String countryGrpcServiceHost();
 
@@ -34,5 +37,8 @@ public interface ServicesConfig extends Config {
 
     @Key("userdata.grpc.service.port")
     Integer userdataGrpcServicePort();
+
+    @Key("kafka.address")
+    String kafkaAddress();
 
 }

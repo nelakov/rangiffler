@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS `rangiffler-country`;
-USE `rangiffler-country`;
 
 CREATE TABLE IF NOT EXISTS country
 (

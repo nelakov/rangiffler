@@ -16,6 +16,14 @@ public class RecievedCodeInterceptor implements Interceptor {
         String location = response.header("Location");
         if (location != null && location.contains("code=")) {
             SessionContext.getInstance().setCode(location.substring(location.indexOf("code=") + 5));
+            // The authorization code is captured from this 302's Location. Rewrite it to
+            // a 200 so OkHttp does not follow the redirect to the frontend (:3001), which
+            // need not be running for API tests. The token is fetched via a separate
+            // /token call using the captured code.
+            return response.newBuilder()
+                    .code(200)
+                    .message("OK (auth redirect short-circuited)")
+                    .build();
         }
         return response;
     }

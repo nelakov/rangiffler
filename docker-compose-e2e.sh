@@ -1,37 +1,38 @@
 #!/bin/bash
+# Build all images and run the e2e stack (services + Selenoid + Allure).
+#
+# NOTE: the e2e test container will not pass until Selenide remote-driver
+# (Selenoid) wiring is added to the test code — see docker-compose.test.yml.
+set -e
 
 source ./rangiffler-e-2-e-tests/docker.properties
 
 echo '### Java version ###'
 java --version
-echo '### Gradle version ###'
-gradle --version
 
-docker-compose -f docker-compose.test.yml down
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-docker rmi -f $(docker images | grep 'rangiffler')
+echo '### Stop previous stack ###'
+docker compose -f docker-compose.test.yml down
 
+echo '### Build backend images ###'
+./gradlew clean build dockerBuild -x test -x :rangiffler-e-2-e-tests:test
+
+echo '### Build frontend image ###'
+docker build -t nelakov/rangiffler-client:latest rangiffler-client
+
+echo '### Build e2e image ###'
 ARCH=$(uname -m)
-
-bash ./gradlew clean build dockerTagLatest -x :rangiffler-e-2-e-tests:test
-
-var DOCKER_ARCH
 if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
-  DOCKER_ARCH="linux/arm64/v8"
-  docker build --build-arg DOCKER=arm64v8/eclipse-temurin:19-jdk -t "${IMAGE_NAME}":"${VERSION}" -t "${IMAGE_NAME}":latest -f ./rangiffler-e-2-e-tests/Dockerfile .
+  E2E_BASE=arm64v8/eclipse-temurin:25-jdk
 else
-  DOCKER_ARCH="linux/amd64"
-  docker build --build-arg DOCKER=eclipse-temurin:19-jdk -t "${IMAGE_NAME}":"${VERSION}" -t "${IMAGE_NAME}":latest -f ./rangiffler-e-2-e-tests/Dockerfile .
+  E2E_BASE=eclipse-temurin:25-jdk
 fi
+docker build --build-arg DOCKER="$E2E_BASE" \
+  -t "${IMAGE_NAME}:${VERSION}" -t "${IMAGE_NAME}:latest" \
+  -f ./rangiffler-e-2-e-tests/Dockerfile .
 
-var front
-if [[ "$1" = "gql" ]]; then front="./rangiffler-frontend-gql/"; else front="./rangiffler-frontend/"; fi
+docker pull selenoid/vnc_chrome:128.0
+docker images | grep -E 'rangiffler|selenoid'
 
-cd "$front" || exit
-bash ./docker-build.sh test
-cd ../ || exit
-docker pull selenoid/vnc_chrome:110.0
-docker images
-ARCH="$DOCKER_ARCH" docker-compose -f docker-compose.test.yml up -d
-docker ps -a
+echo '### Start e2e stack ###'
+docker compose -f docker-compose.test.yml up -d
+docker compose -f docker-compose.test.yml ps

@@ -10,4 +10,6 @@ COPY ./rangiffler-grpc-common ./rangiffler-grpc-common
 COPY ./build.gradle ./
 COPY ./settings.gradle ./
 
-CMD chmod +x ./rangiffler-e-2-e-tests/send_results.sh; ./gradlew test -Dtest.environment=docker; bash ./rangiffler-e-2-e-tests/send_results.sh
+# Allure results land in build/allure-results — shared with the
+# allure-docker-service container via a compose volume.
+CMD ./gradlew :rangiffler-e-2-e-tests:test -Denv=docker

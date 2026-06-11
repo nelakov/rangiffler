@@ -51,4 +51,12 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    // Test JVM is forked: propagate -Denv so @Env-gated tests are not silently skipped
+    if (System.getProperty('env') != null) {
+        systemProperty 'env', System.getProperty('env')
+    }
+    testLogging {
+        exceptionFormat = 'full'
+        showCauses = true
+    }
 }

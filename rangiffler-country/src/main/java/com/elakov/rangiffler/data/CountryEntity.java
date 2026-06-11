@@ -16,7 +16,7 @@ public class CountryEntity {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", nullable = false, columnDefinition = "UUID")
+    @Column(name = "id", nullable = false)
     private UUID id;
 
     @Column(name = "country_code", nullable = false, unique = true)

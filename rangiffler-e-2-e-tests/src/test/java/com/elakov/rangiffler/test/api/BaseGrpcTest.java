@@ -2,8 +2,13 @@ package com.elakov.rangiffler.test.api;
 
 import com.elakov.rangiffler.api.grpc.CountryGrpcClient;
 import com.elakov.rangiffler.api.grpc.PhotoGrpcClient;
+import com.elakov.rangiffler.api.grpc.UserdataGrpcClient;
+import com.elakov.rangiffler.data.repository.country.CountryRepository;
+import com.elakov.rangiffler.data.repository.country.CountryRepositoryImpl;
 import com.elakov.rangiffler.data.repository.photo.PhotoRepository;
 import com.elakov.rangiffler.data.repository.photo.PhotoRepositoryImpl;
+import com.elakov.rangiffler.data.repository.userdata.UserdataRepository;
+import com.elakov.rangiffler.data.repository.userdata.UserdataRepositoryImpl;
 import com.elakov.rangiffler.jupiter.annotation.meta.GrpcTest;
 
 @GrpcTest
@@ -11,6 +16,9 @@ public class BaseGrpcTest {
 
     protected CountryGrpcClient countryGrpcClient = new CountryGrpcClient();
     protected PhotoGrpcClient photoGrpcClient = new PhotoGrpcClient();
+    protected UserdataGrpcClient userdataGrpcClient = new UserdataGrpcClient();
     protected PhotoRepository photoRepository = new PhotoRepositoryImpl();
+    protected CountryRepository countryRepository = new CountryRepositoryImpl();
+    protected UserdataRepository userdataRepository = new UserdataRepositoryImpl();
 
 }
