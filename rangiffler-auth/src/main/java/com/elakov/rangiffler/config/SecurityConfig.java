@@ -10,8 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -43,7 +45,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .permitAll())
                 .logout(logout ->
-                        logout.logoutUrl("/logout") // https://github.com/spring-projects/spring-authorization-server/issues/266
+                        // The SPA logs out via GET /logout; default logoutUrl only matches POST,
+                        // so a GET fell through to a 404 and the client never cleared the session
+                        // or redirected to /landing. Match GET explicitly.
+                        logout.logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, "/logout"))
                                 .deleteCookies("JSESSIONID", "XSRF-TOKEN")
                                 .invalidateHttpSession(true)
                                 .clearAuthentication(true)
