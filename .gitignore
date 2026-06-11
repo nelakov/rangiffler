@@ -47,3 +47,7 @@ out/
 ### Test artifacts ###
 ajcore.*.txt
 rangiffler-e-2-e-tests/logs/
+
+### Claude Code (local agent guidance, not shared) ###
+CLAUDE.md
+CLAUDE.local.md
