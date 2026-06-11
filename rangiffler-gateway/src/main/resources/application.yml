@@ -66,4 +66,8 @@ spring.grpc.client.channels:
     address: 'static://photo.rangiffler.dc:9021'
     negotiation-type: plaintext
     max-inbound-message-size: 50000000
+logging:
+  structured:
+    format:
+      console: ecs
 ---

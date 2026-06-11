@@ -72,4 +72,8 @@ rangiffler-client:
   base-uri: 'http://client.rangiffler.dc:3001'
 rangiffler-auth:
   base-uri: 'http://auth.rangiffler.dc:9000'
+logging:
+  structured:
+    format:
+      console: ecs
 ---
