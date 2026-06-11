@@ -1,5 +1,6 @@
 package com.elakov.rangiffler.test.api;
 
+import com.elakov.rangiffler.helper.AllureSoftSteps;
 import com.elakov.rangiffler.helper.comparator.JsonComparator;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
@@ -9,12 +10,14 @@ import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 
 import static com.elakov.rangiffler.helper.allure.tags.AllureOwner.ELAKOV;
 import static com.elakov.rangiffler.helper.allure.tags.AllureTag.API;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Owner(ELAKOV)
 @Epic("Auth service")
@@ -42,5 +45,21 @@ class AuthRestTest extends BaseRestTest {
                 .assertThatJson(tokenJson)
                 .ignorePaths("access_token", "id_token", "refresh_token", "expires_in")
                 .equalsToJson(expected);
+    }
+
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
+    @AllureId("5002")
+    @DisplayName("token endpoint response fields are all valid")
+    @CreateUser
+    void tokenResponseFieldsAreValid(UserJson user) {
+        JsonPath token = JsonPath.from(tokenResponse(user.username(), user.password()));
+
+        new AllureSoftSteps()
+                .add("token_type is Bearer", () -> assertThat(token.getString("token_type")).isEqualTo("Bearer"))
+                .add("scope is openid", () -> assertThat(token.getString("scope")).isEqualTo("openid"))
+                .add("access_token is present", () -> assertThat(token.getString("access_token")).isNotBlank())
+                .add("id_token is present", () -> assertThat(token.getString("id_token")).isNotBlank())
+                .add("expires_in is positive", () -> assertThat(token.getInt("expires_in")).isPositive())
+                .execute();
     }
 }
