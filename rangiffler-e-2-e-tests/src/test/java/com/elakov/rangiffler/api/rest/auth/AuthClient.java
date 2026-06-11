@@ -8,5 +8,7 @@ public interface AuthClient {
 
     String getToken();
 
+    String tokenResponseRaw();
+
     void register(String username, String password);
 }
