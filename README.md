@@ -6,9 +6,31 @@
 
 <p align="center"><i>I haven't been everywhere, but it's on my list</i></p>
 
-Rangiffler is a travel-tracking application built on a microservice architecture: upload photos from your trips, see them as marks on a world map, add friends and follow their journeys. The name combines *Rangifer* (the reindeer genus) with a love for wandering.
+<p align="center">
+<img src="https://img.shields.io/badge/Java-25-orange?logo=openjdk&logoColor=white" alt="Java 25"/>
+<img src="https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=springboot&logoColor=white" alt="Spring Boot 4.1"/>
+<img src="https://img.shields.io/badge/Security%207-OAuth2%20%2F%20JWT-6DB33F?logo=springsecurity&logoColor=white" alt="Spring Security 7"/>
+<img src="https://img.shields.io/badge/gRPC-1.82-244c5a?logo=grpc&logoColor=white" alt="gRPC"/>
+<img src="https://img.shields.io/badge/Kafka-KRaft-231F20?logo=apachekafka&logoColor=white" alt="Kafka"/>
+<br/>
+<img src="https://img.shields.io/badge/Gradle%209.4-Kotlin%20DSL-02303A?logo=gradle&logoColor=white" alt="Gradle Kotlin DSL"/>
+<img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19"/>
+<img src="https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white" alt="TypeScript 6"/>
+<img src="https://img.shields.io/badge/Tests-JUnit%206%20%2B%20Selenide-25A162?logo=junit5&logoColor=white" alt="JUnit 6 + Selenide"/>
+<img src="https://img.shields.io/badge/Reporting-Allure-FF7C00?logo=qameta&logoColor=white" alt="Allure"/>
+</p>
 
-The project doubles as a playground for a production-style test harness: Selenide UI tests, gRPC/API tests, JUnit extensions for test data setup, and Allure reporting.
+**Rangiffler** is a travel-tracking app on a microservice backbone: upload photos from your trips, watch them light up a world map, add friends and follow their journeys. The name fuses *Rangifer* (the reindeer genus) with an itch to wander.
+
+It is also a working reference for a **modern JVM stack on the leading edge** — Spring Boot 4 / Framework 7 / Security 7, the official Spring gRPC starters, Java 25 — wired to a **production-grade test harness**: Selenide UI tests, REST + gRPC API tests, JUnit extensions that seed data over the real APIs, structured logging, cross-service request tracing, and a custom Allure toolkit.
+
+### Highlights
+
+- **Polyglot service mesh** — REST at the edge, **gRPC between services**, Kafka for user events; one gateway fans out to four backends.
+- **Bleeding-edge Spring** — Boot 4.1, Framework 7, Security 7 OAuth2 Authorization Server + JWT resource server, official `org.springframework.grpc` starters (not the retired net.devh).
+- **Convention-plugin build** — Gradle **Kotlin DSL** with a `gradle/plugins` included build, modeled on the JUnit 5 repo: each module is ~12 lines, all shared config lives in `rangifflerbuild.*-conventions`.
+- **Traceable by design** — a `requestId` rides `X-Request-Id` → gRPC metadata → MDC → ECS JSON, so one trip request is greppable across every service log.
+- **Allure that actually helps** — structural JSON diffs, soft assertions as steps, p6spy SQL capture, and automatic secret masking, all attached to the report.
 
 ## Table of Contents
 
@@ -16,6 +38,7 @@ The project doubles as a playground for a production-style test harness: Selenid
 - [Architecture](#architecture)
 - [Service Ports](#service-ports)
 - [Modules](#modules)
+- [Build System](#build-system)
 - [Prerequisites](#prerequisites)
 - [Running Locally](#running-locally)
 - [Observability](#observability)
@@ -28,7 +51,7 @@ The project doubles as a playground for a production-style test harness: Selenid
 
 | Area | Technology |
 |------|-----------|
-| Language / build | Java 25, Gradle 9.4.1 (version catalog in `gradle/libs.versions.toml`) |
+| Language / build | Java 25, Gradle 9.4.1 **Kotlin DSL** — convention plugins in a `gradle/plugins` included build, version catalog in `gradle/libs.versions.toml` |
 | Framework | Spring Boot 4.1 (Spring Framework 7) |
 | Security | Spring Security 7 — OAuth2 Authorization Server (auth), JWT Resource Server (gateway) |
 | Inter-service RPC | [Spring gRPC](https://docs.spring.io/spring-grpc/reference/) 1.0 (official starters), gRPC 1.82, Protobuf 4.35 |
@@ -80,6 +103,47 @@ Browser ──► rangiffler-client (React SPA, :3001)
 | `rangiffler-grpc-common` | Shared `.proto` contracts; stubs generated into `build/generated/source/proto/` |
 | `rangiffler-client` | React SPA |
 | `rangiffler-e-2-e-tests` | Selenide UI tests + API tests with Allure reporting |
+
+## Build System
+
+The build is **Gradle Kotlin DSL** organized like the [JUnit 5 repository](https://github.com/junit-team/junit5): all shared configuration lives in a `gradle/plugins` **included build** as precompiled **convention plugins**, so each module's build file stays declarative and tiny.
+
+```
+gradle/
+├── libs.versions.toml                         # single source of truth for versions
+└── plugins/                                    # included build (its own settings.gradle.kts)
+    └── common/
+        └── src/main/kotlin/
+            ├── ProjectExtensions.kt            # catalog access helpers for convention plugins
+            ├── rangifflerbuild.java-conventions.gradle.kts            # toolchain 25, repos, JUnit platform, UTF-8
+            ├── rangifflerbuild.docker-conventions.gradle.kts         # single parameterized dockerBuild task
+            └── rangifflerbuild.spring-service-conventions.gradle.kts # java + boot + lombok + docker + test
+```
+
+A whole service is then just:
+
+```kotlin
+// rangiffler-country/rangiffler-country.gradle.kts
+plugins {
+    id("rangifflerbuild.spring-service-conventions")
+}
+
+dependencies {
+    implementation(projects.rangifflerGrpcCommon)   // type-safe project accessor
+    implementation(libs.spring.grpc.server.starter)
+    implementation(libs.spring.data.jpa.starter)
+    runtimeOnly(libs.mysql)
+    runtimeOnly(libs.flyway)
+    runtimeOnly(libs.flyway.mysql)
+}
+```
+
+Conventions worth knowing:
+
+- **Per-module build files are named `<module>.gradle.kts`**, not `build.gradle.kts` — enforced in `settings.gradle.kts` (`require(buildFile.isFile)`).
+- The type-safe `libs` accessor is **not** generated inside precompiled plugins; convention plugins reach the catalog through `ProjectExtensions.kt` (`dependencyFromLibs` / `bundleFromLibs` / `requiredVersionFromLibs`).
+- `dockerBuild` is defined **once** and derives its image name from `project.name` → `nelakov/<module>:<version>`.
+- Type-safe project accessors are on (`projects.rangifflerGrpcCommon`).
 
 ## Prerequisites
 
