@@ -14,9 +14,8 @@ import static com.elakov.rangiffler.helper.allure.AllureStepHelper.step;
 public class MapComponent extends BaseComponent<MapComponent> {
 
     private final SelenideElement zoomIcon = $("svg[data-testid='ZoomInIcon']");
-    private final SelenideElement worldIcon = $("svg.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.css-x0sd41-MuiSvgIcon-root[data-testid='PublicIcon']");
+    private final SelenideElement worldIcon = $("svg[data-testid='PublicIcon']");
 
-    // Map ToolTip
     SelenideElement visitedCountryIcon = $("polygon[fill='black'][visibility='visible']");
     SelenideElement countryToolTip = $("rect[fill='black'][visibility='visible']");
     SelenideElement textsToolTip = $("text[fill='white'][visibility='visible']");
