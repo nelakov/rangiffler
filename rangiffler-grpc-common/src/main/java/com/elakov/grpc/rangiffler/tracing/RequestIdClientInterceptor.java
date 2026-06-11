@@ -14,6 +14,11 @@ import org.slf4j.MDC;
  * callee can continue the same trace. start() runs on the caller thread
  * (blocking stub), where the id was placed by the gateway's servlet filter
  * or by {@link RequestIdServerInterceptor} on an upstream hop.
+ *
+ * Limitation: this relies on the request-id being in MDC on the thread that
+ * calls start(). That holds for blocking stubs (the only kind used here). With
+ * async/future stubs start() may run on a different thread and the id would be
+ * lost — pass it explicitly via CallOptions/Context in that case.
  */
 public class RequestIdClientInterceptor implements ClientInterceptor {
 
