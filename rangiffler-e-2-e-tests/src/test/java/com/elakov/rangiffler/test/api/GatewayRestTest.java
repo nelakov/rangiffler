@@ -2,6 +2,7 @@ package com.elakov.rangiffler.test.api;
 
 import com.elakov.rangiffler.data.entity.country.CountryEntity;
 import com.elakov.rangiffler.data.entity.userdata.UserEntity;
+import com.elakov.rangiffler.helper.comparator.JsonComparator;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.model.CountryJson;
@@ -81,5 +82,32 @@ class GatewayRestTest extends BaseRestTest {
         int status = gatewayApiClient.currentUserStatus("not-a-valid-jwt");
 
         assertThat(status).isEqualTo(401);
+    }
+
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
+    @AllureId("4005")
+    @DisplayName("GET /currentUser body matches the expected JSON (structural diff attached to Allure)")
+    @CreateUser
+    void currentUserBodyMatchesExpectedJson(UserJson user) {
+        String token = login(user.username(), user.password());
+
+        String body = gatewayApiClient.currentUserRaw(token);
+
+        // The id is server-generated → ignored; everything else must match. On a
+        // mismatch JsonComparator attaches a side-by-side Actual/Expect diff to Allure.
+        String expected = """
+                {
+                  "id": "ignored",
+                  "username": "%s",
+                  "firstName": null,
+                  "lastName": null,
+                  "avatar": null,
+                  "friendStatus": "NOT_FRIEND"
+                }""".formatted(user.username());
+
+        new JsonComparator()
+                .assertThatJson(body)
+                .ignorePaths("id")
+                .equalsToJson(expected);
     }
 }
