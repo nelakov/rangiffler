@@ -159,8 +159,35 @@ public class UserService {
         final String password = DataFakeHelper.generateRandomPassword();
         authClient.register(username, password);
 
-        UserJson user = userdataClient.currentUser(username);
-        return user.withPassword(password);
+        return awaitCurrentUser(username).withPassword(password);
     }
 
+    /**
+     * Registration creates the userdata row asynchronously (auth -> Kafka -> userdata),
+     * which races the lazy create-if-absent in /currentUser and can transiently 500
+     * (duplicate key). Retry until the row settles instead of relying on timing.
+     */
+    private UserJson awaitCurrentUser(String username) {
+        for (int attempt = 1; attempt <= CURRENT_USER_RETRIES; attempt++) {
+            UserJson user = userdataClient.currentUser(username);
+            if (user != null) {
+                return user;
+            }
+            sleep(CURRENT_USER_RETRY_DELAY_MS);
+        }
+        throw new IllegalStateException("userdata did not return a user for " + username
+                + " after " + CURRENT_USER_RETRIES + " attempts");
+    }
+
+    private static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static final int CURRENT_USER_RETRIES = 10;
+    private static final long CURRENT_USER_RETRY_DELAY_MS = 200;
 }
