@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "default": "128.0",
+    "versions": {
+      "128.0": {
+        "image": "selenoid/vnc_chrome:128.0",
+        "port": "4444",
+        "path": "/",
+        "env": ["TZ=Europe/Moscow"]
+      }
+    }
+  }
+}

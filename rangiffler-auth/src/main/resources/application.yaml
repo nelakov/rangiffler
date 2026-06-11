@@ -62,6 +62,8 @@ spring:
   config:
     activate:
       on-profile: 'docker'
+  kafka:
+    bootstrap-servers: 'kafka:9092'
   datasource:
     url: jdbc:mysql://rangiffler-all-db:3306/rangiffler-auth?serverTimezone=UTC&createDatabaseIfNotExist=true
   jpa:
@@ -69,7 +71,7 @@ spring:
     hibernate:
       ddl-auto: validate
 rangiffler-client:
-  base-uri: 'http://client.rangiffler.dc'
+  base-uri: 'http://client.rangiffler.dc:3001'
 rangiffler-auth:
   base-uri: 'http://auth.rangiffler.dc:9000'
 ---

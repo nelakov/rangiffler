@@ -1,22 +1,56 @@
-version: '3.9'
+# Rangiffler full stack.
+#
+# Build images first:
+#   ./gradlew clean build dockerBuild -x test
+#   docker build -t nelakov/rangiffler-client:latest rangiffler-client
+#
+# Browser-facing services use *.rangiffler.dc hostnames; add to /etc/hosts:
+#   127.0.0.1 auth.rangiffler.dc gateway.rangiffler.dc client.rangiffler.dc
+#
+# Then: docker compose up -d  →  http://client.rangiffler.dc:3001
+
+name: rangiffler
 
 services:
   rangiffler-all-db:
     container_name: rangiffler-all-db
-    image: postgres:15.1
+    image: mysql:8.0
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-psecret" ]
       interval: 3s
       timeout: 3s
-      retries: 5
+      retries: 10
     expose:
-      - "5432"
+      - "3306"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    restart: always
+      - mysqldata:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  kafka:
+    container_name: kafka
+    image: apache/kafka:latest
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9092'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    expose:
+      - "9092"
+    restart: unless-stopped
     networks:
       - rangiffler-network
     dns_search: .
@@ -27,55 +61,31 @@ services:
     ports:
       - "9000:9000"
     healthcheck:
-      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9000'" ]
       interval: 5s
       timeout: 5s
       retries: 10
-    restart: always
+    restart: unless-stopped
     depends_on:
       rangiffler-all-db:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
     networks:
       - rangiffler-network
     dns_search: .
 
-  currency.rangiffler.dc:
-    container_name: currency.rangiffler.dc
-    image: nelakov/rangiffler-currency:latest
+  country.rangiffler.dc:
+    container_name: country.rangiffler.dc
+    image: nelakov/rangiffler-country:latest
     expose:
-      - "8091"
-      - "8092"
-    restart: always
-    depends_on:
-      rangiffler-all-db:
-        condition: service_healthy
-    networks:
-      - rangiffler-network
-    dns_search: .
-
-  gateway.rangiffler.dc:
-    container_name: gateway.rangiffler.dc
-    image: nelakov/rangiffler-gateway:latest
-    ports:
-      - "8090:8090"
+      - "9011"
     healthcheck:
-      test: "wget --spider http://localhost:8090/actuator/health || exit 1"
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9011'" ]
       interval: 5s
       timeout: 5s
       retries: 10
-    restart: always
-    depends_on:
-      - auth.rangiffler.dc
-    networks:
-      - rangiffler-network
-    dns_search: .
-
-  spend.rangiffler.dc:
-    container_name: spend.rangiffler.dc
-    image: nelakov/rangiffler-spend:latest
-    expose:
-      - "8093"
-    restart: always
+    restart: unless-stopped
     depends_on:
       rangiffler-all-db:
         condition: service_healthy
@@ -87,8 +97,14 @@ services:
     container_name: userdata.rangiffler.dc
     image: nelakov/rangiffler-userdata:latest
     expose:
-      - "8089"
-    restart: always
+      - "9030"
+      - "9031"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9031'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
     depends_on:
       rangiffler-all-db:
         condition: service_healthy
@@ -96,12 +112,58 @@ services:
       - rangiffler-network
     dns_search: .
 
-  frontend.rangiffler.dc:
-    container_name: frontend.rangiffler.dc
-    image: nelakov/rangiffler-frontend:latest
+  photo.rangiffler.dc:
+    container_name: photo.rangiffler.dc
+    image: nelakov/rangiffler-photo:latest
+    expose:
+      - "9021"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9021'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+      country.rangiffler.dc:
+        condition: service_healthy
+      userdata.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  gateway.rangiffler.dc:
+    container_name: gateway.rangiffler.dc
+    image: nelakov/rangiffler-gateway:latest
     ports:
-      - "80:80"
-    restart: always
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8080'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+      country.rangiffler.dc:
+        condition: service_healthy
+      photo.rangiffler.dc:
+        condition: service_healthy
+      userdata.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  client.rangiffler.dc:
+    container_name: client.rangiffler.dc
+    image: nelakov/rangiffler-client:latest
+    ports:
+      - "3001:80"
+    restart: unless-stopped
     depends_on:
       gateway.rangiffler.dc:
         condition: service_healthy
@@ -110,8 +172,7 @@ services:
     dns_search: .
 
 volumes:
-  pgdata:
-    external: true
+  mysqldata:
 
 networks:
   rangiffler-network:
