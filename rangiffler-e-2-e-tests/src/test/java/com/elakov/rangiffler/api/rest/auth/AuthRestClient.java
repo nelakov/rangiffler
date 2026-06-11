@@ -73,20 +73,28 @@ public class AuthRestClient extends BaseRestClient implements AuthClient {
 
     @Override
     public String getToken() {
+        String token = tokenRequest().post("/oauth2/token").jsonPath().getString("id_token");
+        SessionContext.getInstance().setToken(token);
+        return token;
+    }
+
+    /** Raw /oauth2/token JSON body — for JsonComparator (structural diff in Allure).
+     * The authorization code is single-use, so call this OR getToken in a flow, not both. */
+    public String tokenResponseRaw() {
+        return tokenRequest().post("/oauth2/token").getBody().asString();
+    }
+
+    private RequestSpecification tokenRequest() {
         String basic = "Basic " + Base64.getEncoder()
                 .encodeToString("client:secret".getBytes(StandardCharsets.UTF_8));
-        String token = spec()
+        return spec()
                 .header("Authorization", basic)
                 .contentType(ContentType.URLENC)
                 .formParam("client_id", "client")
                 .formParam("redirect_uri", CLIENT_BASE_URL + "/authorized")
                 .formParam("grant_type", "authorization_code")
                 .formParam("code", SessionContext.getInstance().getCode())
-                .formParam("code_verifier", SessionContext.getInstance().getCodeVerifier())
-                .post("/oauth2/token")
-                .jsonPath().getString("id_token");
-        SessionContext.getInstance().setToken(token);
-        return token;
+                .formParam("code_verifier", SessionContext.getInstance().getCodeVerifier());
     }
 
     @Override

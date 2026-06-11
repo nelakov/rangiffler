@@ -41,6 +41,25 @@ public class BaseRestTest {
         }
     }
 
+    /**
+     * Runs the PKCE flow up to the code exchange and returns the raw /oauth2/token
+     * JSON body (instead of just the id_token). For asserting the token response shape.
+     */
+    protected String tokenResponse(String username, String password) {
+        try {
+            SessionContext session = SessionContext.getInstance();
+            String codeVerifier = OauthUtils.generateCodeVerifier();
+            session.setCodeChallenge(OauthUtils.generateCodeChallenge(codeVerifier));
+            session.setCodeVerifier(codeVerifier);
+
+            authClient.authorizePreRequest();
+            authClient.login(username, password);
+            return authClient.tokenResponseRaw();
+        } catch (Throwable e) {
+            throw new RuntimeException("Browserless token exchange failed for " + username, e);
+        }
+    }
+
     @AfterEach
     void releaseAuthContext() {
         SessionContext.getInstance().release();
