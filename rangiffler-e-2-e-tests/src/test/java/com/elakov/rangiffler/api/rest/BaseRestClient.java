@@ -1,50 +1,43 @@
 package com.elakov.rangiffler.api.rest;
 
 import com.elakov.rangiffler.config.services.ServicesConfig;
-import lombok.extern.slf4j.Slf4j;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.OkHttpClient.Builder;
-import okhttp3.logging.HttpLoggingInterceptor;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.aeonbits.owner.ConfigCache;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
+import static io.restassured.RestAssured.given;
 
-@Slf4j
+/**
+ * rest-assured base for the e2e REST clients. {@link #spec()} returns a request
+ * spec bound to the service base URI with the Allure filter attached, so every
+ * request/response is auto-attached to the report. Subclasses add what they
+ * need (cookies, redirect control, bearer token).
+ */
 public abstract class BaseRestClient {
 
     protected static final ServicesConfig CFG = ConfigCache.getOrCreate(ServicesConfig.class, System.getProperties());
-    protected final String serviceBaseUrl;
-    protected final OkHttpClient httpClient;
-    protected final Retrofit retrofit;
-    public BaseRestClient(String serviceBaseUrl) {
-        this(serviceBaseUrl, false, null);
-    }
-    public BaseRestClient(String serviceBaseUrl, boolean followRedirect) {
-        this(serviceBaseUrl, followRedirect, null);
+
+    protected final String baseUri;
+
+    protected BaseRestClient(String baseUri) {
+        this.baseUri = baseUri;
     }
 
-    public BaseRestClient(String serviceBaseUrl, boolean followRedirect, Interceptor... interceptors) {
-        this.serviceBaseUrl = serviceBaseUrl;
-        Builder builder = new Builder()
-                .followRedirects(followRedirect);
-
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
-                builder.addNetworkInterceptor(interceptor);
-            }
-        }
-
-        builder.addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BODY));
-        this.httpClient = builder.build();
-
-        this.retrofit = new Retrofit.Builder()
-                .client(httpClient)
-                .baseUrl(serviceBaseUrl)
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
+    protected RequestSpecification spec() {
+        return given()
+                .baseUri(baseUri)
+                .filter(new AllureMaskingFilter());
     }
 
+    /**
+     * Deserializes the body only on a 2xx response, else returns null — matching
+     * the prior Retrofit clients ({@code response.body()} was null on non-2xx).
+     * Keeps the transient currentUser/Kafka create race surfacing as the same
+     * downstream NPE the retry net already absorbs, rather than a parse error.
+     */
+    protected <T> T asOrNull(Response response, Class<T> type) {
+        return (response.statusCode() >= 200 && response.statusCode() < 300)
+                ? response.as(type)
+                : null;
+    }
 }

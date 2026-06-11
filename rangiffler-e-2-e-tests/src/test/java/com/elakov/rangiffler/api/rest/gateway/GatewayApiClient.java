@@ -3,10 +3,9 @@ package com.elakov.rangiffler.api.rest.gateway;
 import com.elakov.rangiffler.api.rest.BaseRestClient;
 import com.elakov.rangiffler.model.CountryJson;
 import com.elakov.rangiffler.model.UserJson;
-import retrofit2.Call;
-import retrofit2.Response;
+import io.restassured.response.Response;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.elakov.rangiffler.config.services.ServicesProperties.GATEWAY_BASE_URL;
@@ -17,51 +16,35 @@ import static com.elakov.rangiffler.config.services.ServicesProperties.GATEWAY_B
  */
 public class GatewayApiClient extends BaseRestClient {
 
-    private final GatewayApi api;
-
     public GatewayApiClient() {
         super(GATEWAY_BASE_URL);
-        this.api = retrofit.create(GatewayApi.class);
     }
 
     public List<CountryJson> allCountries(String token) {
-        return body(api.allCountries(bearer(token)));
+        return Arrays.asList(ok(bearer(token).get("/countries")).as(CountryJson[].class));
     }
 
     public UserJson currentUser(String token) {
-        return body(api.currentUser(bearer(token)));
+        return ok(bearer(token).get("/currentUser")).as(UserJson.class);
     }
 
     public List<UserJson> allUsers(String token) {
-        return body(api.allUsers(bearer(token)));
+        return Arrays.asList(ok(bearer(token).get("/users")).as(UserJson[].class));
     }
 
     /** Raw HTTP status for negative/security cases (e.g. missing/invalid token). */
     public int currentUserStatus(String token) {
-        return code(api.currentUser(bearer(token)));
+        return bearer(token).get("/currentUser").statusCode();
     }
 
-    private static String bearer(String token) {
-        return "Bearer " + token;
+    private io.restassured.specification.RequestSpecification bearer(String token) {
+        return spec().header("Authorization", "Bearer " + token);
     }
 
-    private static <T> T body(Call<T> call) {
-        try {
-            Response<T> response = call.execute();
-            if (!response.isSuccessful()) {
-                throw new IllegalStateException("Gateway returned HTTP " + response.code());
-            }
-            return response.body();
-        } catch (IOException e) {
-            throw new RuntimeException("Gateway call failed", e);
+    private static Response ok(Response response) {
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new IllegalStateException("Gateway returned HTTP " + response.statusCode());
         }
-    }
-
-    private static <T> int code(Call<T> call) {
-        try {
-            return call.execute().code();
-        } catch (IOException e) {
-            throw new RuntimeException("Gateway call failed", e);
-        }
+        return response;
     }
 }

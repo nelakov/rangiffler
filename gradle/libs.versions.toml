@@ -28,9 +28,8 @@ hibernate = "7.4.1.Final"
 p6spy = "3.9.1"
 sql-formatter = "2.0.5"
 
-# HTTP clients
-retrofit = "3.0.0"
-okhttp3-logging = "5.4.0"
+# HTTP / API testing
+rest-assured = "6.0.0"
 
 # Testing
 junit-jupiter = "6.1.0"
@@ -102,10 +101,8 @@ hibernate = { module = "org.hibernate.orm:hibernate-core", version.ref = "hibern
 p6spy = { module = "p6spy:p6spy", version.ref = "p6spy" }
 sql-formatter = { module = "com.github.vertical-blank:sql-formatter", version.ref = "sql-formatter" }
 
-# HTTP clients
-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-retrofit-converter = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }
-okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp3-logging" }
+# HTTP / API testing
+rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "rest-assured" }
 
 # Testing
 junit5-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
@@ -150,7 +147,7 @@ database = ["mysql", "hibernate", "p6spy", "sql-formatter", "spring-security-cry
 
 logs = ["logback-classic", "logback-core", "slf4j-api", "slf4j-jul"]
 
-retrofit = ["retrofit", "retrofit-converter", "okhttp3-logging-interceptor"]
+rest-assured = ["rest-assured"]
 
 spring-boot-starter-auth = [
     "spring-boot-starter",

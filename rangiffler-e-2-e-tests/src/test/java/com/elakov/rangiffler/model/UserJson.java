@@ -43,4 +43,16 @@ public record UserJson(
         return new UserJson(id, username, firstName, lastName, avatar, password,
                 friendStatus, friends, outcomeInvitations, incomeInvitations, photos, avatarClassPath);
     }
+
+    // Mask the password — the record is captured as a test parameter in Allure
+    // (via toString), and the default record toString would expose it.
+    @Override
+    public String toString() {
+        return "UserJson[id=" + id + ", username=" + username + ", firstName=" + firstName
+                + ", lastName=" + lastName + ", avatar=" + avatar
+                + ", password=" + (password == null ? "null" : "***")
+                + ", friendStatus=" + friendStatus + ", friends=" + friends
+                + ", outcomeInvitations=" + outcomeInvitations + ", incomeInvitations=" + incomeInvitations
+                + ", photos=" + photos + ", avatarClassPath=" + avatarClassPath + "]";
+    }
 }
