@@ -1,18 +1,14 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    java
+    id("rangifflerbuild.java-conventions")
     alias(libs.plugins.allure.report)
     alias(libs.plugins.allure.adapter)
     alias(libs.plugins.lombok)
 }
 
-group = libs.versions.group.get()
-version = libs.versions.app.get()
-
 repositories {
     gradlePluginPortal()
-    mavenCentral()
 }
 
 allure {
@@ -34,7 +30,7 @@ allure {
 dependencies {
     implementation(libs.jakarta.validation)
     implementation(libs.jakarta.annotation)
-    testImplementation(project(":rangiffler-grpc-common"))
+    testImplementation(projects.rangifflerGrpcCommon)
     testImplementation(libs.junit5.jupiter)
     testImplementation(libs.bundles.selenide)
     testImplementation(libs.bundles.allure)
@@ -45,12 +41,7 @@ dependencies {
     testImplementation(libs.bundles.test.utils)
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-}
-
 tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
     // Test JVM is forked: propagate -Denv so @Env-gated tests are not silently skipped
     System.getProperty("env")?.let { systemProperty("env", it) }
     testLogging {

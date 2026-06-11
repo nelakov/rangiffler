@@ -14,14 +14,3 @@ java {
 repositories {
     mavenCentral()
 }
-
-subprojects {
-    extra["dockerImage"] = if (System.getProperty("os.arch") in listOf("aarch64", "arm64"))
-        "arm64v8/eclipse-temurin:25-jre"
-    else
-        "eclipse-temurin:25-jre"
-}
-
-tasks.named<Test>("test") {
-    useJUnitPlatform()
-}

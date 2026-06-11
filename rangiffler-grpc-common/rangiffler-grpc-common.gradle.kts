@@ -1,17 +1,9 @@
 import com.google.protobuf.gradle.id
 
 plugins {
-    id("java-library")
-    idea
+    id("rangifflerbuild.java-conventions")
+    `java-library`
     alias(libs.plugins.google.protobuf)
-}
-
-group = libs.versions.group.get()
-version = libs.versions.app.get()
-
-repositories {
-    mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
