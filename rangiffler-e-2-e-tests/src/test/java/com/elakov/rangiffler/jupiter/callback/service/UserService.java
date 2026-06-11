@@ -105,7 +105,7 @@ public class UserService {
     private void addFriendsIfPresent(UserJson targetUser, CreateFriend[] createFriends) {
         if (createFriends != null && createFriends.length > 0) {
             for (CreateFriend createFriend : createFriends) {
-                UserJson friendJson = createRandomUserViaApi();
+                UserJson friendJson = createFriendViaApi(createFriend);
                 userdataClient.addFriend(targetUser.username(), friendJson.username());
                 userdataClient.acceptInvitation(friendJson.username(), targetUser.username());
                 addPhotoIfPresent(friendJson, createFriend.photos());
@@ -117,7 +117,7 @@ public class UserService {
     private void addOutcomeInvitationsIfPresent(UserJson targetUser, CreateFriend[] outcomeInvitations) {
         if (outcomeInvitations != null && outcomeInvitations.length > 0) {
             for (CreateFriend oi : outcomeInvitations) {
-                UserJson friendJson = createRandomUserViaApi();
+                UserJson friendJson = createFriendViaApi(oi);
                 userdataClient.addFriend(targetUser.username(), friendJson.username());
                 targetUser.outcomeInvitations().add(friendJson);
             }
@@ -127,15 +127,35 @@ public class UserService {
     private void addIncomeInvitationsIfPresent(UserJson targetUser, CreateFriend[] incomeInvitations) {
         if (incomeInvitations != null && incomeInvitations.length > 0) {
             for (CreateFriend ii : incomeInvitations) {
-                UserJson friendJson = createRandomUserViaApi();
+                UserJson friendJson = createFriendViaApi(ii);
                 userdataClient.addFriend(friendJson.username(), targetUser.username());
                 targetUser.incomeInvitations().add(friendJson);
             }
         }
     }
 
+    /**
+     * Creates a friend from a {@link CreateFriend} spec: a fixed username if given
+     * (else random), and applies first/last name when specified — so tests can
+     * assert on a friend's identity, not just their photos.
+     */
+    private UserJson createFriendViaApi(CreateFriend createFriend) {
+        UserJson friend = createFriend.username().isEmpty()
+                ? createRandomUserViaApi()
+                : createUserViaApi(createFriend.username());
+
+        if (!createFriend.firstname().isEmpty() || !createFriend.lastname().isEmpty()) {
+            friend = friend.withUserInfo(createFriend.firstname(), createFriend.lastname(), friend.avatar());
+            userdataClient.updateUserInfo(friend);
+        }
+        return friend;
+    }
+
     private UserJson createRandomUserViaApi() {
-        final String username = DataFakeHelper.generateRandomUsername();
+        return createUserViaApi(DataFakeHelper.generateRandomUsername());
+    }
+
+    private UserJson createUserViaApi(String username) {
         final String password = DataFakeHelper.generateRandomPassword();
         authClient.register(username, password);
 
