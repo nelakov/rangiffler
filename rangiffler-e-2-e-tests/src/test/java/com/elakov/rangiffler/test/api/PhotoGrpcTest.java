@@ -5,6 +5,7 @@ import com.elakov.grpc.rangiffler.grpc.Photo;
 import com.elakov.grpc.rangiffler.grpc.PhotoArray;
 import com.elakov.grpc.rangiffler.grpc.PhotoID;
 import com.elakov.rangiffler.data.entity.photo.PhotoEntity;
+import com.elakov.rangiffler.helper.AllureSoftSteps;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreatePhoto;
@@ -53,15 +54,16 @@ class PhotoGrpcTest extends BaseGrpcTest {
                 .build();
 
         Photo response = photoGrpcClient.addPhoto(request);
-
-        assertThat(response.getId()).isNotBlank();
-        assertThat(response.getUsername()).isEqualTo(user.username());
-        assertThat(response.getCountryCode().getCode()).isEqualTo("GE");
-
         PhotoEntity inDb = photoRepository.findByUsername(user.username());
-        assertThat(inDb).isNotNull();
-        assertThat(inDb.getCountryCode()).isEqualTo("GE");
-        assertThat(inDb.getDescription()).isEqualTo("Tbilisi");
+
+        new AllureSoftSteps()
+                .add("response has an id", () -> assertThat(response.getId()).isNotBlank())
+                .add("response username matches", () -> assertThat(response.getUsername()).isEqualTo(user.username()))
+                .add("response country is GE", () -> assertThat(response.getCountryCode().getCode()).isEqualTo("GE"))
+                .add("photo row exists in the DB", () -> assertThat(inDb).isNotNull())
+                .add("DB country is GE", () -> assertThat(inDb.getCountryCode()).isEqualTo("GE"))
+                .add("DB description is Tbilisi", () -> assertThat(inDb.getDescription()).isEqualTo("Tbilisi"))
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -70,13 +72,14 @@ class PhotoGrpcTest extends BaseGrpcTest {
     @CreateUser(photos = @CreatePhoto(photoPath = GEORGIA_PHOTO, countryCode = "GE", description = "Georgia"))
     void getPhotosForUserMatchesDatabase(UserJson user) {
         PhotoArray photos = photoGrpcClient.getUserPhotos(user.username());
-
-        assertThat(photos.getPhotoArrayList()).hasSize(1);
-        assertThat(photos.getPhotoArray(0).getCountryCode().getCode()).isEqualTo("GE");
-        assertThat(photos.getPhotoArray(0).getDescription()).isEqualTo("Georgia");
-
         List<PhotoEntity> inDb = photoRepository.findAllByUsername(user.username());
-        assertThat(inDb).hasSize(1);
+
+        new AllureSoftSteps()
+                .add("one photo returned", () -> assertThat(photos.getPhotoArrayList()).hasSize(1))
+                .add("country is GE", () -> assertThat(photos.getPhotoArray(0).getCountryCode().getCode()).isEqualTo("GE"))
+                .add("description is Georgia", () -> assertThat(photos.getPhotoArray(0).getDescription()).isEqualTo("Georgia"))
+                .add("one photo row in the DB", () -> assertThat(inDb).hasSize(1))
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -90,10 +93,12 @@ class PhotoGrpcTest extends BaseGrpcTest {
                 "updated description", user.username(), original.photoClassPath());
 
         PhotoJson response = photoGrpcClient.editPhoto(edited);
-
-        assertThat(response.description()).isEqualTo("updated description");
         PhotoEntity inDb = photoRepository.findById(original.id());
-        assertThat(inDb.getDescription()).isEqualTo("updated description");
+
+        new AllureSoftSteps()
+                .add("response description updated", () -> assertThat(response.description()).isEqualTo("updated description"))
+                .add("DB description updated", () -> assertThat(inDb.getDescription()).isEqualTo("updated description"))
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -105,8 +110,10 @@ class PhotoGrpcTest extends BaseGrpcTest {
 
         photoGrpcClient.deletePhoto(PhotoID.newBuilder().setId(photoId.toString()).build());
 
-        assertThat(photoGrpcClient.getUserPhotos(user.username()).getPhotoArrayList()).isEmpty();
-        assertThat(photoRepository.findAllByUsername(user.username())).isEmpty();
+        new AllureSoftSteps()
+                .add("photo gone from the service", () -> assertThat(photoGrpcClient.getUserPhotos(user.username()).getPhotoArrayList()).isEmpty())
+                .add("photo gone from the DB", () -> assertThat(photoRepository.findAllByUsername(user.username())).isEmpty())
+                .execute();
     }
 
     @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
@@ -117,8 +124,10 @@ class PhotoGrpcTest extends BaseGrpcTest {
     void getAllFriendsPhotoReturnsFriendPhotos(UserJson user) {
         PhotoArray friendsPhotos = photoGrpcClient.getAllFriendsPhotos(user.username());
 
-        assertThat(friendsPhotos.getPhotoArrayList()).hasSize(1);
-        assertThat(friendsPhotos.getPhotoArray(0).getDescription()).isEqualTo("friend trip");
-        assertThat(friendsPhotos.getPhotoArray(0).getCountryCode().getCode()).isEqualTo("GE");
+        new AllureSoftSteps()
+                .add("one friend photo", () -> assertThat(friendsPhotos.getPhotoArrayList()).hasSize(1))
+                .add("description is 'friend trip'", () -> assertThat(friendsPhotos.getPhotoArray(0).getDescription()).isEqualTo("friend trip"))
+                .add("country is GE", () -> assertThat(friendsPhotos.getPhotoArray(0).getCountryCode().getCode()).isEqualTo("GE"))
+                .execute();
     }
 }
