@@ -17,7 +17,8 @@ jakarta-validation = "3.1.1"
 
 # gRPC & Protobuf
 grpc-version = "1.82.0"
-protobuf-version = "4.35.0"
+# Aligned with spring-grpc BOM-managed runtime: gencode must not be newer than runtime
+protobuf-version = "4.34.2"
 javax-annotation = "1.3.2"
 protobuf-plugin = "0.10.0"
 
@@ -33,6 +34,8 @@ okhttp3-logging = "5.4.0"
 
 # Testing
 junit-jupiter = "6.1.0"
+kafka-clients = "4.1.0"
+awaitility = "4.3.0"
 allure-bom = "2.35.2"
 selenide = "7.16.2"
 assertj = "3.27.7"
@@ -68,6 +71,7 @@ spring-boot-services-starter = { module = "org.springframework.boot:spring-boot-
 spring-oauth2-starter = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-resource-server" }
 
 # Spring (versioned separately from BOM)
+spring-kafka-starter = { module = "org.springframework.boot:spring-boot-starter-kafka" }
 spring-kafka = { module = "org.springframework.kafka:spring-kafka", version.ref = "spring-kafka" }
 spring-data-commons = { module = "org.springframework.data:spring-data-commons", version.ref = "spring-data-commons" }
 spring-security-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "spring-crypto" }
@@ -112,6 +116,8 @@ selenide-core = { module = "com.codeborne:selenide-core", version.ref = "selenid
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 datafaker = { module = "net.datafaker:datafaker", version.ref = "datafaker" }
 database-rider-core = { module = "com.github.database-rider:rider-core", version.ref = "database-rider" }
+kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
 database-rider-junit5 = { module = "com.github.database-rider:rider-junit5", version.ref = "database-rider" }
 
 # Logging
@@ -121,6 +127,9 @@ logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback"
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 # Utilities
+# Explicit: spring-security-oauth2-authorization-server wrongly excludes it from
+# spring-core, but Framework 7 requires it (spring-jcl is gone). See spring-security#18372.
+commons-logging = { module = "commons-logging:commons-logging", version = "1.3.5" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 aeonbits-owner = { module = "org.aeonbits.owner:owner", version.ref = "owner" }
 findbugs = { module = "com.google.code.findbugs:jsr305", version.ref = "google-findbugs" }
@@ -174,6 +183,8 @@ test-utils = [
     "datafaker",
     "database-rider-core",
     "database-rider-junit5",
+    "kafka-clients",
+    "awaitility",
 ]
 
 [plugins]

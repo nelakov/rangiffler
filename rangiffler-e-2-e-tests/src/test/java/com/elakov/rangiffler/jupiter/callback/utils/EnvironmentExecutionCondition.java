@@ -34,10 +34,12 @@ public class EnvironmentExecutionCondition implements ExecutionCondition {
 
     private Set<String> getEnabledEnvironments(ExtensionContext context) {
         Set<String> enabledEnvironments = new HashSet<>();
-        context.getElement().ifPresent(element -> AnnotationSupport.findAnnotation(element, Env.class)
+        // method-level @Env wins; fall back to the class-level annotation, otherwise
+        // every method of an @Env-annotated class is silently disabled
+        context.getElement().flatMap(element -> AnnotationSupport.findAnnotation(element, Env.class))
+                .or(() -> context.getTestClass().flatMap(clazz -> AnnotationSupport.findAnnotation(clazz, Env.class)))
                 .map(Env::enabledFor)
-                .ifPresent(array -> enabledEnvironments.addAll(Arrays.asList(array)))
-        );
+                .ifPresent(array -> enabledEnvironments.addAll(Arrays.asList(array)));
         return enabledEnvironments;
     }
 }

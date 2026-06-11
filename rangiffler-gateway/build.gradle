@@ -31,6 +31,7 @@ dependencies {
             libs.spring.grpc.client.starter,
             libs.reactor.netty
     )
+    runtimeOnly(libs.commons.logging)
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
