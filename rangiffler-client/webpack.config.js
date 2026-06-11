@@ -46,7 +46,9 @@ module.exports = {
   },
   plugins: [
     new Dotenv({
-      path: `./.env.${process.env.NODE_ENV === "development" ? "dev" : process.env.NODE_ENV === "production" ? "docker" : "test"}`,
+      // e2e: production-mode build (no react-refresh overlay) pointed at the
+      // local backend, for web tests that must run against the prod artifact.
+      path: `./.env.${process.env.NODE_ENV === "development" ? "dev" : process.env.NODE_ENV === "e2e" ? "e2e" : process.env.NODE_ENV === "production" ? "docker" : "test"}`,
     }),
     new HTMLWebpackPlugin({
       template: "./index.html",

@@ -115,8 +115,10 @@ annotations, @RetryingTest, custom AssertJ/SoftAssertions, Selenide conditions.
   noise). Deferred from the niffler-parity branch to keep the merge focused;
   needs careful gRPC metadata propagation. Motivated by this session: hours lost
   grepping noisy plain-text logs (Kafka trace, OAuth exchange, test stdout).
-- **Web e2e against production frontend build** — run UI tests against the nginx
-  static build, not `npm start`; the dev server's react-refresh-overlay iframe
-  intercepts Selenide clicks (false failures in ProfileTest 1014/1015).
+- **Web e2e against production frontend build** — DONE: `npm run start:e2e`
+  (NODE_ENV=e2e -> .env.e2e localhost + webpack --mode production) serves the
+  prod artifact at :3001 with no react-refresh overlay. Verified: served bundle
+  has 0 react-refresh refs, SPA fallback 200. Full live ProfileTest re-run not
+  re-executed (cause deterministically removed).
 - **Nested data-factory annotations** — @CreateFriend recursion (friends-of-friends)
   + friendship-status params; current flat graph covers friends/invitations/photos.
