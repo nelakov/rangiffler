@@ -85,7 +85,7 @@ country    photo     userdata
 - **Java 25** with Gradle 9.4.1 toolchain
 - **Spring Boot 4.1.0** (Framework 7, Security 7), gRPC 1.82.0, Protobuf 4.35.0 — authoritative source: `gradle/libs.versions.toml`
 - **gRPC integration**: official `org.springframework.grpc` starters (replaced dead net.devh). Server is any `@Service` extending the generated `*ImplBase`; client stubs are `@Bean`s wired via `GrpcChannelFactory` (see `config/GrpcClientsConfig.java` in photo/gateway). Config prefix is `spring.grpc.*`, channels under `spring.grpc.client.channels.<name>`
-- **Profiles**: `local` (localhost URLs, MySQL) and `docker` (container DNS, PostgreSQL)
+- **Profiles**: `local` (localhost URLs, MySQL) and `docker` (container DNS; stale — compose provisions PostgreSQL but service URLs are `jdbc:mysql://`)
 - **Model classes use Java records** (not Lombok @Data) — accessors are `obj.field()` not `obj.getField()`
 - **JPA entities still use Lombok @Data** (Hibernate requires mutability)
 - **Docker plugin**: Bmuschko `docker-remote-api` (replaced Palantir). Task name: `dockerBuild` (not `docker`)

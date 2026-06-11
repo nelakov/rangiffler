@@ -1,413 +1,174 @@
 <p align="center">
-<img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/download.svg" width="250"/>
+<img src="utils/Images/download.svg" width="250" alt="Rangiffler logo"/>
 </p>
 
-<div align="center">
-  <b style="color: #fafafa; font-size: 54px;">Rangiffler</b>
-</div>
+<h1 align="center">Rangiffler</h1>
 
-<div align="center">
-  <i style="font-size: 18px;">I haven't been everywhere but it's on my list</i>
-</div>
+<p align="center"><i>I haven't been everywhere, but it's on my list</i></p>
 
-<div id="badges" align="center">
- <img src="https://komarev.com/ghpvc/?username=rangiffler&label=REPO+VIEWS&style=for-the-badge&color=brightgreen" alt="Github Badge"/>
-</div>
+Rangiffler is a travel-tracking application built on a microservice architecture: upload photos from your trips, see them as marks on a world map, add friends and follow their journeys. The name combines *Rangifer* (the reindeer genus) with a love for wandering.
 
-<br>
+The project doubles as a playground for a production-style test harness: Selenide UI tests, gRPC/API tests, JUnit extensions for test data setup, and Allure reporting.
 
-# Table of contents
+## Table of Contents
 
-<hr>
-
-- [Technology stack](#technology-stack)
-- [Project Description](#project-description)
-- [About the Project](#about-the-project)
-- [Ports of microservices](#ports)
-- [Project modules](#modules)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Service Ports](#service-ports)
+- [Modules](#modules)
+- [Prerequisites](#prerequisites)
+- [Running Locally](#running-locally)
 - [Testing](#testing)
-- [Documentation](#documentation)
-- [Local launch in IDE](#local launch in IDE)
-- [Docker launch](#docker launch)
-- [Local test launch](#local test launch)
-- [Allure report example](#allure report example)
+- [Known Issues](#known-issues)
 
-# Technology stack
+## Technology Stack
 
-<hr>
+| Area | Technology |
+|------|-----------|
+| Language / build | Java 25, Gradle 9.4.1 (version catalog in `gradle/libs.versions.toml`) |
+| Framework | Spring Boot 4.1 (Spring Framework 7) |
+| Security | Spring Security 7 — OAuth2 Authorization Server (auth), JWT Resource Server (gateway) |
+| Inter-service RPC | [Spring gRPC](https://docs.spring.io/spring-grpc/reference/) 1.0 (official starters), gRPC 1.82, Protobuf 4.35 |
+| Persistence | Spring Data JPA, Hibernate 7, MySQL 8 |
+| Messaging | Kafka (auth publishes user registration events, userdata consumes) |
+| Frontend | React 19, TypeScript 6, MUI 9, webpack 5 |
+| Auth UI | Thymeleaf (login/registration pages served by auth) |
+| Testing | JUnit 6, Selenide, REST/gRPC API tests, Allure reports |
+| Packaging | Docker (Bmuschko gradle plugin, `dockerBuild` task per module) |
 
-- [Spring Authorization Server](https://spring.io/projects/spring-authorization-server)
-- [Spring OAuth 2.0 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html)
-- [Spring data JPA](https://spring.io/projects/spring-data-jpa)
-- [Spring Web](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#spring-web)
-- [Spring actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
-- [Spring gRPC by https://github.com/yidongnan](https://yidongnan.github.io/grpc-spring-boot-starter/en/server/getting-started.html)
-- [Spring web-services](https://docs.spring.io/spring-ws/docs/current/reference/html/)
-- [Docker](https://www.docker.com/resources/what-container/)
-- [Retrofit](https://github.com/square/retrofit)
-- [Docker-compose](https://docs.docker.com/compose/)
-- [Postgres](https://www.postgresql.org/about/)
-- [React](https://ru.reactjs.org/docs/getting-started.html)
-- [Thymeleaf](https://www.thymeleaf.org/)
-- [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
-- [Allure](https://docs.qameta.io/allure/)
-- [Selenide](https://selenide.org/)
-- [Selenoid & Selenoid-UI](https://aerokube.com/selenoid/latest/)
-- [Allure-docker-service](https://github.com/fescobar/allure-docker-service)
-- [Java 19](https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html)
-- [Gradle 8.1](https://docs.gradle.org/7.6/release-notes.html)
-- And much more:)
+## Architecture
 
-# Project Description
+```
+Browser ──► rangiffler-client (React SPA, :3001)
+                 │ REST + JWT
+                 ▼
+            rangiffler-gateway (:8080) ◄──JWT issuer──► rangiffler-auth (:9000)
+                 │ gRPC                                       │ Kafka
+     ┌───────────┼────────────┐                          (user events)
+     ▼           ▼            ▼
+  country      photo       userdata
+  (:9011)     (:9021)     (:9030 REST / :9031 gRPC)
+```
 
-<hr>
+- **auth** issues JWTs (OAuth2 Authorization Code flow + form login + registration) and emits a Kafka event per registered user.
+- **gateway** validates JWTs and fans client REST calls out to backend services: gRPC to country/photo, REST to userdata.
+- **photo** is also a gRPC *client* of country and userdata (resolves photo country, fetches friend lists for the friends feed).
 
-<div style="text-align: left;">
-<span style="color: #fafafa; font-size: 14px; line-height: 1.5;">
+## Service Ports
 
-### Welcome to the amazing world of **Rangiffler**!
+| Service  | HTTP | gRPC | Database (MySQL schema) |
+|----------|------|------|-------------------------|
+| auth     | 9000 | —    | rangiffler-auth         |
+| country  | 9010 | 9011 | rangiffler-country      |
+| photo    | 9020 | 9021 | rangiffler-photo        |
+| userdata | 9030 | 9031 | rangiffler-userdata     |
+| gateway  | 8080 | —    | —                       |
+| client   | 3001 | —    | —                       |
 
-The travel service for true rangifer enthusiasts!
+## Modules
 
-Why did we name it **Rangiffler**? Oh, it's simple!
+| Module | Purpose |
+|--------|---------|
+| `rangiffler-auth` | OAuth2 Authorization Server: login/registration UI, JWT issuing, Kafka producer |
+| `rangiffler-gateway` | API gateway: JWT validation, REST↔gRPC fan-out |
+| `rangiffler-country` | Country reference data (gRPC server) |
+| `rangiffler-photo` | Photo storage with country association (gRPC server + gRPC client) |
+| `rangiffler-userdata` | User profiles and friendship management (gRPC server + REST) |
+| `rangiffler-grpc-common` | Shared `.proto` contracts; stubs generated into `build/generated/source/proto/` |
+| `rangiffler-client` | React SPA |
+| `rangiffler-e-2-e-tests` | Selenide UI tests + API tests with Allure reporting |
 
-We combined the word "rangifer" (which means "reindeer") with our unique set of features just for you!
+## Prerequisites
 
-- With Rangiffler, you can embark on thrilling journeys around the globe, uploading your photos at every destination.
-- Each photo becomes a mark on the map of your incredible odyssey.
-- From bustling metropolises to cozy countryside nooks - every corner deserves its own reindeer track!
-- And don't stop at solo travels! Make Rangiffler even more fun by adding your friends!
-- You'll easily browse through their photos, support their adventures, and even send reindeer-style friendship requests!
+- **Java 25** (toolchain enforced by Gradle)
+- **Docker** — for MySQL and Kafka
+- **Node.js + npm** — for the frontend
 
-Who knows, you might even share some reindeer tricks and travel secrets!
+Start the infrastructure:
 
-### **But that's not all!**
+```bash
+# MySQL (databases are auto-created on first connect)
+docker run -d --name rangiffler-mysql \
+  -e MYSQL_ROOT_PASSWORD=secret -p 3306:3306 mysql:8.0
 
-Discover the unique "Reindeer Reflection" feature - a fun way to see the world from a reindeer's perspective! Just
-upload a photo and marvel at how it would look if you were a reindeer!
+# Kafka (KRaft, no Zookeeper)
+docker run -d --name rangiffler-kafka \
+  -e KAFKA_NODE_ID=1 -e KAFKA_PROCESS_ROLES=broker,controller \
+  -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 \
+  -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 \
+  -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+  -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT \
+  -e CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk \
+  -p 9092:9092 apache/kafka:latest
+```
 
-_**Rangifer**_ - the generic name of the scientific name of a reindeer.
+## Running Locally
 
-_**Rangiffler**_ - the generic name of the generic name!
+Build everything once:
 
-Thus, **Rangiffler** becomes not only a travel service but also a universal symbol of generality!
+```bash
+./gradlew clean build -x test
+```
 
-We are aimed at satisfying all your needs and desires in travels, whether you are a true reindeer or just an adventure
-enthusiast!
+Start services **in this order** (gateway discovers the JWT issuer from auth at startup):
 
-With Rangiffler, everyone can become a true explorer of the world! 🦌✨
+```bash
+# 1. Auth — must be up before the gateway
+./gradlew :rangiffler-auth:bootRun --args='--spring.profiles.active=local'
 
-With love from the Rangiffler!
-</div>
+# 2. Backend services — any order
+./gradlew :rangiffler-country:bootRun --args='--spring.profiles.active=local'
+./gradlew :rangiffler-userdata:bootRun --args='--spring.profiles.active=local'
+./gradlew :rangiffler-photo:bootRun --args='--spring.profiles.active=local'
 
-# About the Project
+# 3. Gateway
+./gradlew :rangiffler-gateway:bootRun --args='--spring.profiles.active=local'
 
-<hr>
-<div style="text-align: left;">
-<span style="color: #fafafa; font-size: 14px; line-height: 1.5;">
+# 4. Frontend
+cd rangiffler-client && npm install && npm start
+```
 
-The Rangiffler project is a comprehensive application built on a microservices architecture, providing scalability,
-flexibility, and efficient operation.
+The app opens at http://localhost:3001.
 
-The project includes several modules, each serving specific functions and offering unique experiences to users.
+Frontend checks:
 
-<p align="left">
-<img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/rangiffler_schema.png" width="900"/>
-</p>
+```bash
+cd rangiffler-client
+npm run lint          # eslint (flat config) + prettier
+npm run build:docker  # production webpack build
+```
 
-<a name="ports"></a>
-### Ports of microservices
-
-| **Service** |          **Port**          |
-|:-----------:|:--------------------------:|
-|  FRONTEND   |        80 (server)         |
-|   GATEWAY   |       8080 (server)        |
-|    AUTH     |       9000 (server)        |
-|  USERDATA   | 9010 (server), 9011 (grpc) |
-|     GEO     | 9020 (server), 9021 (grpc) |
-|    PHOTO    | 9030 (server), 9031 (grpc) |
-
-</div>
-
-<a name="modules"></a>
-## Project Modules
-
-<hr>
-<div style="text-align: left;">
-<span style="color: #fafafa; font-size: 14px; line-height: 2.0;">
-
-### Frontend
-
-The "Frontend" module represents the client-side of the application.
-
-Here, users can enjoy a user-friendly and intuitive interface, enabling them to interact with various functionalities of
-the Rangiffler project.
-
-Embark on thrilling journeys around the globe, upload your photos, connect with friends, and savor every moment with
-Rangiffler!
-
-### Gateway
-
-The "Gateway" module is a powerful component that distributes all client requests to the corresponding microservices.
-
-It ensures access control by verifying each request for a JWT token to provide security and user authentication.
-
-The "Gateway" serves as the trustworthy guardian of the magical world of Rangiffler!
-
-### Auth Service
-
-The "Auth Service" is responsible for user authentication, storing credentials in the database, and recording Kafka
-messages for each successful authorization.
-
-Interaction with the Gateway module is via the HTTP protocol in a RESTful style, ensuring simple and efficient
-communication.
-
-### Userdata Service
-
-The "Userdata Service" is a repository for user information, including personal data and friends' lists.
-
-Interaction with the Gateway module is also through the HTTP protocol in a RESTful style, ensuring high performance and
-convenient data management.
-
-### Geo Service
-
-The "Geo Service" is a virtual atlas storing information about countries around the world.
-
-Communication with the Gateway module is based on the gRPC protocol, providing efficient data transmission and
-high-speed request processing.
-
-### Photo Service
-
-The "Photo Service" is a reliable repository of user photo details.
-
-Interaction with the Gateway module also utilizes the gRPC protocol, ensuring reliability and speedy data processing.
-
-<a name="testing"></a>
 ## Testing
 
-<hr>
+E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Locally](#running-locally) plus Chrome:
 
-#### Unit Testing and Allure Report
+```bash
+# all e2e tests
+./gradlew :rangiffler-e-2-e-tests:test
 
-Rangiffler takes unit testing seriously to ensure code correctness and reliability.
+# subset by class name
+./gradlew :rangiffler-e-2-e-tests:test --tests '*LoginTest'
 
-Each service is diligently covered with comprehensive unit tests.
+# Allure report
+./gradlew :rangiffler-e-2-e-tests:allureServe
+```
 
-To provide a transparent and insightful view of the test results, Rangiffler leverages the Allure Report.
+Test data is provisioned through JUnit 5-style extensions — `@ApiLogin`, `@CreateUser`, `@CreatePhoto`, `@CreateFriend` — which register users via the Auth API and create entities over gRPC, so tests never click through setup flows.
 
-#### E2E Testing in Docker Containers
+> **Note:** tests annotated with `@Env` are silently skipped unless `-Denv=local` (or a matching `env` environment variable) is passed.
 
-All end-to-end (e2e) tests in Rangiffler are seamlessly executed within isolated Docker containers, ensuring consistency
-and portability of the testing environment.
+Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config/local/web_local.properties`.
 
-Docker containers provide a clean and reproducible environment for running the tests, guaranteeing reliable and accurate
-test results.
+## Known Issues
 
-This approach ensures that the tests run consistently across different environments, avoiding potential configuration
-issues and making the testing process more efficient.
+- **Docker Compose flow is stale.** `docker-compose.yml` / `docker-compose.test.yml` (Selenoid + allure-docker-service pipeline) reference images from a previous project iteration (`rangiffler-currency`, `rangiffler-spend`) and provision PostgreSQL while the services' `docker` profile expects MySQL. Local launch is the supported path until the compose stack is reworked.
+- Lint and type-check surface pre-existing findings (MUI Grid v1 `item` props, a few `react-hooks` violations) that are tracked but not yet fixed.
 
-- #### Testing Technologies and Tools
-
-Rangiffler's e2e testing harness leverages a powerful set of testing technologies and tools:
-
-- #### Selenide for WEB Testing:
-
-Selenide is used to perform web testing, providing an elegant and concise API for interacting with web elements, making
-the tests easy to read and maintain.
-
-- #### JUnit 5 with Custom Annotations and Extensions:
-
-JUnit 5, enriched with custom annotations and extensions, offers a structured and organized testing framework, enabling
-us to write clear and expressive test cases.
-
-- #### Mockito and Wiremock:
-
-Mockito allows us to create mock objects for testing, while Wiremock provides a flexible framework for mocking external
-APIs, enabling us to simulate various scenarios in our tests.
-
-- #### Testing gRPC and Kafka:
-
-The e2e tests also cover interactions with gRPC and Kafka, ensuring that all communication channels between services are
-thoroughly tested for correctness and reliability.
-
-- #### Infrastructure Prepared with Docker Compose
-
-The entire Rangiffler infrastructure is conveniently set up using Docker Compose.
-
-This enables effortless management and deployment of the application and its dependencies.
-
-Docker Compose ensures that the various modules and services work harmoniously together, delivering a robust and unified
-user experience.
-
-### Reporting
-
-<hr>
-
-- #### The Power of Allure
-
-The Allure Report is a feature-rich reporting tool that offers valuable information on test results in an intuitive and
-visually appealing manner.
-
-With Allure, we can generate detailed, interactive, and user-friendly reports, making it easy to understand and analyze
-test outcomes.
-
-- #### Customizations for Enhanced Reporting
-
-Rangiffler's Allure Report is customized to provide even more insights into the test results and to aid in
-troubleshooting potential issues:
-
-- #### Detailed Logs for Each Test:
-
-Every test case includes its own log file in HTML format, making it easy to analyze any potential problems that occurred
-during the test execution.
-
-- #### Logging Database Queries:
-
-All database queries made during the test execution are logged and attached to the report as separate steps with applied
-CSS styles.
-
-This provides a transparent view of database interactions and helps in identifying performance or data-related issues.
-
-#### Simplifying Test Analysis
-
-The Allure Report simplifies the analysis of test results, helping the development team to quickly identify and address
-any issues.
-
-With the customized reports, we gain deeper insights into the application's behavior and can take informed actions to
-enhance its overall reliability and performance.
-</div>
-
-# Documentation
 ---
 
-<div style="text-align: left;">
-<span style="color: #fafafa; font-size: 18px; line-height: 1.5;">
+<p align="center"><i>Six month vacation, twice a year</i></p>
 
-**Minimum Requirements for Working with Rangiffler Project**
-
-To work with the Rangiffler project, you need to ensure the following minimum requirements are met:
-
-1. Install Docker (If not already installed)
-   Docker is used for the database (MySQL) and running microservices in a unified Docker network using docker-compose.
-
-    - [Install Docker on Windows](https://docs.docker.com/desktop/install/windows-install/)
-    - [Install Docker on Mac](https://docs.docker.com/desktop/install/mac-install/) (Different packages for ARM and
-      Intel)
-    - [Install Docker on Linux](https://docs.docker.com/desktop/install/linux-install/)
-
-   After installing and starting the Docker daemon, you can verify the Docker commands by running `docker -v`:
-
-    ``` bash
-    docker -v
-    ```
-
-2. Pull MySQL Container Version 8.0.33
-
-    ```bash
-    docker pull mysql:8.0.33
-    ```
-
-   After pulling, you will see the downloaded image using the command `docker images`:
-
-    ``` posh
-    ❯ docker images
-    REPOSITORY                  TAG       IMAGE ID       CREATED         SIZE
-    mysql                       8.0.33    a5e6f938c138   9 days ago      587MB
-    ```
-
-3. Create a Volume for Data Persistence from the Database in Docker on Your Computer
-
-    ``` bash
-    docker volume create mysqldata
-    ```
-
-4. Start the Database with the Following Command
-
-    ``` bash
-    docker run --name rangiffler-all -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -v mysqldata:/var/lib/mysql -d mysql:8.0.33
-    ```
-
-5. Install One of the Programs for Visual Interaction with MySQL
-
-   For example, you can use DBeaver or Datagrip.
-
-6. Connect to the MySQL Database (host: localhost, port: 3306, user: root, pass: secret)
-
-7. Install Java Version 17 or Higher
-
-   Rangiffler does not support versions older than 17. To check your installed Java version, run `java -version`:
-
-    ``` posh
-    ❯ java -version
-    java version "20.0.1" 2023-04-18
-    Java(TM) SE Runtime Environment (build 20.0.1+9-29)
-    Java HotSpot(TM) 64-Bit Server VM (build 20.0.1+9-29, mixed mode, sharing)
-    ```
-
-   If you have multiple Java versions installed, at least one of them should be 17+. If Java is not installed, you can
-   install OpenJDK (e.g., from https://adoptium.net/en-GB/).
-
-8. Install the Package Manager for Front-End Build: npm
-
-   Follow the instructions
-   to [Install Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm). The recommended
-   version of Node.js is 18.13.0 (LTS).
-
-</span>
-</div>
-
-<hr>
-
-<div style="text-align: left;">
-<span style="color: #fafafa; font-size: 18px; line-height: 2.0;">
-
-**Running Rangiffler Locally in IDE:**
-
-1. Start rangiffler-gateway (specify profile = local)
-
-    ```bash
-    ./gradlew :rangiffler-gateway:bootRun --args='--spring.profiles.active=local'
-    ```
-
-2. Start rangiffler-auth (specify profile = local)
-
-    ```bash
-    ./gradlew :rangiffler-auth:bootRun --args='--spring.profiles.active=local'
-    ```
-
-3. Start rangiffler-userdata (specify profile = local)
-
-    ```bash
-    ./gradlew :rangiffler-userdata:bootRun --args='--spring.profiles.active=local'
-    ```
-
-4. Start the Frontend (Make sure to update dependencies first)
-
-    - Navigate to the frontend directory:
-
-    ```bash
-    cd rangiffler-client
-    ```
-
-    - Start the frontend (If it's the first time, build the node-modules with npm i):
-
-    ```bash
-    npm i 
-    npm start
-    ```
-
-</span>
-</div>
-
-<div align="center">
-  <b style="color: #fafafa; font-size: 54px;">Enjoy the Rangiffler</b>
-</div>
-
-<div align="center">
-  <i style="font-size: 18px;">Six month vacation twice a year</i>
-</div>
-
-<hr>
 <p align="center">
-<img src="https://github.com/elakovnick24/rangiffler/blob/master/utils/Images/mimino_rangiffler.jpg" width="800"/>
+<img src="utils/Images/mimino_rangiffler.jpg" width="600" alt="Rangiffler"/>
 </p>
