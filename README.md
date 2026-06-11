@@ -18,6 +18,7 @@ The project doubles as a playground for a production-style test harness: Selenid
 - [Modules](#modules)
 - [Prerequisites](#prerequisites)
 - [Running Locally](#running-locally)
+- [Observability](#observability)
 - [Testing](#testing)
 - [Known Issues](#known-issues)
 
@@ -143,6 +144,40 @@ npm run lint          # eslint (flat config) + prettier
 npm run build:docker  # production webpack build
 ```
 
+## Observability
+
+### Structured logging
+
+Each backend service logs **plain text** under the `local`/default profile (readable in a `bootRun` terminal) and **ECS JSON** under the `docker` profile (production / containers), using Spring Boot 4 native structured logging — no extra dependencies. JSON logs parse directly with `jq`:
+
+```bash
+# follow a service's container logs, pretty
+docker logs -f photo.rangiffler.dc | jq .
+
+# only errors
+docker logs gateway.rangiffler.dc | jq 'select(.log.level == "ERROR")'
+```
+
+To get JSON locally (e.g. for log analysis), override the format on any service:
+
+```bash
+./gradlew :rangiffler-country:bootRun --args='--spring.profiles.active=local --logging.structured.format.console=ecs'
+```
+
+### Request tracing across the gRPC mesh
+
+A single **request-id** correlates the logs of all four services. The gateway takes the `X-Request-Id` header (or mints a UUID), echoes it on the response, and forwards it as gRPC metadata (`x-request-id`) on every downstream call; country / userdata / photo read it back into MDC, so it rides into each ECS log line as a `requestId` field. Follow one request end-to-end:
+
+```bash
+# any gateway request (e.g. GET /countries, with a Bearer JWT); the gateway echoes X-Request-Id back
+curl -H 'X-Request-Id: trace-123' -H 'Authorization: Bearer <jwt>' http://localhost:8080/countries
+
+# then, across every service's JSON logs:
+docker logs photo.rangiffler.dc | jq 'select(.requestId == "trace-123")'
+```
+
+The shared contract (MDC key + header) lives in `rangiffler-grpc-common` (`tracing/RequestIdSupport`); interceptors are registered per service via `@GlobalServerInterceptor` / `@GlobalClientInterceptor`. Each non-infra gRPC call also emits one INFO access-log line carrying the id (`grpc.health.*` / `grpc.reflection.*` are skipped to avoid probe noise).
+
 ## Testing
 
 E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Locally](#running-locally) plus Chrome:
@@ -164,6 +199,8 @@ E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Loc
 Test data is provisioned through JUnit 5-style extensions — `@ApiLogin`, `@CreateUser`, `@CreatePhoto`, `@CreateFriend` — which register users via the Auth API and create entities over gRPC, so tests never click through setup flows.
 
 > **Note:** tests annotated with `@Env` are silently skipped unless `-Denv=local` (or a matching `env` environment variable) is passed.
+
+> **Web tests:** serve the frontend with `npm run start:e2e` (production webpack build, no react-refresh overlay) instead of `npm start` — the dev server's overlay iframe intercepts Selenide clicks.
 
 Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config/local/web_local.properties`.
 
