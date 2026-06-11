@@ -28,6 +28,11 @@ public class GatewayApiClient extends BaseRestClient {
         return ok(bearer(token).get("/currentUser")).as(UserJson.class);
     }
 
+    /** Raw /currentUser JSON body — for JsonComparator (structural diff in Allure). */
+    public String currentUserRaw(String token) {
+        return ok(bearer(token).get("/currentUser")).getBody().asString();
+    }
+
     public List<UserJson> allUsers(String token) {
         return Arrays.asList(ok(bearer(token).get("/users")).as(UserJson[].class));
     }
