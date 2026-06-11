@@ -35,4 +35,7 @@ public interface ServicesConfig extends Config {
     @Key("userdata.grpc.service.port")
     Integer userdataGrpcServicePort();
 
+    @Key("kafka.address")
+    String kafkaAddress();
+
 }

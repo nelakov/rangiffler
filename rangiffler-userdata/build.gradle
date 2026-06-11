@@ -19,7 +19,8 @@ dependencies {
     implementation(
             libs.spring.grpc.server.starter,
             libs.spring.data.jpa.starter,
-            libs.spring.boot.starter
+            libs.spring.boot.starter,
+            libs.spring.kafka.starter
     )
     runtimeOnly libs.mysql
 }

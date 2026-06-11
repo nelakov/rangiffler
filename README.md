@@ -99,6 +99,10 @@ docker run -d --name rangiffler-kafka \
   -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
   -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
   -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT \
+  -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+  -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+  -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+  -e KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0 \
   -e CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk \
   -p 9092:9092 apache/kafka:latest
 ```
@@ -152,6 +156,9 @@ E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Loc
 
 # Allure report
 ./gradlew :rangiffler-e-2-e-tests:allureServe
+
+# Kafka tests (registration event published by auth, consumed by userdata)
+./gradlew :rangiffler-e-2-e-tests:test --tests '*Kafka*' -Denv=local
 ```
 
 Test data is provisioned through JUnit 5-style extensions — `@ApiLogin`, `@CreateUser`, `@CreatePhoto`, `@CreateFriend` — which register users via the Auth API and create entities over gRPC, so tests never click through setup flows.
@@ -162,7 +169,7 @@ Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config
 
 ## Known Issues
 
-- **Docker Compose flow is stale.** `docker-compose.yml` / `docker-compose.test.yml` (Selenoid + allure-docker-service pipeline) reference images from a previous project iteration (`rangiffler-currency`, `rangiffler-spend`) and provision PostgreSQL while the services' `docker` profile expects MySQL. Local launch is the supported path until the compose stack is reworked.
+- **E2E-in-Docker needs remote-browser wiring.** The compose stack (`docker-compose.test.yml`) is current, but the test code configures local Chrome only — Selenide `Configuration.remote` support for Selenoid is not implemented yet, so the `rangiffler-e-2-e` container cannot pass.
 - Lint and type-check surface pre-existing findings (MUI Grid v1 `item` props, a few `react-hooks` violations) that are tracked but not yet fixed.
 
 ---

@@ -18,9 +18,9 @@ dependencies {
     implementation(
             libs.bundles.spring.boot.starter.auth,
             libs.spring.data.jpa.starter,
-            libs.spring.kafka
+            libs.spring.kafka.starter
     )
-    runtimeOnly(libs.mysql)
+    runtimeOnly(libs.mysql, libs.commons.logging)
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
