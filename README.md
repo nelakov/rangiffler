@@ -82,7 +82,7 @@ Browser ──► rangiffler-client (React SPA, :3001)
 
 ### Request Flows
 
-**Authentication — OAuth2 Authorization Code + PKCE.** The SPA logs in against the auth server, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token.
+**Authentication — OAuth2 Authorization Code + PKCE.** The SPA generates a PKCE challenge, logs in against the auth server, consents to scope, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token. The registered client (`RangifflerAuthServiceConfig`) is a **public client** (`ClientAuthenticationMethod.NONE`) with **PKCE enforced** (`requireProofKey`) — no client secret — plus `authorization_code`/`refresh_token`, consent required, 10-hour tokens.
 
 ```mermaid
 sequenceDiagram
@@ -93,13 +93,17 @@ sequenceDiagram
     participant GW as gateway (:8080)
 
     U->>SPA: open app
-    SPA->>AUTH: GET /oauth2/authorize (PKCE challenge)
+    Note over SPA: generate code_verifier → SHA-256 → code_challenge
+    SPA->>AUTH: GET /oauth2/authorize?response_type=code&client_id=client<br/>&scope=openid&code_challenge=…&code_challenge_method=S256
     AUTH-->>U: login form (Thymeleaf)
     U->>AUTH: POST credentials
-    AUTH-->>SPA: 302 redirect + authorization code
-    SPA->>AUTH: POST /oauth2/token (code + PKCE verifier, form-urlencoded)
-    AUTH-->>SPA: access token (JWT)
-    Note over SPA,GW: every API call now carries Authorization: Bearer <JWT>
+    AUTH-->>U: consent screen (scope: openid)
+    U->>AUTH: approve
+    AUTH-->>SPA: 302 → {front}/authorized?code=…
+    SPA->>AUTH: POST /oauth2/token (grant_type=authorization_code,<br/>client_id, code, code_verifier, redirect_uri)
+    AUTH->>AUTH: verify code_verifier against stored challenge (PKCE)
+    AUTH-->>SPA: access + refresh JWT (TTL 10h)
+    Note over SPA,GW: API calls carry Authorization: Bearer <access JWT>
     SPA->>GW: GET /currentUser (Bearer JWT)
     GW->>GW: validate JWT (issuer discovered from auth)
     GW-->>SPA: 200 user profile
