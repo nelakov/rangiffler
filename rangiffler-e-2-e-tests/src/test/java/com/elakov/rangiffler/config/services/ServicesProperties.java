@@ -8,6 +8,7 @@ public final class ServicesProperties {
 
     public static final String CLIENT_BASE_URL = SERVICES_CONFIG.clientBaseUrl();
     public static final String AUTH_BASE_URL = SERVICES_CONFIG.authBaseUrl();
+    public static final String GATEWAY_BASE_URL = SERVICES_CONFIG.gatewayBaseUrl();
     public static final String COUNTRY_GRPC_HOST = SERVICES_CONFIG.countryGrpcServiceHost();
     public static final int COUNTRY_GRPC_PORT = SERVICES_CONFIG.countryGrpcServicePort();
 
