@@ -4,7 +4,9 @@ import com.elakov.grpc.rangiffler.grpc.UserArray;
 import com.elakov.grpc.rangiffler.grpc.User;
 import com.elakov.rangiffler.data.entity.userdata.UserEntity;
 import com.elakov.rangiffler.helper.AllureSoftSteps;
+import com.elakov.rangiffler.helper.comparator.JsonComparator;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
+import com.google.protobuf.util.JsonFormat;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateUser;
 import com.elakov.rangiffler.model.UserJson;
@@ -75,5 +77,30 @@ class UserdataGrpcTest extends BaseGrpcTest {
                 .add("firstname is Joe", () -> assertThat(friends.getUsers(0).getFirstname()).isEqualTo("Joe"))
                 .add("surname is Mate", () -> assertThat(friends.getUsers(0).getSurname()).isEqualTo("Mate"))
                 .execute();
+    }
+
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
+    @AllureId("2004")
+    @DisplayName("getAllFriends body matches the expected JSON (structural diff in Allure)")
+    @CreateUser(friends = @CreateFriend(firstname = "Joe", lastname = "Mate"))
+    void getAllFriendsBodyMatchesExpectedJson(UserJson user) throws Exception {
+        String expectedUsername = user.friends().getFirst().username();
+
+        UserArray friends = userdataGrpcClient.getAllFriends(user.username());
+        // proto -> JSON (default values included so empty avatar is present and stable)
+        String friendJson = JsonFormat.printer().includingDefaultValueFields().print(friends.getUsers(0));
+
+        String expected = """
+                {
+                  "username": "%s",
+                  "firstname": "Joe",
+                  "surname": "Mate",
+                  "avatar": ""
+                }""".formatted(expectedUsername);
+
+        new JsonComparator()
+                .assertThatJson(friendJson)
+                .ignorePaths("id")
+                .equalsToJson(expected);
     }
 }

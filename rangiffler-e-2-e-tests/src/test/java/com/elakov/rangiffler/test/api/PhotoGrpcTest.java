@@ -6,6 +6,7 @@ import com.elakov.grpc.rangiffler.grpc.PhotoArray;
 import com.elakov.grpc.rangiffler.grpc.PhotoID;
 import com.elakov.rangiffler.data.entity.photo.PhotoEntity;
 import com.elakov.rangiffler.helper.AllureSoftSteps;
+import com.elakov.rangiffler.helper.comparator.JsonComparator;
 import com.elakov.rangiffler.jupiter.annotation.RetryingTest;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreateFriend;
 import com.elakov.rangiffler.jupiter.annotation.creation.CreatePhoto;
@@ -129,5 +130,28 @@ class PhotoGrpcTest extends BaseGrpcTest {
                 .add("description is 'friend trip'", () -> assertThat(friendsPhotos.getPhotoArray(0).getDescription()).isEqualTo("friend trip"))
                 .add("country is GE", () -> assertThat(friendsPhotos.getPhotoArray(0).getCountryCode().getCode()).isEqualTo("GE"))
                 .execute();
+    }
+
+    @RetryingTest(onExceptions = {NullPointerException.class, StatusRuntimeException.class})
+    @AllureId("3006")
+    @DisplayName("getPhotosForUser body matches the expected JSON (structural diff in Allure)")
+    @CreateUser(photos = @CreatePhoto(photoPath = GEORGIA_PHOTO, countryCode = "GE", description = "Georgia"))
+    void getPhotosForUserBodyMatchesExpectedJson(UserJson user) {
+        PhotoArray photos = photoGrpcClient.getUserPhotos(user.username());
+        PhotoJson photo = PhotoJson.fromGrpcMessage(photos.getPhotoArray(0));
+
+        // id + raw photo bytes + country UUID are volatile → ignored; the rest is
+        // compared structurally and the diff is attached to Allure on a mismatch.
+        String expected = """
+                {
+                  "country": {"code": "GE", "name": "Georgia"},
+                  "description": "Georgia",
+                  "username": "%s"
+                }""".formatted(user.username());
+
+        new JsonComparator()
+                .assertThatObject(photo)
+                .ignorePaths("id", "photo", "country.id")
+                .equalsToJson(expected);
     }
 }
