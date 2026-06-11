@@ -22,7 +22,7 @@ dependencies {
             libs.spring.boot.starter,
             libs.spring.kafka.starter
     )
-    runtimeOnly libs.mysql
+    runtimeOnly(libs.mysql, libs.flyway, libs.flyway.mysql)
 }
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
