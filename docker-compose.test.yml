@@ -1,10 +1,9 @@
 # Rangiffler e2e stack: app services + Selenoid + Allure.
 #
-# KNOWN GAP: the e2e tests currently configure a local Chrome only —
-# there is no Selenide remote-driver (Selenoid) wiring in the test code
-# yet, and config/docker/web_docker.properties is empty. The app side of
-# this stack is current; the rangiffler-e-2-e service will not pass
-# until remote-browser support is added to BrowserConfigExtension.
+# Remote browser: BrowserConfigExtension reads browser.remote from
+# config/docker/web_docker.properties (http://selenoid:4444/wd/hub) and
+# routes Selenide at the Selenoid hub. Selenoid records each session;
+# failed tests attach the .mp4 to Allure (video.storage = /video/).
 #
 # Allure results flow via the shared allure-results volume — the
 # allure-docker-service watches it directly, no upload script needed.
@@ -170,9 +169,15 @@ services:
     image: aerokube/selenoid:1.10.12
     volumes:
       - ./selenoid:/etc/selenoid
+      - ./selenoid/video:/opt/selenoid/video
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      # Browser containers are spawned on the host docker daemon, so they mount the
+      # video dir from the HOST path, not from inside this container — must be absolute.
+      - OVERRIDE_VIDEO_OUTPUT_DIR=${PWD}/selenoid/video
     restart: unless-stopped
     command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "3",
+               "-video-output-dir", "/opt/selenoid/video",
                "-container-network", "rangiffler-test-network" ]
     ports:
       - "4444:4444"

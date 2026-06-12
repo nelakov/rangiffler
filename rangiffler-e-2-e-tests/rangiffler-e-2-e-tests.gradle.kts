@@ -42,8 +42,12 @@ dependencies {
 }
 
 tasks.withType<Test>().configureEach {
-    // Test JVM is forked: propagate -Denv so @Env-gated tests are not silently skipped
-    System.getProperty("env")?.let { systemProperty("env", it) }
+    // Test JVM is forked: propagate -Denv so @Env-gated tests are not silently skipped,
+    // plus the remote-browser / Selenoid-video overrides so a local Grid run works via
+    // -Dbrowser.remote=... -Dvideo.storage=...
+    listOf("env", "browser.remote", "video.storage").forEach { key ->
+        System.getProperty(key)?.let { systemProperty(key, it) }
+    }
     testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         showCauses = true
