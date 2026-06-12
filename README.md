@@ -26,9 +26,9 @@ It is also a working reference for a **modern JVM stack on the leading edge** �
 
 ### Highlights
 
-- **Polyglot service mesh** — REST at the edge, **gRPC between services**, Kafka for user events; one gateway fans out to four backends.
+- **Polyglot service mesh** — REST at the edge, **gRPC between services**, Kafka for user events; one gateway fans out to three backends (gRPC to country/photo, REST to userdata).
 - **Bleeding-edge Spring** — Boot 4.1, Framework 7, Security 7 OAuth2 Authorization Server + JWT resource server, official `org.springframework.grpc` starters (not the retired net.devh).
-- **Convention-plugin build** — Gradle **Kotlin DSL** with a `gradle/plugins` included build, modeled on the JUnit 5 repo: each module is ~12 lines, all shared config lives in `rangifflerbuild.*-conventions`.
+- **Convention-plugin build** — Gradle **Kotlin DSL** with a `gradle/plugins` included build, modeled on the JUnit 5 repo: a service module is as little as ~12 lines, all shared config lives in `rangifflerbuild.*-conventions`.
 - **Traceable by design** — a `requestId` rides `X-Request-Id` → gRPC metadata → MDC → ECS JSON, so one trip request is greppable across every service log.
 - **Allure that actually helps** — structural JSON diffs, soft assertions as steps, p6spy SQL capture, and automatic secret masking, all attached to the report.
 
@@ -54,7 +54,7 @@ It is also a working reference for a **modern JVM stack on the leading edge** �
 | Language / build | Java 25, Gradle 9.4.1 **Kotlin DSL** — convention plugins in a `gradle/plugins` included build, version catalog in `gradle/libs.versions.toml` |
 | Framework | Spring Boot 4.1 (Spring Framework 7) |
 | Security | Spring Security 7 — OAuth2 Authorization Server (auth), JWT Resource Server (gateway) |
-| Inter-service RPC | [Spring gRPC](https://docs.spring.io/spring-grpc/reference/) 1.0 (official starters), gRPC 1.82, Protobuf 4.35 |
+| Inter-service RPC | [Spring gRPC](https://docs.spring.io/spring-grpc/reference/) 1.0 (official starters), gRPC 1.82, Protobuf 4.34 |
 | Persistence | Spring Data JPA, Hibernate 7, MySQL 8 |
 | Messaging | Kafka (auth publishes user registration events, userdata consumes) |
 | Frontend | React 19, TypeScript 6, MUI 9, webpack 5 |
@@ -341,7 +341,7 @@ Use it where a test has **2+ independent** checks (so one run reports them all).
 
 ## Allure Report Examples
 
-Run the suite, then `allure serve rangiffler-e-2-e-tests/build/allure-results` to open the report. What each test attaches:
+Run the suite, then open the report with `./gradlew :rangiffler-e-2-e-tests:allureServe` (same task as [Testing](#testing)) — or `allure serve rangiffler-e-2-e-tests/build/allure-results` if you have the standalone Allure CLI. What each test attaches:
 
 ### Per-test log
 Every test's color-coded log (steps, levels, START/FINISH) is attached as `logs.html`.
