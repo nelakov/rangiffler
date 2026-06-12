@@ -64,17 +64,9 @@ It is also a working reference for a **modern JVM stack on the leading edge** �
 
 ## Architecture
 
-```
-Browser ──► rangiffler-client (React SPA, :3001)
-                 │ REST + JWT
-                 ▼
-            rangiffler-gateway (:8080) ◄──JWT issuer──► rangiffler-auth (:9000)
-                 │ gRPC                                       │ Kafka
-     ┌───────────┼────────────┐                          (user events)
-     ▼           ▼            ▼
-  country      photo       userdata
-  (:9011)     (:9021)     (:9030 REST / :9031 gRPC)
-```
+<p align="center">
+<img src="utils/Images/rangiffler.svg" width="900" alt="Rangiffler component diagram — gRPC mesh, OAuth2, Kafka, MySQL"/>
+</p>
 
 - **auth** issues JWTs (OAuth2 Authorization Code flow + form login + registration) and emits a Kafka event per registered user.
 - **gateway** validates JWTs and fans client REST calls out to backend services: gRPC to country/photo, REST to userdata.
@@ -84,52 +76,15 @@ Browser ──► rangiffler-client (React SPA, :3001)
 
 **Authentication — OAuth2 Authorization Code + PKCE.** The SPA generates a PKCE challenge, logs in against the auth server, consents to scope, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token. The registered client (`RangifflerAuthServiceConfig`) is a **public client** (`ClientAuthenticationMethod.NONE`) with **PKCE enforced** (`requireProofKey`) — no client secret — plus `authorization_code`/`refresh_token`, consent required, 10-hour tokens.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor U as User
-    participant SPA as client (React :3001)
-    participant AUTH as auth (:9000)
-    participant GW as gateway (:8080)
-
-    U->>SPA: open app
-    Note over SPA: generate code_verifier → SHA-256 → code_challenge
-    SPA->>AUTH: GET /oauth2/authorize?response_type=code&client_id=client<br/>&scope=openid&code_challenge=…&code_challenge_method=S256
-    AUTH-->>U: login form (Thymeleaf)
-    U->>AUTH: POST credentials
-    AUTH-->>U: consent screen (scope: openid)
-    U->>AUTH: approve
-    AUTH-->>SPA: 302 → {front}/authorized?code=…
-    SPA->>AUTH: POST /oauth2/token (grant_type=authorization_code,<br/>client_id, code, code_verifier, redirect_uri)
-    AUTH->>AUTH: verify code_verifier against stored challenge (PKCE)
-    AUTH-->>SPA: access + refresh JWT (TTL 10h)
-    Note over SPA,GW: API calls carry Authorization: Bearer <access JWT>
-    SPA->>GW: GET /currentUser (Bearer JWT)
-    GW->>GW: validate JWT (issuer discovered from auth)
-    GW-->>SPA: 200 user profile
-```
+<p align="center">
+<img src="utils/Images/rangiffler_oauth.svg" width="900" alt="OAuth2 Authorization Code + PKCE sequence — front-channel authorize/consent, back-channel token exchange"/>
+</p>
 
 **Friends' photo feed — gateway fan-out across the gRPC mesh.** One client request triggers nested gRPC calls: the gateway asks photo, which itself asks userdata (who are my friends?) and country (resolve each photo's country).
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant SPA as client
-    participant GW as gateway (:8080)
-    participant PH as photo (:9021)
-    participant UD as userdata (:9031)
-    participant CO as country (:9011)
-
-    SPA->>GW: GET /friends/photos (Bearer JWT)
-    GW->>GW: validate JWT
-    GW->>PH: gRPC getAllFriendsPhoto(username)
-    PH->>UD: gRPC getAllFriends(username)
-    UD-->>PH: friend list
-    PH->>CO: gRPC resolve photo countries
-    CO-->>PH: countries
-    PH-->>GW: PhotoArray (photos + country)
-    GW-->>SPA: 200 friends' photos
-```
+<p align="center">
+<img src="utils/Images/rangiffler_sequence.svg" width="900" alt="GET /friends/photos sequence — gateway orchestrates photo → {userdata, country} + MySQL"/>
+</p>
 
 **Registration — asynchronous user propagation over Kafka.** Auth owns credentials; userdata owns profiles. On registration, auth persists the account and publishes a `users` event that userdata consumes to create the matching profile.
 
@@ -316,6 +271,12 @@ docker logs photo.rangiffler.dc | jq 'select(.requestId == "trace-123")'
 The shared contract (MDC key + header) lives in `rangiffler-grpc-common` (`tracing/RequestIdSupport`); interceptors are registered per service via `@GlobalServerInterceptor` / `@GlobalClientInterceptor`. Each non-infra gRPC call also emits one INFO access-log line carrying the id (`grpc.health.*` / `grpc.reflection.*` are skipped to avoid probe noise).
 
 ## Testing
+
+The e2e harness provisions data declaratively over the real APIs, drives the UI through Selenide, verifies against the database directly, and reports through Allure.
+
+<p align="center">
+<img src="utils/Images/rangiffler_test.svg" width="900" alt="Rangiffler e2e test architecture — declarative provisioning, Selenide UI, direct-DB verification, Allure"/>
+</p>
 
 E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Locally](#running-locally) plus Chrome:
 
