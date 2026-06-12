@@ -365,7 +365,7 @@ Each HTTP request/response is attached with secrets (password, tokens, cookies) 
 
 ## Known Issues
 
-- **E2E-in-Docker needs remote-browser wiring.** The compose stack (`docker-compose.test.yml`) is current, but the test code configures local Chrome only — Selenide `Configuration.remote` support for Selenoid is not implemented yet, so the `rangiffler-e-2-e` container cannot pass.
+- **E2E-in-Docker has not been exercised end-to-end.** Selenide remote-browser wiring now exists — `BrowserConfigExtension` routes `Configuration.remote` at the Selenoid hub when `browser.remote` is set, and `docker-compose.test.yml` is configured for it (`web_docker.properties` → `http://selenoid:4444/wd/hub`, with session video attached to Allure). The local-browser path is verified; a full `docker compose -f docker-compose.test.yml up` run (which builds every service image) has not yet been run to confirm the containerized suite is green.
 - Lint and type-check surface pre-existing findings (MUI Grid v1 `item` props, a few `react-hooks` violations) that are tracked but not yet fixed.
 
 ---
