@@ -2,6 +2,8 @@ package com.elakov.rangiffler.helper.data;
 
 import net.datafaker.Faker;
 
+import java.util.UUID;
+
 public class DataFakeHelper {
 
 
@@ -16,7 +18,9 @@ public class DataFakeHelper {
     }
 
     public static String generateRandomFunnyUsername() {
-        return FAKER.funnyName().name();
+        // Append a unique suffix: the funnyName pool is small, so parallel tests
+        // collide on the unique users.username column under load.
+        return FAKER.funnyName().name() + "-" + UUID.randomUUID().toString().substring(0, 8);
     }
 
     public static String generateRandomPassword() {

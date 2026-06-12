@@ -12,16 +12,13 @@ import java.util.UUID;
 public class PhotoRepositoryImpl extends JpaTransactionManager implements PhotoRepository {
 
     public PhotoRepositoryImpl() {
-        super(EmfProvider.INSTANCE
-                .getEmf(ServiceDataBase.PHOTO_SERVICE)
-                .createEntityManager()
-        );
+        super(EmfProvider.INSTANCE.getEmf(ServiceDataBase.PHOTO_SERVICE));
     }
 
     @NotNull
     @Override
     public PhotoEntity findById(UUID id) {
-        return em.createQuery("SELECT p FROM PhotoEntity p WHERE p.id=:id", PhotoEntity.class)
+        return em().createQuery("SELECT p FROM PhotoEntity p WHERE p.id=:id", PhotoEntity.class)
                 .setParameter("id", id)
                 .getResultStream()
                 .findFirst()
@@ -31,7 +28,7 @@ public class PhotoRepositoryImpl extends JpaTransactionManager implements PhotoR
     @NotNull
     @Override
     public PhotoEntity findByUsername(String username) {
-        return em.createQuery("SELECT p FROM PhotoEntity p WHERE p.username=:username", PhotoEntity.class)
+        return em().createQuery("SELECT p FROM PhotoEntity p WHERE p.username=:username", PhotoEntity.class)
                 .setParameter("username", username)
                 .getResultStream()
                 .findFirst()
@@ -41,7 +38,7 @@ public class PhotoRepositoryImpl extends JpaTransactionManager implements PhotoR
 
     @Override
     public @NotNull List<PhotoEntity> findAllByUsername(String username) {
-        return  em.createQuery("SELECT p FROM PhotoEntity p WHERE p.username=:username", PhotoEntity.class)
+        return em().createQuery("SELECT p FROM PhotoEntity p WHERE p.username=:username", PhotoEntity.class)
                 .setParameter("username", username)
                 .getResultList()
                 .stream()

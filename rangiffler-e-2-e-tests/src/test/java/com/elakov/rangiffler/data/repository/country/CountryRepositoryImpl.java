@@ -12,22 +12,19 @@ import static com.elakov.rangiffler.data.ServiceDataBase.COUNTRY_SERVICE;
 
 public class CountryRepositoryImpl extends JpaTransactionManager implements CountryRepository {
     public CountryRepositoryImpl() {
-        super(EmfProvider.INSTANCE
-                .getEmf(COUNTRY_SERVICE)
-                .createEntityManager()
-        );
+        super(EmfProvider.INSTANCE.getEmf(COUNTRY_SERVICE));
     }
 
     @Override
     public List<CountryEntity> findAll() {
-        return em.createQuery("select c from CountryEntity c", CountryEntity.class)
+        return em().createQuery("select c from CountryEntity c", CountryEntity.class)
                 .getResultList();
     }
 
     @NotNull
     @Override
     public CountryEntity findByName(@NotNull String name) {
-        return em.createQuery("select c from CountryEntity c where name=:name", CountryEntity.class)
+        return em().createQuery("select c from CountryEntity c where name=:name", CountryEntity.class)
                 .setParameter("name", name)
                 .getSingleResult();
     }
@@ -35,7 +32,7 @@ public class CountryRepositoryImpl extends JpaTransactionManager implements Coun
     @Nullable
     @Override
     public CountryEntity findByCode(@NotNull String code) {
-        return em.createQuery("select c from CountryEntity c where code=:code", CountryEntity.class)
+        return em().createQuery("select c from CountryEntity c where code=:code", CountryEntity.class)
                 .setParameter("code", code)
                 .getSingleResult();
     }

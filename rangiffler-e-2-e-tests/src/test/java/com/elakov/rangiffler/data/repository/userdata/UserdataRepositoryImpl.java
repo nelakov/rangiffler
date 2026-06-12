@@ -11,15 +11,12 @@ import static com.elakov.rangiffler.data.ServiceDataBase.USERDATA_SERVICE;
 public class UserdataRepositoryImpl extends JpaTransactionManager implements UserdataRepository {
 
     public UserdataRepositoryImpl() {
-        super(EmfProvider.INSTANCE
-                .getEmf(USERDATA_SERVICE)
-                .createEntityManager()
-        );
+        super(EmfProvider.INSTANCE.getEmf(USERDATA_SERVICE));
     }
 
     @Override
     public UserEntity findByUsername( String username) {
-        return Objects.requireNonNull(em.createQuery("SELECT u FROM UserEntity u WHERE u.username=:username", UserEntity.class)
+        return Objects.requireNonNull(em().createQuery("SELECT u FROM UserEntity u WHERE u.username=:username", UserEntity.class)
                 .setParameter("username", username)
                 .getResultStream()
                 .findFirst().orElse(null));

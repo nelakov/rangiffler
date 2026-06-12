@@ -9,10 +9,7 @@ import static com.elakov.rangiffler.data.ServiceDataBase.AUTH_SERVICE;
 public class AuthRepositoryImpl extends JpaTransactionManager implements AuthRepository {
 
     public AuthRepositoryImpl() {
-        super(EmfProvider.INSTANCE
-                .getEmf(AUTH_SERVICE)
-                .createEntityManager()
-        );
+        super(EmfProvider.INSTANCE.getEmf(AUTH_SERVICE));
     }
 
     @Override
@@ -24,21 +21,21 @@ public class AuthRepositoryImpl extends JpaTransactionManager implements AuthRep
 
     @Override
     public UserAuthEntity getUser(UserAuthEntity userAuthEntity) {
-        return em.createQuery("select u from UserAuthEntity u where id=:id", UserAuthEntity.class)
+        return em().createQuery("select u from UserAuthEntity u where id=:id", UserAuthEntity.class)
                 .setParameter("id", userAuthEntity.getId())
                 .getSingleResult();
     }
 
     @Override
     public UserAuthEntity getUserByUsername(String username) {
-        return em.createQuery("select u from UserAuthEntity u where username=:username", UserAuthEntity.class)
+        return em().createQuery("select u from UserAuthEntity u where username=:username", UserAuthEntity.class)
                 .setParameter("username", username)
                 .getSingleResult();
     }
 
     @Override
     public String findUserById(String username) {
-        return em.createQuery("select u from UserAuthEntity u where username=:username", UserAuthEntity.class)
+        return em().createQuery("select u from UserAuthEntity u where username=:username", UserAuthEntity.class)
                 .setParameter("username", username)
                 .getSingleResult()
                 .getId()

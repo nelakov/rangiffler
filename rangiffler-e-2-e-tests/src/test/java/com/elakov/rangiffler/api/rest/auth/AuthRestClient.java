@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -85,10 +84,9 @@ public class AuthRestClient extends BaseRestClient implements AuthClient {
     }
 
     private RequestSpecification tokenRequest() {
-        String basic = "Basic " + Base64.getEncoder()
-                .encodeToString("client:secret".getBytes(StandardCharsets.UTF_8));
+        // Public client (ClientAuthenticationMethod.NONE): no Basic auth — the PKCE
+        // code_verifier plus client_id in the body authenticate the token request.
         return spec()
-                .header("Authorization", basic)
                 .contentType(ContentType.URLENC)
                 .formParam("client_id", "client")
                 .formParam("redirect_uri", CLIENT_BASE_URL + "/authorized")
