@@ -74,19 +74,19 @@ It also doubles as a reference for a current JVM stack: Spring Boot 4 / Framewor
 
 ### Request Flows
 
-**Authentication, OAuth2 Authorization Code + PKCE.** The SPA generates a PKCE challenge, logs in against the auth server, consents to scope, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token. The registered client (`RangifflerAuthServiceConfig`) is a **public client** (`ClientAuthenticationMethod.NONE`) with **PKCE enforced** (`requireProofKey`), no client secret, plus `authorization_code`/`refresh_token`, consent required, 10-hour tokens.
+**Authentication: OAuth2 Authorization Code + PKCE.** The SPA generates a PKCE challenge, logs in against the auth server, consents to scope, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token. The registered client (`RangifflerAuthServiceConfig`) is a **public client** (`ClientAuthenticationMethod.NONE`) with **PKCE enforced** (`requireProofKey`), no client secret, plus `authorization_code`/`refresh_token`, consent required, 10-hour tokens.
 
 <p align="center">
 <img src="utils/Images/rangiffler_oauth.svg" width="900" alt="OAuth2 Authorization Code + PKCE sequence, front-channel authorize/consent, back-channel token exchange"/>
 </p>
 
-**Friends' photo feed, gateway fan-out across the gRPC mesh.** One client request triggers nested gRPC calls: the gateway asks photo, which itself asks userdata (who are my friends?) and country (resolve each photo's country).
+**Friends' photo feed: gateway fan-out across the gRPC mesh.** One client request triggers nested gRPC calls: the gateway asks photo, which itself asks userdata (who are my friends?) and country (resolve each photo's country).
 
 <p align="center">
 <img src="utils/Images/rangiffler_sequence.svg" width="900" alt="GET /friends/photos sequence, gateway orchestrates photo → {userdata, country} + MySQL"/>
 </p>
 
-**Registration, asynchronous user propagation over Kafka.** Auth owns credentials; userdata owns profiles. On registration, auth persists the account and publishes a `users` event that userdata consumes to create the matching profile.
+**Registration: asynchronous user propagation over Kafka.** Auth owns credentials; userdata owns profiles. On registration, auth persists the account and publishes a `users` event that userdata consumes to create the matching profile.
 
 ```mermaid
 sequenceDiagram
@@ -240,7 +240,7 @@ npm run build:docker  # production webpack build
 
 ### Structured logging
 
-Each backend service logs **plain text** under the `local`/default profile (readable in a `bootRun` terminal) and **ECS JSON** under the `docker` profile (production / containers), using Spring Boot 4 native structured logging, no extra dependencies. JSON logs parse directly with `jq`:
+Each backend service logs **plain text** under the `local`/default profile (readable in a `bootRun` terminal) and **ECS JSON** under the `docker` profile (production / containers), using Spring Boot 4 native structured logging, with no extra dependencies. JSON logs parse directly with `jq`:
 
 ```bash
 # follow a service's container logs, pretty
@@ -298,7 +298,7 @@ Test data is provisioned through JUnit 5-style extensions, `@ApiLogin`, `@Create
 
 > **Note:** tests annotated with `@Env` are silently skipped unless `-Denv=local` (or a matching `env` environment variable) is passed.
 
-> **Web tests:** serve the frontend with `npm run start:e2e` (production webpack build, no react-refresh overlay) instead of `npm start`, the dev server's overlay iframe intercepts Selenide clicks.
+> **Web tests:** serve the frontend with `npm run start:e2e` (production webpack build, no react-refresh overlay) instead of `npm start`; the dev server's overlay iframe intercepts Selenide clicks.
 
 Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config/local/web_local.properties`.
 
