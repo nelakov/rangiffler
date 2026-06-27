@@ -20,17 +20,17 @@
 <img src="https://img.shields.io/badge/Reporting-Allure-FF7C00?logo=qameta&logoColor=white" alt="Allure"/>
 </p>
 
-**Rangiffler** is a travel-tracking app on a microservice backbone: upload photos from your trips, watch them light up a world map, add friends and follow their journeys. The name fuses *Rangifer* (the reindeer genus) with an itch to wander.
+**Rangiffler** is a travel-tracking app on a microservice backbone: upload photos from your trips, watch them light up a world map, add friends and follow their journeys. The name comes from *Rangifer*, the reindeer genus.
 
-It is also a working reference for a **modern JVM stack on the leading edge** — Spring Boot 4 / Framework 7 / Security 7, the official Spring gRPC starters, Java 25 — wired to a **production-grade test harness**: Selenide UI tests, REST + gRPC API tests, JUnit extensions that seed data over the real APIs, structured logging, cross-service request tracing, and a custom Allure toolkit.
+It also doubles as a reference for a current JVM stack: Spring Boot 4 / Framework 7 / Security 7, the official Spring gRPC starters, Java 25, alongside the test setup: Selenide UI tests, REST and gRPC API tests, JUnit extensions that seed data over the real APIs, structured logging, cross-service request tracing, and a custom Allure toolkit.
 
 ### Highlights
 
-- **Polyglot service mesh** — REST at the edge, **gRPC between services**, Kafka for user events; one gateway fans out to three backends (gRPC to country/photo, REST to userdata).
-- **Bleeding-edge Spring** — Boot 4.1, Framework 7, Security 7 OAuth2 Authorization Server + JWT resource server, official `org.springframework.grpc` starters (not the retired net.devh).
-- **Convention-plugin build** — Gradle **Kotlin DSL** with a `gradle/plugins` included build, modeled on the JUnit 5 repo: a service module is as little as ~12 lines, all shared config lives in `rangifflerbuild.*-conventions`.
-- **Traceable by design** — a `requestId` rides `X-Request-Id` → gRPC metadata → MDC → ECS JSON, so one trip request is greppable across every service log.
-- **Allure that actually helps** — structural JSON diffs, soft assertions as steps, p6spy SQL capture, and automatic secret masking, all attached to the report.
+- REST at the edge, gRPC between services, Kafka for user events. One gateway fans out to three backends (gRPC to country/photo, REST to userdata).
+- Spring Boot 4.1, Framework 7, Security 7 (OAuth2 Authorization Server + JWT resource server), and the official `org.springframework.grpc` starters (not the retired net.devh).
+- Gradle Kotlin DSL with a `gradle/plugins` included build, modeled on the JUnit 5 repo: a service module is about 12 lines, with shared config in `rangifflerbuild.*-conventions`.
+- Request tracing: a `requestId` rides `X-Request-Id` → gRPC metadata → MDC → ECS JSON, so one trip request is greppable across every service log.
+- Allure extras: structural JSON diffs, soft assertions as steps, p6spy SQL capture, and automatic secret masking, all attached to the report.
 
 ## Table of Contents
 
@@ -51,9 +51,9 @@ It is also a working reference for a **modern JVM stack on the leading edge** �
 
 | Area | Technology |
 |------|-----------|
-| Language / build | Java 25, Gradle 9.4.1 **Kotlin DSL** — convention plugins in a `gradle/plugins` included build, version catalog in `gradle/libs.versions.toml` |
+| Language / build | Java 25, Gradle 9.4.1 **Kotlin DSL**, convention plugins in a `gradle/plugins` included build, version catalog in `gradle/libs.versions.toml` |
 | Framework | Spring Boot 4.1 (Spring Framework 7) |
-| Security | Spring Security 7 — OAuth2 Authorization Server (auth), JWT Resource Server (gateway) |
+| Security | Spring Security 7, OAuth2 Authorization Server (auth), JWT Resource Server (gateway) |
 | Inter-service RPC | [Spring gRPC](https://docs.spring.io/spring-grpc/reference/) 1.0 (official starters), gRPC 1.82, Protobuf 4.34 |
 | Persistence | Spring Data JPA, Hibernate 7, MySQL 8 |
 | Messaging | Kafka (auth publishes user registration events, userdata consumes) |
@@ -65,7 +65,7 @@ It is also a working reference for a **modern JVM stack on the leading edge** �
 ## Architecture
 
 <p align="center">
-<img src="utils/Images/rangiffler.svg" width="900" alt="Rangiffler component diagram — gRPC mesh, OAuth2, Kafka, MySQL"/>
+<img src="utils/Images/rangiffler.svg" width="900" alt="Rangiffler component diagram, gRPC mesh, OAuth2, Kafka, MySQL"/>
 </p>
 
 - **auth** issues JWTs (OAuth2 Authorization Code flow + form login + registration) and emits a Kafka event per registered user.
@@ -74,19 +74,19 @@ It is also a working reference for a **modern JVM stack on the leading edge** �
 
 ### Request Flows
 
-**Authentication — OAuth2 Authorization Code + PKCE.** The SPA generates a PKCE challenge, logs in against the auth server, consents to scope, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token. The registered client (`RangifflerAuthServiceConfig`) is a **public client** (`ClientAuthenticationMethod.NONE`) with **PKCE enforced** (`requireProofKey`) — no client secret — plus `authorization_code`/`refresh_token`, consent required, 10-hour tokens.
+**Authentication, OAuth2 Authorization Code + PKCE.** The SPA generates a PKCE challenge, logs in against the auth server, consents to scope, exchanges the code for a JWT, then calls the API through the gateway with a Bearer token. The registered client (`RangifflerAuthServiceConfig`) is a **public client** (`ClientAuthenticationMethod.NONE`) with **PKCE enforced** (`requireProofKey`), no client secret, plus `authorization_code`/`refresh_token`, consent required, 10-hour tokens.
 
 <p align="center">
-<img src="utils/Images/rangiffler_oauth.svg" width="900" alt="OAuth2 Authorization Code + PKCE sequence — front-channel authorize/consent, back-channel token exchange"/>
+<img src="utils/Images/rangiffler_oauth.svg" width="900" alt="OAuth2 Authorization Code + PKCE sequence, front-channel authorize/consent, back-channel token exchange"/>
 </p>
 
-**Friends' photo feed — gateway fan-out across the gRPC mesh.** One client request triggers nested gRPC calls: the gateway asks photo, which itself asks userdata (who are my friends?) and country (resolve each photo's country).
+**Friends' photo feed, gateway fan-out across the gRPC mesh.** One client request triggers nested gRPC calls: the gateway asks photo, which itself asks userdata (who are my friends?) and country (resolve each photo's country).
 
 <p align="center">
-<img src="utils/Images/rangiffler_sequence.svg" width="900" alt="GET /friends/photos sequence — gateway orchestrates photo → {userdata, country} + MySQL"/>
+<img src="utils/Images/rangiffler_sequence.svg" width="900" alt="GET /friends/photos sequence, gateway orchestrates photo → {userdata, country} + MySQL"/>
 </p>
 
-**Registration — asynchronous user propagation over Kafka.** Auth owns credentials; userdata owns profiles. On registration, auth persists the account and publishes a `users` event that userdata consumes to create the matching profile.
+**Registration, asynchronous user propagation over Kafka.** Auth owns credentials; userdata owns profiles. On registration, auth persists the account and publishes a `users` event that userdata consumes to create the matching profile.
 
 ```mermaid
 sequenceDiagram
@@ -101,7 +101,7 @@ sequenceDiagram
     AUTH->>AUTH: persist credentials
     AUTH--)K: publish UserJson(username)
     AUTH-->>U: 200 registered
-    Note over K,UD: async — @KafkaListener(topics = "users", groupId = "userdata")
+    Note over K,UD: async, @KafkaListener(topics = "users", groupId = "userdata")
     K--)UD: consume user event
     UD->>DB: create user profile row
 ```
@@ -110,12 +110,12 @@ sequenceDiagram
 
 | Service  | HTTP | gRPC | Database (MySQL schema) |
 |----------|------|------|-------------------------|
-| auth     | 9000 | —    | rangiffler-auth         |
+| auth     | 9000 | -    | rangiffler-auth         |
 | country  | 9010 | 9011 | rangiffler-country      |
 | photo    | 9020 | 9021 | rangiffler-photo        |
 | userdata | 9030 | 9031 | rangiffler-userdata     |
-| gateway  | 8080 | —    | —                       |
-| client   | 3001 | —    | —                       |
+| gateway  | 8080 | -    | -                       |
+| client   | 3001 | -    | -                       |
 
 ## Modules
 
@@ -166,7 +166,7 @@ dependencies {
 
 Conventions worth knowing:
 
-- **Per-module build files are named `<module>.gradle.kts`**, not `build.gradle.kts` — enforced in `settings.gradle.kts` (`require(buildFile.isFile)`).
+- **Per-module build files are named `<module>.gradle.kts`**, not `build.gradle.kts`, enforced in `settings.gradle.kts` (`require(buildFile.isFile)`).
 - The type-safe `libs` accessor is **not** generated inside precompiled plugins; convention plugins reach the catalog through `ProjectExtensions.kt` (`dependencyFromLibs` / `bundleFromLibs` / `requiredVersionFromLibs`).
 - `dockerBuild` is defined **once** and derives its image name from `project.name` → `nelakov/<module>:<version>`.
 - Type-safe project accessors are on (`projects.rangifflerGrpcCommon`).
@@ -174,8 +174,8 @@ Conventions worth knowing:
 ## Prerequisites
 
 - **Java 25** (toolchain enforced by Gradle)
-- **Docker** — for MySQL and Kafka
-- **Node.js + npm** — for the frontend
+- **Docker**, for MySQL and Kafka
+- **Node.js + npm**, for the frontend
 
 Start the infrastructure:
 
@@ -211,10 +211,10 @@ Build everything once:
 Start services **in this order** (gateway discovers the JWT issuer from auth at startup):
 
 ```bash
-# 1. Auth — must be up before the gateway
+# 1. Auth, must be up before the gateway
 ./gradlew :rangiffler-auth:bootRun --args='--spring.profiles.active=local'
 
-# 2. Backend services — any order
+# 2. Backend services, any order
 ./gradlew :rangiffler-country:bootRun --args='--spring.profiles.active=local'
 ./gradlew :rangiffler-userdata:bootRun --args='--spring.profiles.active=local'
 ./gradlew :rangiffler-photo:bootRun --args='--spring.profiles.active=local'
@@ -240,7 +240,7 @@ npm run build:docker  # production webpack build
 
 ### Structured logging
 
-Each backend service logs **plain text** under the `local`/default profile (readable in a `bootRun` terminal) and **ECS JSON** under the `docker` profile (production / containers), using Spring Boot 4 native structured logging — no extra dependencies. JSON logs parse directly with `jq`:
+Each backend service logs **plain text** under the `local`/default profile (readable in a `bootRun` terminal) and **ECS JSON** under the `docker` profile (production / containers), using Spring Boot 4 native structured logging, no extra dependencies. JSON logs parse directly with `jq`:
 
 ```bash
 # follow a service's container logs, pretty
@@ -275,7 +275,7 @@ The shared contract (MDC key + header) lives in `rangiffler-grpc-common` (`traci
 The e2e harness provisions data declaratively over the real APIs, drives the UI through Selenide, verifies against the database directly, and reports through Allure.
 
 <p align="center">
-<img src="utils/Images/rangiffler_test.svg" width="900" alt="Rangiffler e2e test architecture — declarative provisioning, Selenide UI, direct-DB verification, Allure"/>
+<img src="utils/Images/rangiffler_test.svg" width="900" alt="Rangiffler e2e test architecture, declarative provisioning, Selenide UI, direct-DB verification, Allure"/>
 </p>
 
 E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Locally](#running-locally) plus Chrome:
@@ -294,11 +294,11 @@ E2E tests (Selenide + JUnit 6 + Allure) require the full stack from [Running Loc
 ./gradlew :rangiffler-e-2-e-tests:test --tests '*Kafka*' -Denv=local
 ```
 
-Test data is provisioned through JUnit 5-style extensions — `@ApiLogin`, `@CreateUser`, `@CreatePhoto`, `@CreateFriend` — which register users via the Auth API and create entities over gRPC, so tests never click through setup flows.
+Test data is provisioned through JUnit 5-style extensions, `@ApiLogin`, `@CreateUser`, `@CreatePhoto`, `@CreateFriend`, which register users via the Auth API and create entities over gRPC, so tests never click through setup flows.
 
 > **Note:** tests annotated with `@Env` are silently skipped unless `-Denv=local` (or a matching `env` environment variable) is passed.
 
-> **Web tests:** serve the frontend with `npm run start:e2e` (production webpack build, no react-refresh overlay) instead of `npm start` — the dev server's overlay iframe intercepts Selenide clicks.
+> **Web tests:** serve the frontend with `npm run start:e2e` (production webpack build, no react-refresh overlay) instead of `npm start`, the dev server's overlay iframe intercepts Selenide clicks.
 
 Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config/local/web_local.properties`.
 
@@ -306,9 +306,9 @@ Browser configuration lives in `rangiffler-e-2-e-tests/src/test/resources/config
 
 Two helpers (`com.elakov.rangiffler.helper.*`) make e2e assertions richer in the Allure report.
 
-### JsonComparator — structural JSON diff
+### JsonComparator, structural JSON diff
 
-Asserts a JSON body equals an expected one and attaches a side-by-side **Actual / Expect HTML diff** to the Allure report (differing paths highlighted), on both pass and fail — so a failure shows exactly what mismatched.
+Asserts a JSON body equals an expected one and attaches a side-by-side **Actual / Expect HTML diff** to the Allure report (differing paths highlighted), on both pass and fail, so a failure shows exactly what mismatched.
 
 ```java
 // REST (raw body)
@@ -317,7 +317,7 @@ new JsonComparator()
         .ignorePaths("id")                       // volatile/server-generated paths
         .equalsToJson(expectedJson);
 
-// A model object (serialized via Jackson) — e.g. a gRPC response mapped to a record
+// A model object (serialized via Jackson), e.g. a gRPC response mapped to a record
 new JsonComparator()
         .assertThatObject(PhotoJson.fromGrpcMessage(photo))
         .ignorePaths("id", "photo", "country.id")
@@ -326,7 +326,7 @@ new JsonComparator()
 
 Comparison is backed by **json-unit**; `assertThatObject` serializes the object first. For a protobuf message with no model mapping, convert it with `JsonFormat.printer().includingDefaultValueFields().print(message)` and use `assertThatJson`.
 
-### AllureSoftSteps — soft assertions as Allure steps
+### AllureSoftSteps, soft assertions as Allure steps
 
 Runs every check (not stopping at the first failure), each as its own Allure step; one failure rethrows the original cause, more than one throws a single error summarizing the count.
 
@@ -341,7 +341,7 @@ Use it where a test has **2+ independent** checks (so one run reports them all).
 
 ## Allure Report Examples
 
-Run the suite, then open the report with `./gradlew :rangiffler-e-2-e-tests:allureServe` (same task as [Testing](#testing)) — or `allure serve rangiffler-e-2-e-tests/build/allure-results` if you have the standalone Allure CLI. What each test attaches:
+Run the suite, then open the report with `./gradlew :rangiffler-e-2-e-tests:allureServe` (same task as [Testing](#testing)), or `allure serve rangiffler-e-2-e-tests/build/allure-results` if you have the standalone Allure CLI. What each test attaches:
 
 ### Per-test log
 Every test's color-coded log (steps, levels, START/FINISH) is attached as `logs.html`.
@@ -365,7 +365,7 @@ Each HTTP request/response is attached with secrets (password, tokens, cookies) 
 
 ## Known Issues
 
-- **E2E-in-Docker has not been exercised end-to-end.** Selenide remote-browser wiring now exists — `BrowserConfigExtension` routes `Configuration.remote` at the Selenoid hub when `browser.remote` is set, and `docker-compose.test.yml` is configured for it (`web_docker.properties` → `http://selenoid:4444/wd/hub`, with session video attached to Allure). The local-browser path is verified; a full `docker compose -f docker-compose.test.yml up` run (which builds every service image) has not yet been run to confirm the containerized suite is green.
+- **E2E-in-Docker has not been exercised end-to-end.** Selenide remote-browser wiring now exists, `BrowserConfigExtension` routes `Configuration.remote` at the Selenoid hub when `browser.remote` is set, and `docker-compose.test.yml` is configured for it (`web_docker.properties` → `http://selenoid:4444/wd/hub`, with session video attached to Allure). The local-browser path is verified; a full `docker compose -f docker-compose.test.yml up` run (which builds every service image) has not yet been run to confirm the containerized suite is green.
 - Lint and type-check surface pre-existing findings (MUI Grid v1 `item` props, a few `react-hooks` violations) that are tracked but not yet fixed.
 
 ---
